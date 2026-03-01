@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui
+package com.example.kts_android_kmp.feature.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,10 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.kts_android_kmp.ui.components.LoginForm
-import com.example.kts_android_kmp.ui.components.PrintCoilImage
-import com.example.kts_android_kmp.ui.validation.validateEmail
-import com.example.kts_android_kmp.ui.validation.validatePassword
+import com.example.kts_android_kmp.utils.PrintCoilImage
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.logo_content_description
 import ktsandroidkmp.composeapp.generated.resources.top_logo_img_url

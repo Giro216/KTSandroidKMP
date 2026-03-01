@@ -1,10 +1,11 @@
-package com.example.kts_android_kmp.ui
+package com.example.kts_android_kmp.app
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.kts_android_kmp.ui.navigation.Screen
+import com.example.kts_android_kmp.feature.intro.HelloScreen
+import com.example.kts_android_kmp.feature.login.LoginScreen
 import io.github.aakira.napier.Napier
 
 @Composable

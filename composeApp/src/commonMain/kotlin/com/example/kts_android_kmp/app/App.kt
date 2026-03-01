@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp
+package com.example.kts_android_kmp.app
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -8,7 +8,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.kts_android_kmp.ui.AppNavigation
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 

@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui
+package com.example.kts_android_kmp.feature.intro
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.kts_android_kmp.ui.components.PrintCoilImage
-import com.example.kts_android_kmp.ui.theme.AppColors
-import com.example.kts_android_kmp.ui.theme.Dimens
+import com.example.kts_android_kmp.utils.PrintCoilImage
+import com.example.kts_android_kmp.theme.AppColors
+import com.example.kts_android_kmp.theme.Dimens
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url
 

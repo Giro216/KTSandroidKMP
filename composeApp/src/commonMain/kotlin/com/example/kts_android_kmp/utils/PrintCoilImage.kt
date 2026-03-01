@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui.components
+package com.example.kts_android_kmp.utils
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
