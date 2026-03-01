@@ -3,5 +3,19 @@
     <string name="hello_screen_img_url">https://img.freepik.com/free-vector/place-your-curbside-pickup-order-online-abstract-concept_335657-3122.jpg?t=st=1771500729~exp=1771504329~hmac=eb9c216ad8f2b12e5d2515fbdbcc91137fb6ea06ae696f6736f32e659005fc51&amp;w=740</string>
     <string name="hello_screen_img1_url">https://img.freepik.com/free-vector/rental-car-service-abstract-concept-illustration_335657-3740.jpg</string>
     <string name="hello_screen_img2_url">https://avatars.mds.yandex.net/i?id=98dfdffb4134f04667a87ec167830721fcfc9adb-16439051-images-thumbs&amp;n=13</string>
+    <string name="top_logo_img_url">https://media.istockphoto.com/id/1332607862/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD-%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%B0-%D0%BB%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF%D0%B0-%D0%BF%D1%80%D0%BE%D0%BA%D0%B0%D1%82%D0%B0-%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%BE%D0%B1%D0%B8%D0%BB%D0%B5%D0%B9.jpg?s=612x612&amp;w=0&amp;k=20&amp;c=wptDl4cKyTK4Ay-AHv02GAurqhHSojYlvcjmyxP1FfM=</string>
+    <string name="login_screen_title">Войдите в аккаунт, чтобы продолжить</string>
+    <string name="ru_login">Войти</string>
+    <string name="login_screen_title_main">Вход</string>
+    <string name="logo_content_description">Логотип</string>
+    <string name="email_label">Email</string>
+    <string name="email_placeholder">name@example.com</string>
+    <string name="password_label">Пароль</string>
+    <string name="hide_password_content_description">Скрыть пароль</string>
+    <string name="show_password_content_description">Показать пароль</string>
+    <string name="email_error_blank">Введите email</string>
+    <string name="email_error_invalid">Некорректный email</string>
+    <string name="password_error_blank">Введите пароль</string>
+    <string name="password_error_min_length">Минимум %1$d символов</string>
 </resources>
 
