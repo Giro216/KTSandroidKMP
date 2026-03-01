@@ -42,8 +42,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LoginForm(
-    email: String,
-    onEmailChange: (String) -> Unit,
+    username: String,
+    onUsernameChange: (String) -> Unit,
     emailError: EmailError?,
     password: String,
     onPasswordChange: (String) -> Unit,
@@ -74,9 +74,9 @@ fun LoginForm(
 
         Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
-        EmailTextField(
-            value = email,
-            onValueChange = onEmailChange,
+        UsernameTextField(
+            value = username,
+            onValueChange = onUsernameChange,
             error = emailError,
         )
 
@@ -107,7 +107,7 @@ fun LoginForm(
 }
 
 @Composable
-private fun EmailTextField(
+private fun UsernameTextField(
     value: String,
     onValueChange: (String) -> Unit,
     error: EmailError?,
