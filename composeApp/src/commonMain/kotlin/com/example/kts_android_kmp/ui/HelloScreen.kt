@@ -33,7 +33,6 @@ fun HelloScreen(
             .padding(horizontal = Dimens.ScreenHorizontalPadding),
         verticalArrangement = Arrangement.Top,
     ) {
-        // Главное изображение
         PrintCoilImage(
             imageUrlRes = Res.string.hello_screen_img_url,
             contentDescription = "Приветственное изображение",
@@ -48,7 +47,6 @@ fun HelloScreen(
 
         Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
 
-        // Заголовок
         Text(
             text = "Подберите для себя идеальный автомобиль!",
             style = MaterialTheme.typography.headlineLarge,
@@ -61,7 +59,6 @@ fun HelloScreen(
 
         Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
 
-        // Кнопка входа
         Button(
             onClick = onLoginButtonClick,
             shape = MaterialTheme.shapes.large,
