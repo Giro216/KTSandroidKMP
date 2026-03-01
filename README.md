@@ -1,35 +1,25 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# KTS Android KMP Project
+Это демонстрационный проект, созданный с использованием **Kotlin Multiplatform** и **Compose Multiplatform**, который работает на платформах **Android** и **iOS**. Приложение представляет собой магазин автомобилей с пробегом
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+## Текущая функциональность
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+### Добашняя работа №2
 
-### Build and Run Android Application
+Проект представляет собой простое двухэкранное приложение: приветственный экран и экран входа
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+## Технологический стек
 
-### Build and Run iOS Application
+- **Kotlin Multiplatform**: Общая кодовая база для бизнес-логики и UI
+- **Compose Multiplatform**: Создание декларативного UI для Android и iOS из общего кода
+- **Навигация**: [Jetpack Navigation for Compose](https://developer.android.com/jetpack/compose/navigation) для переключения между экранами
+- **Загрузка изображений**: [Coil3](https://coil-kt.github.io/coil/compose/) для асинхронной загрузки изображений из сети
+- **Логирование**: [Napier](https://github.com/AAkira/Napier) для мультиплатформенного логирования
+- **Архитектура**: UI-архитектура (Single activity) с разделением на экраны (`screens`), переиспользуемые компоненты (`components`) и навигацию (`navigation`)
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+## Структура проекта
 
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+- `composeApp/`: Основной мультиплатформенный модуль
+  - `src/commonMain/kotlin`: Общий код для Android и iOS, включая UI (экраны, компоненты), навигацию и бизнес-логику
+  - `src/androidMain/kotlin`: Специфичный код для платформы Android
+  - `src/iosMain/kotlin`: Специфичный код для платформы iOS
+- `iosApp/`: Точка входа и конфигурация для iOS-приложения
