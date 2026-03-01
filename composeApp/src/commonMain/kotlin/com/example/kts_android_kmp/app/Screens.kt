@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui.navigation
+package com.example.kts_android_kmp.app
 
 sealed class Screen(val route: String) {
     data object Hello : Screen("hello_screen")

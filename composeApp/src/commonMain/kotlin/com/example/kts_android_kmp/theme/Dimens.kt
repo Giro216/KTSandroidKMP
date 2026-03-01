@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui.theme
+package com.example.kts_android_kmp.theme
 
 import androidx.compose.ui.unit.dp
 
