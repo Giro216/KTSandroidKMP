@@ -8,7 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.kts_android_kmp.feature.intro.HelloScreen
 import com.example.kts_android_kmp.feature.login.LoginScreen
 import com.example.kts_android_kmp.feature.login.LoginViewModel
-import io.github.aakira.napier.Napier
+import com.example.kts_android_kmp.feature.main.MainScreen
+import com.example.kts_android_kmp.platform.exitApp
 
 @Composable
 fun AppNavigation() {
@@ -28,10 +29,19 @@ fun AppNavigation() {
         composable(Screen.Login.route) {
             LoginScreen(
                 loginViewModel = loginViewModel,
-                onLogin = { email, password ->
-                    run {
-                        Napier.w("email: $email, password: $password")
+                onNavigateToMain = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
                     }
+                },
+            )
+        }
+
+        composable(Screen.Main.route) {
+            MainScreen(
+                onBackPressed = {
+                    exitApp()
                 }
             )
         }

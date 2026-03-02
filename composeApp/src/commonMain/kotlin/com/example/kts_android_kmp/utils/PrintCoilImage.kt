@@ -38,6 +38,28 @@ fun PrintCoilImage(
     val painter = rememberAsyncImagePainter(imageUrl)
     val state by painter.state.collectAsState()
 
+    PrintCoilImageProcess(painter, state, contentDescription, modifier)
+}
+
+@Composable
+fun PrintCoilImage(
+    imageUrl: String,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+) {
+    val painter = rememberAsyncImagePainter(imageUrl)
+    val state by painter.state.collectAsState()
+
+    PrintCoilImageProcess(painter, state, contentDescription, modifier)
+}
+
+@Composable
+fun PrintCoilImageProcess(
+    painter: AsyncImagePainter,
+    state: AsyncImagePainter.State,
+    contentDescription: String?,
+    modifier: Modifier
+) {
     when (state) {
         is AsyncImagePainter.State.Empty,
         is AsyncImagePainter.State.Loading -> {
@@ -65,4 +87,3 @@ fun PrintCoilImage(
         }
     }
 }
-
