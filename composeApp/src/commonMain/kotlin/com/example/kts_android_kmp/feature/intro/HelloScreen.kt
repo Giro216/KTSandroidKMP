@@ -21,6 +21,8 @@ import com.example.kts_android_kmp.theme.AppColors
 import com.example.kts_android_kmp.theme.Dimens
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url
+import ktsandroidkmp.composeapp.generated.resources.hello_screen_title
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HelloScreen(
@@ -30,7 +32,7 @@ fun HelloScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = Dimens.ScreenHorizontalPadding),
+            .padding(horizontal = Dimens.ScreenHorizontalPaddingLarge),
         verticalArrangement = Arrangement.Top,
     ) {
         PrintCoilImage(
@@ -48,7 +50,7 @@ fun HelloScreen(
         Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
 
         Text(
-            text = "Подберите для себя идеальный автомобиль!",
+            text = stringResource(Res.string.hello_screen_title),
             style = MaterialTheme.typography.headlineLarge,
             color = AppColors.PrimaryBlue,
             textAlign = TextAlign.Center,
