@@ -4,7 +4,7 @@ import com.example.kts_android_kmp.common.BaseViewModel
 import com.example.kts_android_kmp.feature.login.models.LoginUiEvent
 import com.example.kts_android_kmp.feature.login.models.LoginUiState
 
-class LoginViewModel : BaseViewModel<LoginUiEvent.LoginSuccessEvent, LoginUiState>(
+class LoginViewModel : BaseViewModel<LoginUiEvent, LoginUiState>(
     LoginUiState.Initial
 ) {
 
@@ -34,5 +34,19 @@ class LoginViewModel : BaseViewModel<LoginUiEvent.LoginSuccessEvent, LoginUiStat
 
     fun onPasswordVisibilityToggled() {
         updateState { copy(passwordVisible = !passwordVisible) }
+    }
+
+    fun onLoginClicked() {
+        val current = state.value
+        val login = current.username
+        val password = current.password
+
+        val isValid = true
+
+        if (isValid) {
+            acceptLabel(LoginUiEvent.LoginSuccessEvent)
+        } else {
+            acceptLabel(LoginUiEvent.LoginErrorEvent)
+        }
     }
 }
