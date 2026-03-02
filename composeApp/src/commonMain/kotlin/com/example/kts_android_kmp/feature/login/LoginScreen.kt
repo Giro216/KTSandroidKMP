@@ -9,27 +9,44 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.kts_android_kmp.feature.login.models.EmailError
+import com.example.kts_android_kmp.feature.login.models.LoginUiEvent
 import com.example.kts_android_kmp.feature.login.models.PasswordError
 import com.example.kts_android_kmp.utils.PrintCoilImage
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.logo_content_description
 import ktsandroidkmp.composeapp.generated.resources.top_logo_img_url
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel,
-    onLogin: (username: String, password: String) -> Unit,
+    onNavigateToMain: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     val state = loginViewModel.state.collectAsStateWithLifecycle().value
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(loginViewModel) {
+        loginViewModel.events.collectLatest { event ->
+            when (event) {
+                is LoginUiEvent.LoginSuccessEvent -> onNavigateToMain()
+                is LoginUiEvent.LoginErrorEvent -> {
+                    // TODO сбросить все введенные значения и вывести на экран плашку об ошибке
+                }
+            }
+        }
+    }
 
     val emailError: EmailError? = remember(state.username) {
         derivedStateOf { validateEmail(state.username) }
@@ -56,7 +73,9 @@ fun LoginScreen(
             passwordVisible = state.passwordVisible,
             onPasswordVisibilityToggle = loginViewModel::onPasswordVisibilityToggled,
             canSubmit = state.isLoginButtonActive,
-            onSubmit = { onLogin(state.username.trim(), state.password) },
+            onSubmit = {
+                scope.launch { loginViewModel.onLoginClicked() }
+            },
         )
     }
 }
@@ -81,7 +100,7 @@ private fun LoginScreenPreview() {
     MaterialTheme {
         LoginScreen(
             loginViewModel = LoginViewModel(),
-            onLogin = { _, _ -> },
+            onNavigateToMain = {},
         )
     }
 }

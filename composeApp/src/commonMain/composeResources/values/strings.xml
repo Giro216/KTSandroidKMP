@@ -17,5 +17,13 @@
     <string name="email_error_invalid">Некорректный email</string>
     <string name="password_error_blank">Введите пароль</string>
     <string name="password_error_min_length">Минимум %1$d символов</string>
+
+    <string name="hello_screen_title">Подберите для себя идеальный автомобиль!</string>
+
+    <string name="main_screen_feed_title">лента</string>
+    <string name="like_logo">❤ </string>
+    <string name="comment_logo">💬 </string>
+    <string name="repost_logo">↻ </string>
+    <string name="views_logo">👁 </string>
 </resources>
 

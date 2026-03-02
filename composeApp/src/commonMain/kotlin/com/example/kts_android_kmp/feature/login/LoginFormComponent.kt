@@ -55,8 +55,8 @@ fun LoginForm(
 ) {
     Column(
         modifier = Modifier.padding(
-            horizontal = Dimens.ScreenHorizontalPadding,
-            vertical = Dimens.ScreenVerticalPadding
+            horizontal = Dimens.ScreenHorizontalPaddingLarge,
+            vertical = Dimens.ScreenVerticalPaddingMedium
         ),
     ) {
         Text(
