@@ -7,17 +7,17 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Универсальный компонент для загрузки изображения по URL из ресурсов.
+ * Универсальный компонент для загрузки изображения по URL.
  *
  * Отображает:
  * - Индикатор загрузки во время загрузки
@@ -35,10 +35,11 @@ fun PrintCoilImage(
     modifier: Modifier = Modifier,
 ) {
     val imageUrl = stringResource(imageUrlRes)
-    val painter = rememberAsyncImagePainter(imageUrl)
-    val state by painter.state.collectAsState()
-
-    PrintCoilImageProcess(painter, state, contentDescription, modifier)
+    PrintCoilImage(
+        imageUrl = imageUrl,
+        contentDescription = contentDescription,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -47,20 +48,27 @@ fun PrintCoilImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
 ) {
-    val painter = rememberAsyncImagePainter(imageUrl)
-    val state by painter.state.collectAsState()
+    val painter = rememberAsyncImagePainter(model = imageUrl)
 
-    PrintCoilImageProcess(painter, state, contentDescription, modifier)
+    val stableContentDescription = remember(contentDescription) { contentDescription }
+    val stableModifier = remember(modifier) { modifier }
+
+    PrintCoilImageProcess(
+        painter = painter,
+        contentDescription = stableContentDescription,
+        modifier = stableModifier,
+    )
 }
 
 @Composable
 fun PrintCoilImageProcess(
     painter: AsyncImagePainter,
-    state: AsyncImagePainter.State,
     contentDescription: String?,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
-    when (state) {
+    val state = painter.state.collectAsStateWithLifecycle()
+
+    when (state.value) {
         is AsyncImagePainter.State.Empty,
         is AsyncImagePainter.State.Loading -> {
             Box(
