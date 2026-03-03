@@ -36,11 +36,13 @@ class LoginViewModel : BaseViewModel<LoginUiEvent, LoginUiState>(
         updateState { copy(passwordVisible = !passwordVisible) }
     }
 
-    fun onLoginClicked() {
-        val current = state.value
-        val login = current.username
-        val password = current.password
+    fun reset() {
+        updateState {
+            LoginUiState.Initial
+        }
+    }
 
+    fun onLoginClicked() {
         val isValid = true
 
         if (isValid) {
