@@ -8,6 +8,10 @@ plugins {
     alias(libs.plugins.stability.analyzer)
 }
 
+tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck") }.configureEach {
+    dependsOn("compileDebugUnitTestKotlinAndroid")
+}
+
 kotlin {
     androidTarget {
         compilerOptions {
