@@ -17,19 +17,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -49,9 +49,11 @@ import com.example.kts_android_kmp.theme.Dimens.ScreenVerticalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingSmall
 import com.example.kts_android_kmp.utils.PrintCoilImage
+import kotlinx.coroutines.delay
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.comment_logo
 import ktsandroidkmp.composeapp.generated.resources.like_logo
+import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_feed_title
 import ktsandroidkmp.composeapp.generated.resources.repost_logo
 import ktsandroidkmp.composeapp.generated.resources.views_logo
@@ -69,15 +71,14 @@ fun MainScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var backPressedOnce by remember { mutableStateOf(false) }
     var backHintRequestId by remember { mutableIntStateOf(0) }
+    val backHintMessage = stringResource(Res.string.main_screen_click_back_twice)
 
-    // Показываем подсказку при первом нажатии Back
     LaunchedEffect(backHintRequestId) {
         if (backHintRequestId > 0) {
-            snackbarHostState.showSnackbar("Нажмите назад ещё раз, чтобы выйти")
+            snackbarHostState.showSnackbar(backHintMessage)
         }
     }
 
-    // Сбрасываем флаг через 2 секунды
     LaunchedEffect(backPressedOnce) {
         if (backPressedOnce) {
             delay(2000)
@@ -85,7 +86,7 @@ fun MainScreen(
         }
     }
 
-    // Callback для перехвата Back (вызывается из навигации)
+    // Callback для перехвата Back
     MainScreenBackHandler(
         onBack = {
             if (backPressedOnce) {
@@ -138,9 +139,6 @@ fun MainScreen(
     }
 }
 
-/**
- * expect-функция для перехвата Back. Actual реализуется в androidMain.
- */
 @Composable
 expect fun MainScreenBackHandler(onBack: () -> Unit)
 
@@ -154,7 +152,9 @@ private fun FeedPostCard(
         shape = RoundedCornerShape(RoundedCornerShapeSize),
         tonalElevation = 1.dp,
     ) {
-        Column(modifier = Modifier.padding(ScreenTotalPaddingSmall)) {
+        Column(
+            modifier = Modifier.padding(ScreenTotalPaddingSmall)
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AvatarPlaceholder(letter = post.authorName.firstOrNull()?.toString() ?: "?")
 
@@ -184,61 +184,40 @@ private fun FeedPostCard(
                 style = MaterialTheme.typography.bodyMedium,
             )
 
-            if (post.imageUrl != null) {
-                Spacer(Modifier.height(SpacingSmall))
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(PostImageHeight)
-                        .clip(RoundedCornerShape(RoundedCornerShapeSize))
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    PrintCoilImage(post.imageUrl, contentDescription = "Пост изображение", modifier = Modifier.fillMaxSize())
-                }
-            }
+            PostImage(post.imageUrl)
 
             Spacer(Modifier.height(10.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                val stringBuilder = StringBuilder()
-                Metric(text = appendEmoji(
-                    builder = stringBuilder,
-                    emoji = stringResource(Res.string.like_logo),
-                    count = post.likes))
-
-                Metric(text = appendEmoji(
-                    builder = stringBuilder,
-                    emoji = stringResource(Res.string.comment_logo),
-                    count = post.comments))
-                Metric(text = appendEmoji(
-                    builder = stringBuilder,
-                    emoji = stringResource(Res.string.repost_logo),
-                    count = post.reposts)
-                )
-                Metric(text = appendEmoji(
-                    builder = stringBuilder,
-                    emoji = stringResource(Res.string.views_logo),
-                    count = post.views)
-                )
-            }
+            PostMetrics(
+                likes = post.likes,
+                comments = post.comments,
+                reposts = post.reposts,
+                views = post.views,
+            )
         }
     }
 }
 
-fun appendEmoji(builder: StringBuilder, emoji: String, count: Int) : String {
-    builder.clear()
-    builder.append(emoji)
-    if (count >= 1000) {
-        builder.append("${count / 1000}K")
-    } else {
-        builder.append(count)
+@Composable
+private fun PostImage(imageUrl: String?){
+    if (imageUrl != null) {
+        Spacer(Modifier.height(SpacingSmall))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(PostImageHeight)
+                .clip(RoundedCornerShape(RoundedCornerShapeSize))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center,
+        ) {
+            PrintCoilImage(
+                imageUrl,
+                contentDescription = "Пост изображение",
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
-    return builder.toString()
 }
 
 @Composable
@@ -259,11 +238,54 @@ private fun AvatarPlaceholder(letter: String) {
 }
 
 @Composable
+private fun PostMetrics(likes: Int, comments: Int, reposts: Int, views: Int) {
+    val likeEmoji = stringResource(Res.string.like_logo)
+    val commentEmoji = stringResource(Res.string.comment_logo)
+    val repostEmoji = stringResource(Res.string.repost_logo)
+    val viewsEmoji = stringResource(Res.string.views_logo)
+
+
+    val likeText = remember(likeEmoji, likes) { formatMetric(likeEmoji, likes) }
+    val commentText = remember(commentEmoji, comments) { formatMetric(commentEmoji, comments) }
+    val repostText = remember(repostEmoji, reposts) { formatMetric(repostEmoji, reposts) }
+    val viewsText = remember(viewsEmoji, views) { formatMetric(viewsEmoji, views) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Metric(text = likeText)
+        Metric(text = commentText)
+        Metric(text = repostText)
+        Metric(text = viewsText)
+    }
+}
+
+@Stable
+private fun formatMetric(emoji: String, count: Int): String {
+    return buildString {
+        append(emoji)
+        append(formatCount(count))
+    }
+}
+
+@Stable
+private fun formatCount(count: Int): String {
+    return if (count >= 1000) {
+        "${count / 1000}K"
+    } else {
+        count.toString()
+    }
+}
+
+@Composable
 private fun Metric(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
     )
 }
 
