@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class MainUiState(
     val query: String = "",
-    val allRepos: List<GitHubRepo> = emptyList(),
-    val filteredRepos: List<GitHubRepo> = emptyList(),
+    val repos: List<GitHubRepoEntity> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: Boolean = false,
 )

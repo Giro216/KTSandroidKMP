@@ -1,125 +1,81 @@
 package com.example.kts_android_kmp.feature.main
 
-import androidx.lifecycle.ViewModel
-import com.example.kts_android_kmp.feature.main.models.GitHubRepo
+import androidx.lifecycle.viewModelScope
+import com.example.kts_android_kmp.common.BaseViewModel
+import com.example.kts_android_kmp.feature.main.models.GitHubRepository
+import com.example.kts_android_kmp.feature.main.models.MainUiEvent
 import com.example.kts_android_kmp.feature.main.models.MainUiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.example.kts_android_kmp.network.GitHubApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+private const val SEARCH_DEBOUNCE_MS = 500L
 
-    private val _state = MutableStateFlow(
-        MainUiState(
-            allRepos = demoRepos(),
-            filteredRepos = emptyList(),
-            query = "",
-        )
-    )
-    val state: StateFlow<MainUiState> = _state.asStateFlow()
+@OptIn(FlowPreview::class)
+class MainViewModel(
+    private val repo: GitHubRepository = GitHubRepository(GitHubApi()),
+) : BaseViewModel<MainUiEvent, MainUiState>(MainUiState()) {
+
+    private val searchRequests = MutableSharedFlow<String>(extraBufferCapacity = 1)
+
+    init {
+        // Debounce-поиск по вводу.
+        viewModelScope.launch {
+            searchRequests
+                .debounce(SEARCH_DEBOUNCE_MS)
+                .distinctUntilChanged()
+                .filter { it.isNotBlank() }
+                .collect { query ->
+                    loadRepos(query)
+                }
+        }
+
+        loadRepos(query = "kotlin")
+    }
 
     fun onQueryChanged(value: String) {
-        _state.update { it.copy(query = value) }
+        updateState { copy(query = value) }
+        searchRequests.tryEmit(value.trim())
     }
 
     fun onSearch() {
         val query = state.value.query.trim()
-        val all = state.value.allRepos
-
-        val filtered = if (query.isEmpty()) {
-            emptyList()
-        } else {
-            all.filter { repo ->
-                repo.name.contains(query, ignoreCase = true) ||
-                    repo.owner.contains(query, ignoreCase = true) ||
-                    (repo.description?.contains(query, ignoreCase = true) == true)
-            }
-        }
-
-        _state.update { it.copy(filteredRepos = filtered) }
+        if (query.isBlank()) return
+        loadRepos(query)
     }
 
-    private fun demoRepos(): List<GitHubRepo> = listOf(
-        GitHubRepo(
-            id = 1,
-            owner = "JetBrains",
-            name = "kotlin",
-            description = "The Kotlin Programming Language.",
-            language = "Kotlin",
-            stars = 50000,
-            forks = 6000,
-            updatedAt = "Updated 2 days ago",
-        ),
-        GitHubRepo(
-            id = 2,
-            owner = "ktorio",
-            name = "ktor",
-            description = "Ktor: Framework for quickly creating connected applications.",
-            language = "Kotlin",
-            stars = 14000,
-            forks = 1200,
-            updatedAt = "Updated yesterday",
-        ),
-        GitHubRepo(
-            id = 3,
-            owner = "android",
-            name = "compose-samples",
-            description = "Official Jetpack Compose samples.",
-            language = "Kotlin",
-            stars = 22000,
-            forks = 5000,
-            updatedAt = "Updated 5 days ago",
-        ),
-        GitHubRepo(
-            id = 4,
-            owner = "square",
-            name = "okhttp",
-            description = "Square’s meticulous HTTP client.",
-            language = "Kotlin",
-            stars = 46000,
-            forks = 9200,
-            updatedAt = "Updated 3 days ago",
-        ),
-        GitHubRepo(
-            id = 5,
-            owner = "coil-kt",
-            name = "coil",
-            description = "Image loading for Android and Compose.",
-            language = "Kotlin",
-            stars = 12000,
-            forks = 700,
-            updatedAt = "Updated 1 week ago",
-        ),
-        GitHubRepo(
-            id = 6,
-            owner = "Kotlin",
-            name = "kotlinx.serialization",
-            description = "Kotlin multiplatform / multi-format serialization.",
-            language = "Kotlin",
-            stars = 6000,
-            forks = 700,
-            updatedAt = "Updated 4 days ago",
-        ),
-        GitHubRepo(
-            id = 7,
-            owner = "facebook",
-            name = "react",
-            description = "The library for web and native user interfaces.",
-            language = "JavaScript",
-            stars = 235000,
-            forks = 48000,
-            updatedAt = "Updated today",
-        ),
-        GitHubRepo(
-            id = 8,
-            owner = "torvalds",
-            name = "linux",
-            description = "Linux kernel source tree.",
-            language = "C",
-            stars = 190000000,
-            forks = 55000,
-            updatedAt = "Updated today",
-        ),
-    )
+    fun retry() {
+        val query = state.value.query.trim().ifBlank { "kotlin" }
+        loadRepos(query)
+    }
+
+    private fun loadRepos(query: String) {
+        viewModelScope.launch {
+            updateState { copy(isLoading = true, error = false) }
+
+            val result = repo.loadEntities(
+                GitHubApi.LoadReposRequestParam(
+                    query = query,
+                    sort = GitHubApi.LoadReposRequestParam.SortType.STARS,
+                    order = "desc",
+                    perPage = 20,
+                    page = 1,
+                )
+            )
+
+            result
+                .onSuccess { repos ->
+                    updateState { copy(repos = repos, isLoading = false, error = false) }
+                    acceptLabel(MainUiEvent.ReposLoaded)
+                }
+                .onFailure {
+                    updateState { copy(isLoading = false, error = true) }
+                    acceptLabel(MainUiEvent.ErrorLoadingRepos)
+                }
+        }
+    }
 }
