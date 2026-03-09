@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
@@ -44,7 +45,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.kts_android_kmp.feature.main.models.GitHubRepo
+import com.example.kts_android_kmp.feature.main.models.GitHubRepoEntity
+import com.example.kts_android_kmp.feature.main.models.MainUiEvent
 import com.example.kts_android_kmp.theme.AppColors.AvatarBackground
 import com.example.kts_android_kmp.theme.Dimens.RoundedCornerShapeSize
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
@@ -54,6 +56,7 @@ import com.example.kts_android_kmp.theme.Dimens.ScreenVerticalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingSmall
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.fork_logo
 import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
@@ -78,6 +81,19 @@ fun MainScreen(
     var backPressedOnce by remember { mutableStateOf(false) }
     var backHintRequestId by remember { mutableIntStateOf(0) }
     val backHintMessage = stringResource(Res.string.main_screen_click_back_twice)
+
+    // События экрана (one-shot): ошибки загрузки/успех
+    LaunchedEffect(mainViewModel) {
+        mainViewModel.events.collectLatest { event: MainUiEvent ->
+            when (event) {
+                MainUiEvent.ErrorLoadingRepos -> {
+                    snackbarHostState.showSnackbar("Не удалось загрузить репозитории")
+                }
+
+                MainUiEvent.ReposLoaded -> Unit
+            }
+        }
+    }
 
     LaunchedEffect(backHintRequestId) {
         if (backHintRequestId > 0) snackbarHostState.showSnackbar(backHintMessage)
@@ -104,59 +120,85 @@ fun MainScreen(
 
     Surface(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                item(key = "header") {
+            when {
+                state.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+
+                state.error -> {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = ScreenHorizontalPaddingMedium,
-                                vertical = ScreenVerticalPaddingSmall,
-                            ),
+                            .align(Alignment.Center)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            text = stringResource(Res.string.main_screen_title),
-                            style = MaterialTheme.typography.headlineSmall,
+                            text = "Ошибка загрузки",
+                            style = MaterialTheme.typography.titleMedium,
                         )
-
-                        Spacer(Modifier.height(SpacingSmall))
-
-                        SearchBar(
-                            query = state.query,
-                            onQueryChanged = mainViewModel::onQueryChanged,
-                            onSearch = mainViewModel::onSearch,
-                        )
-
-                        Spacer(Modifier.height(SpacingSmall))
-
-                        val hintText = when {
-                            state.query.isBlank() -> stringResource(Res.string.main_screen_search_advice)
-                            state.filteredRepos.isEmpty() -> stringResource(Res.string.main_screen_search_nothing_found)
-                            else -> "Найдено: ${state.filteredRepos.size}"
+                        Spacer(Modifier.height(12.dp))
+                        Button(onClick = mainViewModel::retry) {
+                            Text("Повторить")
                         }
-                        Text(
-                            text = hintText,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
                     }
                 }
 
-                items(
-                    items = state.filteredRepos,
-                    key = { it.id },
-                ) { repo ->
-                    RepoCard(
-                        repo = repo,
-                        modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
-                    )
-                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        item(key = "header") {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        horizontal = ScreenHorizontalPaddingMedium,
+                                        vertical = ScreenVerticalPaddingSmall,
+                                    ),
+                            ) {
+                                Text(
+                                    text = stringResource(Res.string.main_screen_title),
+                                    style = MaterialTheme.typography.headlineSmall,
+                                )
 
-                item(key = "bottom_spacer") {
-                    Spacer(modifier = Modifier.height(SpacingMedium))
+                                Spacer(Modifier.height(SpacingSmall))
+
+                                SearchBar(
+                                    query = state.query,
+                                    onQueryChanged = mainViewModel::onQueryChanged,
+                                    onSearch = mainViewModel::onSearch,
+                                )
+
+                                Spacer(Modifier.height(SpacingSmall))
+
+                                val hintText = when {
+                                    state.query.isBlank() -> stringResource(Res.string.main_screen_search_advice)
+                                    state.repos.isEmpty() -> stringResource(Res.string.main_screen_search_nothing_found)
+                                    else -> "Найдено: ${state.repos.size}"
+                                }
+                                Text(
+                                    text = hintText,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+
+                        items(
+                            items = state.repos,
+                            key = { it.id },
+                        ) { repo ->
+                            RepoCard(
+                                repo = repo,
+                                modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
+                            )
+                        }
+
+                        item(key = "bottom_spacer") {
+                            Spacer(modifier = Modifier.height(SpacingMedium))
+                        }
+                    }
                 }
             }
 
@@ -208,7 +250,7 @@ private fun SearchBar(
 
 @Composable
 private fun RepoCard(
-    repo: GitHubRepo,
+    repo: GitHubRepoEntity,
     modifier: Modifier = Modifier,
 ) {
     Surface(
