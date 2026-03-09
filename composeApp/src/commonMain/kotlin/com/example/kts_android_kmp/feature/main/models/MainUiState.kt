@@ -6,6 +6,13 @@ import androidx.compose.runtime.Immutable
 data class MainUiState(
     val query: String = "",
     val repos: List<GitHubRepoEntity> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: Boolean = false,
+    val totalCount: Int? = null,
+
+    val isLoading: Boolean = true,
+    val isInitialError: Boolean = false,
+
+    val page: Int = 1,
+    val isPaginationLoading: Boolean = false,
+    val canPaginate: Boolean = true,
+    val isPaginationError: Boolean = false,
 )

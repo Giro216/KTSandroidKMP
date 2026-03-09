@@ -27,7 +27,10 @@
     <string name="main_screen_click_back_twice">Нажмите назад ещё раз, чтобы выйти</string>
     <string name="main_screen_search_advice">Введите запрос и нажмите Поиск</string>
     <string name="main_screen_search_nothing_found">Ничего не найдено</string>
+    <string name="main_screen_next_page_loading_error">Ошибка при загрузке следующей страницы</string>
+    <string name="main_screen_data_loading_error">Не удалось загрузить данные</string>
     <string name="main_screen_search_button">Поиск</string>
+    <string name="main_screen_retry_button">Повторить</string>
     <string name="star_logo">★ </string>
     <string name="fork_logo">⑂ </string>
 </resources>

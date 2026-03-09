@@ -55,7 +55,7 @@ data class GithubRepoDto(
     @SerialName("open_issues_count")
     val openIssuesCount: Int,
     @SerialName("master_branch")
-    val masterBranch: String,
+    val masterBranch: String? = null,
     @SerialName("default_branch")
     val defaultBranch: String,
     val score: Double,

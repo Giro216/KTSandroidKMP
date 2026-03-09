@@ -3,12 +3,20 @@ package com.example.kts_android_kmp.feature.main.models
 import com.example.kts_android_kmp.network.GitHubApi
 import com.example.kts_android_kmp.network.GithubRepoDto
 
-class GitHubRepository(
+interface IGitHubRepository {
+    suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult>
+}
+
+class GitHubRepositoryImpl(
     private val api: GitHubApi,
-) {
-    suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<List<GitHubRepoEntity>> {
+) : IGitHubRepository {
+    override suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult> {
         return runCatching {
-            api.loadRepos(param).map { it.toEntity() }
+            val response = api.loadRepos(param)
+            GitHubSearchResult(
+                totalCount = response.totalCount,
+                items = response.items.map { it.toEntity() },
+            )
         }
     }
 }
