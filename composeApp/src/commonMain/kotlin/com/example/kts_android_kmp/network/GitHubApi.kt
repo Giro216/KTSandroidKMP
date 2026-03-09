@@ -10,8 +10,8 @@ class GitHubApi(
     private val client: HttpClient = ApiClient.httpClient,
 ) {
 
-    suspend fun loadRepos(param: LoadReposRequestParam): List<GithubRepoDto> {
-        val response: GithubRepoSearchResponseDto = client.get("https://api.github.com/search/repositories", block = {
+    suspend fun loadRepos(param: LoadReposRequestParam): GithubRepoSearchResponseDto {
+        return client.get("https://api.github.com/search/repositories", block = {
             url {
                 parameters.append("q", param.query)
                 param.sort?.let { parameters.append("sort", it.toString()) }
@@ -23,11 +23,7 @@ class GitHubApi(
             }
             Napier.i(tag = "GithubApi") { "Request URL: ${url.buildString()}" }
         }).body()
-
-        return response.items
     }
-
-    abstract class RequestParam
 
     class LoadReposRequestParam(
         val query: String,
@@ -35,14 +31,16 @@ class GitHubApi(
         val order: String? = null,
         val perPage: Int? = null,
         val page: Int? = null,
-    ) : RequestParam() {
+    ) {
 
 
-        enum class SortType(string: String) {
+        enum class SortType(private val value: String) {
             STARS("stars"),
             FORKS("forks"),
             HELP_WANTED_ISSUES("help-wanted-issues"),
             UPDATED("updated");
+
+            override fun toString(): String = value
         }
     }
 }
