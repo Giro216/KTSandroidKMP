@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.stability.analyzer)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck") }.configureEach {
@@ -35,6 +36,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.coil.network.okhttp)
 
+            // Ktor engine for Android
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -50,7 +53,20 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.napier)
 
+            // Ktor core + plugins (multiplatform)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
+
+            // kotlinx.serialization Json
+            implementation(libs.kotlinx.serialization.json)
         }
+        iosMain.dependencies {
+            // Ktor engine for iOS
+            implementation(libs.ktor.client.darwin)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
