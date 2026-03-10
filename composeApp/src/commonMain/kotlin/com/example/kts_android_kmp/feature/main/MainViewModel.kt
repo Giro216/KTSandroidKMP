@@ -2,7 +2,6 @@ package com.example.kts_android_kmp.feature.main
 
 import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
-import com.example.kts_android_kmp.feature.main.models.GitHubRepositoryImpl
 import com.example.kts_android_kmp.feature.main.models.IGitHubRepository
 import com.example.kts_android_kmp.feature.main.models.MainUiEvent
 import com.example.kts_android_kmp.feature.main.models.MainUiState
@@ -26,7 +25,7 @@ private const val PER_PAGE = 20
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class MainViewModel(
-    private val repo: IGitHubRepository = GitHubRepositoryImpl(GitHubApi()),
+    private val repo: IGitHubRepository,
 ) : BaseViewModel<MainUiEvent, MainUiState>(MainUiState()) {
 
     private val searchRequests = MutableSharedFlow<String>(extraBufferCapacity = 1)

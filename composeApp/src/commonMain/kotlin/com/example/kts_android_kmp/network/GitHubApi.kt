@@ -5,12 +5,15 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 
+interface IGitHubApi {
+    suspend fun loadRepos(param: GitHubApi.LoadReposRequestParam): GithubRepoSearchResponseDto
+}
 
 class GitHubApi(
-    private val client: HttpClient = ApiClient.httpClient,
-) {
+    private val client: HttpClient,
+) : IGitHubApi {
 
-    suspend fun loadRepos(param: LoadReposRequestParam): GithubRepoSearchResponseDto {
+    override suspend fun loadRepos(param: LoadReposRequestParam): GithubRepoSearchResponseDto {
         return client.get("https://api.github.com/search/repositories", block = {
             url {
                 parameters.append("q", param.query)

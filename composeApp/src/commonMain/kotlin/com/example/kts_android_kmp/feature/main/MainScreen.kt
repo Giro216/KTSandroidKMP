@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kts_android_kmp.feature.main.models.MainUiEvent
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingSmall
 import kotlinx.coroutines.delay
@@ -38,11 +37,12 @@ import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel = viewModel { MainViewModel() },
+    mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
 ) {
     val state by mainViewModel.state.collectAsStateWithLifecycle()
