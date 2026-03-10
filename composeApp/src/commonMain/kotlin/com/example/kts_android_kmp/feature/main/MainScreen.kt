@@ -16,7 +16,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -33,14 +37,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.kts_android_kmp.feature.main.models.FeedPost
+import com.example.kts_android_kmp.feature.main.models.GitHubRepo
 import com.example.kts_android_kmp.theme.AppColors.AvatarBackground
-import com.example.kts_android_kmp.theme.Dimens.PostImageHeight
 import com.example.kts_android_kmp.theme.Dimens.RoundedCornerShapeSize
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingSmall
@@ -48,15 +53,16 @@ import com.example.kts_android_kmp.theme.Dimens.ScreenTotalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.ScreenVerticalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingSmall
-import com.example.kts_android_kmp.utils.PrintCoilImage
 import kotlinx.coroutines.delay
 import ktsandroidkmp.composeapp.generated.resources.Res
-import ktsandroidkmp.composeapp.generated.resources.comment_logo
-import ktsandroidkmp.composeapp.generated.resources.like_logo
+import ktsandroidkmp.composeapp.generated.resources.fork_logo
 import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
-import ktsandroidkmp.composeapp.generated.resources.main_screen_feed_title
-import ktsandroidkmp.composeapp.generated.resources.repost_logo
-import ktsandroidkmp.composeapp.generated.resources.views_logo
+import ktsandroidkmp.composeapp.generated.resources.main_screen_search_advice
+import ktsandroidkmp.composeapp.generated.resources.main_screen_search_button
+import ktsandroidkmp.composeapp.generated.resources.main_screen_search_exp
+import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
+import ktsandroidkmp.composeapp.generated.resources.main_screen_title
+import ktsandroidkmp.composeapp.generated.resources.star_logo
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -74,9 +80,7 @@ fun MainScreen(
     val backHintMessage = stringResource(Res.string.main_screen_click_back_twice)
 
     LaunchedEffect(backHintRequestId) {
-        if (backHintRequestId > 0) {
-            snackbarHostState.showSnackbar(backHintMessage)
-        }
+        if (backHintRequestId > 0) snackbarHostState.showSnackbar(backHintMessage)
     }
 
     LaunchedEffect(backPressedOnce) {
@@ -105,21 +109,48 @@ fun MainScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 item(key = "header") {
-                    Text(
-                        text = stringResource(Res.string.main_screen_feed_title),
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(
-                            horizontal = ScreenHorizontalPaddingMedium,
-                            vertical = ScreenVerticalPaddingSmall),
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = ScreenHorizontalPaddingMedium,
+                                vertical = ScreenVerticalPaddingSmall,
+                            ),
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.main_screen_title),
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
+
+                        Spacer(Modifier.height(SpacingSmall))
+
+                        SearchBar(
+                            query = state.query,
+                            onQueryChanged = mainViewModel::onQueryChanged,
+                            onSearch = mainViewModel::onSearch,
+                        )
+
+                        Spacer(Modifier.height(SpacingSmall))
+
+                        val hintText = when {
+                            state.query.isBlank() -> stringResource(Res.string.main_screen_search_advice)
+                            state.filteredRepos.isEmpty() -> stringResource(Res.string.main_screen_search_nothing_found)
+                            else -> "Найдено: ${state.filteredRepos.size}"
+                        }
+                        Text(
+                            text = hintText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
 
                 items(
-                    items = state.posts,
+                    items = state.filteredRepos,
                     key = { it.id },
-                ) { post ->
-                    FeedPostCard(
-                        post = post,
+                ) { repo ->
+                    RepoCard(
+                        repo = repo,
                         modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
                     )
                 }
@@ -143,8 +174,41 @@ fun MainScreen(
 expect fun MainScreenBackHandler(onBack: () -> Unit)
 
 @Composable
-private fun FeedPostCard(
-    post: FeedPost,
+private fun SearchBar(
+    query: String,
+    onQueryChanged: (String) -> Unit,
+    onSearch: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChanged,
+            modifier = Modifier.weight(1f),
+            singleLine = true,
+            label = { Text(stringResource(Res.string.main_screen_search_exp)) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        )
+
+        Spacer(Modifier.width(10.dp))
+
+        Button(
+            onClick = onSearch,
+            modifier = Modifier.height(56.dp),
+            shape = RoundedCornerShape(12.dp),
+        ) {
+            Text(stringResource(Res.string.main_screen_search_button))
+        }
+    }
+}
+
+@Composable
+private fun RepoCard(
+    repo: GitHubRepo,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -152,112 +216,97 @@ private fun FeedPostCard(
         shape = RoundedCornerShape(RoundedCornerShapeSize),
         tonalElevation = 1.dp,
     ) {
-        Column(
-            modifier = Modifier.padding(ScreenTotalPaddingSmall)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                AvatarPlaceholder(letter = post.authorName.firstOrNull()?.toString() ?: "?")
+        Column(modifier = Modifier.padding(ScreenTotalPaddingSmall)) {
+            // owner/name
+            Text(
+                text = "${repo.owner} / ${repo.name}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
 
-                Spacer(Modifier.width(10.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = post.authorName,
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = post.authorSubtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
+            if (!repo.description.isNullOrBlank()) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = repo.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
 
-            Spacer(Modifier.height(SpacingSmall))
+            Spacer(Modifier.height(8.dp))
 
-            Text(
-                text = post.text,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-
-            PostImage(post.imageUrl)
-
-            Spacer(Modifier.height(10.dp))
-
-            PostMetrics(
-                likes = post.likes,
-                comments = post.comments,
-                reposts = post.reposts,
-                views = post.views,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                PrintMetaData(repo.language, repo.stars, repo.forks, repo.updatedAt)
+            }
         }
     }
 }
 
 @Composable
-private fun PostImage(imageUrl: String?){
-    if (imageUrl != null) {
-        Spacer(Modifier.height(SpacingSmall))
+private fun PrintMetaData(language: String?, stars: Int, forks: Int, updatedAt: String) {
+    val starEmoji = stringResource(Res.string.star_logo)
+    val forkEmoji = stringResource(Res.string.fork_logo)
 
+
+
+    val likeText = remember(starEmoji, stars) { formatMetric(starEmoji, stars) }
+    val commentText = remember(forkEmoji, forks) { formatMetric(forkEmoji, forks) }
+
+    RepoMetaLanguage(language)
+    RepoMetaText(text = likeText)
+    RepoMetaText(text = commentText)
+    RepoMetaText(text = updatedAt)
+
+}
+
+@Composable
+private fun RepoMetaLanguage(language: String?) {
+    if (language.isNullOrBlank()) return
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(PostImageHeight)
-                .clip(RoundedCornerShape(RoundedCornerShapeSize))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center,
-        ) {
-            PrintCoilImage(
-                imageUrl,
-                contentDescription = "Пост изображение",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-    }
-}
-
-@Composable
-private fun AvatarPlaceholder(letter: String) {
-    Box(
-        modifier = Modifier
-            .size(44.dp)
-            .clip(CircleShape)
-            .background(AvatarBackground),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = letter.uppercase(),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White,
+                .size(10.dp)
+                .clip(CircleShape)
+                .background(colorForLanguage(language)),
         )
+        Spacer(Modifier.width(6.dp))
+        RepoMetaText(text = language)
     }
 }
 
 @Composable
-private fun PostMetrics(likes: Int, comments: Int, reposts: Int, views: Int) {
-    val likeEmoji = stringResource(Res.string.like_logo)
-    val commentEmoji = stringResource(Res.string.comment_logo)
-    val repostEmoji = stringResource(Res.string.repost_logo)
-    val viewsEmoji = stringResource(Res.string.views_logo)
+private fun RepoMetaText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
 
 
-    val likeText = remember(likeEmoji, likes) { formatMetric(likeEmoji, likes) }
-    val commentText = remember(commentEmoji, comments) { formatMetric(commentEmoji, comments) }
-    val repostText = remember(repostEmoji, reposts) { formatMetric(repostEmoji, reposts) }
-    val viewsText = remember(viewsEmoji, views) { formatMetric(viewsEmoji, views) }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Metric(text = likeText)
-        Metric(text = commentText)
-        Metric(text = repostText)
-        Metric(text = viewsText)
+@Stable
+private fun colorForLanguage(language: String): Color {
+    return when (language.lowercase()) {
+        "kotlin" -> Color(0xFFA97BFF)
+        "java" -> Color(0xFFB07219)
+        "swift" -> Color(0xFFFFAC45)
+        "javascript" -> Color(0xFFF1E05A)
+        "typescript" -> Color(0xFF3178C6)
+        "c" -> Color(0xFF555555)
+        "c++" -> Color(0xFFF34B7D)
+        "python" -> Color(0xFF3572A5)
+        else -> AvatarBackground
     }
 }
 
@@ -271,22 +320,11 @@ private fun formatMetric(emoji: String, count: Int): String {
 
 @Stable
 private fun formatCount(count: Int): String {
-    return if (count >= 1000) {
-        "${count / 1000}K"
-    } else {
-        count.toString()
+    return when {
+        count >= 1_000_000 -> "${count / 1_000_000}M"
+        count >= 1_000 -> "${count / 1_000}K"
+        else -> count.toString()
     }
-}
-
-@Composable
-private fun Metric(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-    )
 }
 
 @Preview

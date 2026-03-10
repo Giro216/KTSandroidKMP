@@ -3,21 +3,13 @@ package com.example.kts_android_kmp.feature.main.models
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class FeedPost(
-    val id: String,
-    val authorName: String,
-    val authorSubtitle: String,
-    val text: String,
-    val likes: Int,
-    val comments: Int,
-    val reposts: Int,
-    val views: Int,
-    val imageUrl: String? = null,
+data class GitHubRepo(
+    val id: Long,
+    val owner: String,
+    val name: String,
+    val description: String?,
+    val language: String?,
+    val stars: Int,
+    val forks: Int,
+    val updatedAt: String,
 )
-
-@Immutable
-data class MainUiState(
-    val posts: List<FeedPost> = emptyList(),
-    val isRefreshing: Boolean = false,
-)
-
