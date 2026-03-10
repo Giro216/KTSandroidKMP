@@ -53,6 +53,11 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.napier)
 
+            // Koin DI
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
             // Ktor core + plugins (multiplatform)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

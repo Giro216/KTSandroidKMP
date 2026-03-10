@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kts_android_kmp.app.App
+import com.example.kts_android_kmp.di.initKoin
 import com.example.kts_android_kmp.platform.setActivity
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setActivity(this)
-
+        initKoin()
         setContent {
             App()
         }
