@@ -1,7 +1,7 @@
-package com.example.kts_android_kmp.ui.validation
+package com.example.kts_android_kmp.feature.login
 
-import com.example.kts_android_kmp.ui.models.EmailError
-import com.example.kts_android_kmp.ui.models.PasswordError
+import com.example.kts_android_kmp.feature.login.models.EmailError
+import com.example.kts_android_kmp.feature.login.models.PasswordError
 
 private const val MIN_PASSWORD_LENGTH = 6
 

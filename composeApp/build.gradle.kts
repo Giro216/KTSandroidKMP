@@ -5,6 +5,11 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.stability.analyzer)
+}
+
+tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck") }.configureEach {
+    dependsOn("compileDebugUnitTestKotlinAndroid")
 }
 
 kotlin {
@@ -29,6 +34,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.coil.network.okhttp)
+
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui.components
+package com.example.kts_android_kmp.utils
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -7,17 +7,17 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Универсальный компонент для загрузки изображения по URL из ресурсов.
+ * Универсальный компонент для загрузки изображения по URL.
  *
  * Отображает:
  * - Индикатор загрузки во время загрузки
@@ -35,10 +35,40 @@ fun PrintCoilImage(
     modifier: Modifier = Modifier,
 ) {
     val imageUrl = stringResource(imageUrlRes)
-    val painter = rememberAsyncImagePainter(imageUrl)
-    val state by painter.state.collectAsState()
+    PrintCoilImage(
+        imageUrl = imageUrl,
+        contentDescription = contentDescription,
+        modifier = modifier,
+    )
+}
 
-    when (state) {
+@Composable
+fun PrintCoilImage(
+    imageUrl: String,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+) {
+    val painter = rememberAsyncImagePainter(model = imageUrl)
+
+    val stableContentDescription = remember(contentDescription) { contentDescription }
+    val stableModifier = remember(modifier) { modifier }
+
+    PrintCoilImageProcess(
+        painter = painter,
+        contentDescription = stableContentDescription,
+        modifier = stableModifier,
+    )
+}
+
+@Composable
+fun PrintCoilImageProcess(
+    painter: AsyncImagePainter,
+    contentDescription: String?,
+    modifier: Modifier,
+) {
+    val state = painter.state.collectAsStateWithLifecycle()
+
+    when (state.value) {
         is AsyncImagePainter.State.Empty,
         is AsyncImagePainter.State.Loading -> {
             Box(
@@ -65,4 +95,3 @@ fun PrintCoilImage(
         }
     }
 }
-
