@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui
+package com.example.kts_android_kmp.feature.intro
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,11 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.kts_android_kmp.ui.components.PrintCoilImage
-import com.example.kts_android_kmp.ui.theme.AppColors
-import com.example.kts_android_kmp.ui.theme.Dimens
+import com.example.kts_android_kmp.theme.AppColors
+import com.example.kts_android_kmp.theme.Dimens
+import com.example.kts_android_kmp.utils.PrintCoilImage
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url
+import ktsandroidkmp.composeapp.generated.resources.hello_screen_title
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HelloScreen(
@@ -30,7 +32,7 @@ fun HelloScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = Dimens.ScreenHorizontalPadding),
+            .padding(horizontal = Dimens.ScreenHorizontalPaddingLarge),
         verticalArrangement = Arrangement.Top,
     ) {
         PrintCoilImage(
@@ -48,7 +50,7 @@ fun HelloScreen(
         Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
 
         Text(
-            text = "Подберите для себя идеальный автомобиль!",
+            text = stringResource(Res.string.hello_screen_title),
             style = MaterialTheme.typography.headlineLarge,
             color = AppColors.PrimaryBlue,
             textAlign = TextAlign.Center,

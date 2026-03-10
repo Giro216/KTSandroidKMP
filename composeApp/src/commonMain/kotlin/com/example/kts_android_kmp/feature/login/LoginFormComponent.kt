@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.ui.components
+package com.example.kts_android_kmp.feature.login
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,9 +22,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import com.example.kts_android_kmp.ui.models.EmailError
-import com.example.kts_android_kmp.ui.models.PasswordError
-import com.example.kts_android_kmp.ui.theme.Dimens
+import com.example.kts_android_kmp.feature.login.models.EmailError
+import com.example.kts_android_kmp.feature.login.models.PasswordError
+import com.example.kts_android_kmp.theme.Dimens
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.email_error_blank
 import ktsandroidkmp.composeapp.generated.resources.email_error_invalid
@@ -42,8 +42,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LoginForm(
-    email: String,
-    onEmailChange: (String) -> Unit,
+    username: String,
+    onUsernameChange: (String) -> Unit,
     emailError: EmailError?,
     password: String,
     onPasswordChange: (String) -> Unit,
@@ -55,8 +55,8 @@ fun LoginForm(
 ) {
     Column(
         modifier = Modifier.padding(
-            horizontal = Dimens.ScreenHorizontalPadding,
-            vertical = Dimens.ScreenVerticalPadding
+            horizontal = Dimens.ScreenHorizontalPaddingLarge,
+            vertical = Dimens.ScreenVerticalPaddingMedium
         ),
     ) {
         Text(
@@ -74,9 +74,9 @@ fun LoginForm(
 
         Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
-        EmailTextField(
-            value = email,
-            onValueChange = onEmailChange,
+        UsernameTextField(
+            value = username,
+            onValueChange = onUsernameChange,
             error = emailError,
         )
 
@@ -107,7 +107,7 @@ fun LoginForm(
 }
 
 @Composable
-private fun EmailTextField(
+private fun UsernameTextField(
     value: String,
     onValueChange: (String) -> Unit,
     error: EmailError?,

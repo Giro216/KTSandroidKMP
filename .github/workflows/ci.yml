@@ -2,9 +2,7 @@ name: Build and Test
 
 on:
   push:
-    branches: [ "master", "hw-2", "CI-CD" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "**" ]
 
 jobs:
   build:
