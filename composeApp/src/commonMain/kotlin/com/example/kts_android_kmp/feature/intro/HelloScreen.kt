@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,13 +13,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.kts_android_kmp.theme.AppColors
 import com.example.kts_android_kmp.theme.Dimens
+import com.example.kts_android_kmp.theme.Dimens.SpacingExtraLarge
 import com.example.kts_android_kmp.utils.PrintCoilImage
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url
+import ktsandroidkmp.composeapp.generated.resources.hello_screen_subtitle
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_title
 import org.jetbrains.compose.resources.stringResource
 
@@ -39,24 +43,29 @@ fun HelloScreen(
             imageUrlRes = Res.string.hello_screen_img_url,
             contentDescription = "Приветственное изображение",
             modifier = Modifier
-                .fillMaxWidth()
-                .scale(Dimens.ImageScale)
-                .padding(
-                    top = Dimens.HelloImageTopPadding,
-                    bottom = Dimens.HelloImageBottomPadding
-                )
+                .scale(1.8f)
+                .padding(top = 40.dp, start = 45.dp)
         )
 
-        Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
+        Spacer(Modifier.height(SpacingExtraLarge))
 
         Text(
             text = stringResource(Res.string.hello_screen_title),
             style = MaterialTheme.typography.headlineLarge,
+            fontSize = 70.sp,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 58.sp,
             color = AppColors.PrimaryBlue,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = Dimens.SpacingLarge),
+                .padding(top = Dimens.SpacingLarge)
+        )
+
+        Text(
+            text = stringResource(Res.string.hello_screen_subtitle),
+            style = MaterialTheme.typography.headlineMedium,
+            color = AppColors.PrimaryBlue,
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.height(Dimens.SpacingLarge))

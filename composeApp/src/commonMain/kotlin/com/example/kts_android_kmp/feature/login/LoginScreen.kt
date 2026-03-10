@@ -108,7 +108,8 @@ private fun LogoHeader() {
         PrintCoilImage(
             imageUrlRes = Res.string.top_logo_img_url,
             contentDescription = stringResource(Res.string.logo_content_description),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
         )
     }
 }
