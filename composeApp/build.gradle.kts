@@ -35,6 +35,8 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.coil.network.okhttp)
+            implementation(libs.coil.gif)
+            implementation(libs.appauth)
 
             // Ktor engine for Android
             implementation(libs.ktor.client.okhttp)
@@ -63,6 +65,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.auth)
 
             // kotlinx.serialization Json
             implementation(libs.kotlinx.serialization.json)
@@ -88,6 +91,8 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        manifestPlaceholders["appAuthRedirectScheme"] = "ru.kts.giro216.oauth"
     }
     packaging {
         resources {
