@@ -1,5 +1,6 @@
 package com.example.kts_android_kmp.network
 
+import com.example.kts_android_kmp.feature.login.oauth.TokenStorage
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -43,6 +44,11 @@ object ApiClient {
                 header(HttpHeaders.Accept, ContentType.Application.Json)
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.UserAgent, "KTS-android-KMP")
+
+                // Добавляем токен, если он есть. Это работает для "авторизованной зоны".
+                TokenStorage.accessToken?.let { token ->
+                    header(HttpHeaders.Authorization, "Bearer $token")
+                }
             }
         }
     }
