@@ -5,8 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.kts_android_kmp.feature.intro.HelloScreen
-import com.example.kts_android_kmp.feature.login.LoginScreen
-import com.example.kts_android_kmp.feature.login.LoginViewModel
+import com.example.kts_android_kmp.feature.login.oauth.LoginScreen
+import com.example.kts_android_kmp.feature.login.oauth.LoginViewModel
 import com.example.kts_android_kmp.feature.main.MainScreen
 import com.example.kts_android_kmp.platform.exitApp
 import org.koin.compose.viewmodel.koinViewModel
@@ -22,7 +22,10 @@ fun AppNavigation() {
     ) {
         composable<Routes.HelloScreen> {
             HelloScreen(
-                onLoginButtonClick = { navController.navigate(Routes.LoginScreen) },
+                onLoginButtonClick = {
+                    loginViewModel.openLoginPage()
+                    navController.navigate(Routes.LoginScreen)
+                },
             )
         }
 

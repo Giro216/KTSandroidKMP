@@ -2,6 +2,7 @@ package com.example.kts_android_kmp.feature.login.oauth
 
 import android.content.Context
 import com.example.kts_android_kmp.feature.login.oauth.model.TokensModel
+import io.github.aakira.napier.Napier
 import net.openid.appauth.AuthorizationService
 
 actual class TokenRefresher(private val context: Context) {
@@ -11,7 +12,7 @@ actual class TokenRefresher(private val context: Context) {
             val tokenRequest = AppAuth.getRefreshTokenRequest(refreshToken)
             AppAuth.performTokenRequest(authService, tokenRequest)
         } catch (e: Exception) {
-            // TODO: Log the exception
+            Napier.e("Failed to refresh token: ${e.message}", e)
             null
         }
     }

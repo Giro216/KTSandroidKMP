@@ -3,6 +3,7 @@ package com.example.kts_android_kmp.feature.login.oauth
 import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
 import com.example.kts_android_kmp.feature.login.oauth.model.LoginState
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
@@ -23,14 +24,10 @@ class LoginViewModel(
                     updateState { copy(isLoggedIn = true) }
                 }
             }.onFailure {
-                // TODO: Handle error (e.g., show a message to the user)
+                Napier.e("Failed to perform token request: ${it.message}", throwable = it)
             }
         }
 
-        return state.value.isLoggedIn
-    }
-
-    fun isLoggedIn(): Boolean {
         return state.value.isLoggedIn
     }
 }
