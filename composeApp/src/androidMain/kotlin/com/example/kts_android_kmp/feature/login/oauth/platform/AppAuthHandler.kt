@@ -61,7 +61,7 @@ actual class AppAuthHandler(private val activity: ComponentActivity) {
 
     actual suspend fun performTokenRequest(): TokensModel? = suspendCancellableCoroutine { cont ->
         continuation = { result ->
-            result.onSuccess { cont.resume(it, null) }
+            result.onSuccess { cont.resume(it) { cause, _, _ -> null?.let { it1 -> it1(cause) } } }
             result.onFailure { cont.resumeWithException(it) }
         }
         val authRequest = AppAuth.getAuthRequest()

@@ -30,8 +30,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
+import com.example.kts_android_kmp.feature.mainScreen.platform.MainScreenBackHandler
 import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
+import com.example.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.example.kts_android_kmp.theme.Strings.LOAD_REPO_ERR
 import kotlinx.coroutines.delay
@@ -186,9 +187,6 @@ fun MainScreen(
         }
     }
 }
-
-@Composable
-expect fun MainScreenBackHandler(onBack: () -> Unit)
 
 @Preview
 @Composable

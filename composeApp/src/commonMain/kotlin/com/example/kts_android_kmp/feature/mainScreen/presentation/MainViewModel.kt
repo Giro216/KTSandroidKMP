@@ -1,10 +1,10 @@
 package com.example.kts_android_kmp.feature.mainScreen.presentation
 
-import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
-import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
 import com.example.kts_android_kmp.feature.mainScreen.domain.IMainUiMapper
 import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiState.PaginationUiState

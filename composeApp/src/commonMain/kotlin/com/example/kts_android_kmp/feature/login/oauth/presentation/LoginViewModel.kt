@@ -2,9 +2,9 @@ package com.example.kts_android_kmp.feature.login.oauth.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
-import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.feature.login.oauth.data.network.TokenStorage
 import com.example.kts_android_kmp.feature.login.oauth.data.repo.AuthRepository
+import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.utils.coRunCatching
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
