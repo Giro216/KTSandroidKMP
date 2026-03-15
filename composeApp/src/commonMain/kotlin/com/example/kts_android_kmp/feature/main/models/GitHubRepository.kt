@@ -12,7 +12,7 @@ class GitHubRepositoryImpl(
     private val api: IGitHubApi,
 ) : IGitHubRepository {
     override suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult> {
-        return runCatching {
+        return coRunCatching {
             val response = api.loadRepos(param)
             GitHubSearchResult(
                 totalCount = response.totalCount,

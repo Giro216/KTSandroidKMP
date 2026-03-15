@@ -3,6 +3,7 @@ package com.example.kts_android_kmp.feature.login.oauth
 import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
 import com.example.kts_android_kmp.feature.login.oauth.model.LoginState
+import com.example.kts_android_kmp.utils.coRunCatching
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
@@ -16,7 +17,7 @@ class LoginViewModel(
     fun openLoginPage() : Boolean {
 
         viewModelScope.launch {
-            runCatching {
+            coRunCatching {
                 appAuthHandler.performTokenRequest()
             }.onSuccess { tokens ->
                 if (tokens != null) {
