@@ -1,10 +1,11 @@
-package com.example.kts_android_kmp.feature.login.oauth
+package com.example.kts_android_kmp.feature.login.oauth.platform
 
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.example.kts_android_kmp.feature.login.oauth.model.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.AppAuth
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
