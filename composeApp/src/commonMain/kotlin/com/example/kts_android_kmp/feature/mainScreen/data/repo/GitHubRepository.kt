@@ -1,20 +1,12 @@
-package com.example.kts_android_kmp.feature.mainScreen.models
+package com.example.kts_android_kmp.feature.mainScreen.data.repo
 
-import com.example.kts_android_kmp.network.GitHubApi
-import com.example.kts_android_kmp.network.IGitHubApi
+import com.example.kts_android_kmp.feature.mainScreen.data.network.GithubRepoDto
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepoEntity
+import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
+import com.example.kts_android_kmp.feature.mainScreen.data.network.GitHubApi
+import com.example.kts_android_kmp.feature.mainScreen.data.network.IGitHubApi
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.utils.coRunCatching
-
-interface IGitHubRepository {
-    suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult>
-
-    fun initGitHubApiReposRequestParam(
-        query: String,
-        sort: GitHubApi.LoadReposRequestParam.SortType? = GitHubApi.LoadReposRequestParam.SortType.STARS,
-        order: String? = "desc",
-        perPage: Int? = 30,
-        page: Int? = 1,
-    ): GitHubApi.LoadReposRequestParam
-}
 
 class GitHubRepositoryImpl(
     private val api: IGitHubApi,

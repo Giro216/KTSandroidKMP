@@ -1,15 +1,13 @@
-package com.example.kts_android_kmp.feature.mainScreen
+package com.example.kts_android_kmp.feature.mainScreen.presentation
 
 import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.Color
 import com.example.kts_android_kmp.common.BaseViewModel
-import com.example.kts_android_kmp.feature.mainScreen.models.GitHubSearchResult
-import com.example.kts_android_kmp.feature.mainScreen.models.HintContent
-import com.example.kts_android_kmp.feature.mainScreen.models.IGitHubRepository
-import com.example.kts_android_kmp.feature.mainScreen.models.IMainUiMapper
-import com.example.kts_android_kmp.feature.mainScreen.models.MainUiEvent
-import com.example.kts_android_kmp.feature.mainScreen.models.MainUiState
-import com.example.kts_android_kmp.feature.mainScreen.models.MainUiState.PaginationUiState
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
+import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
+import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
+import com.example.kts_android_kmp.feature.mainScreen.domain.IMainUiMapper
+import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiState.PaginationUiState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce

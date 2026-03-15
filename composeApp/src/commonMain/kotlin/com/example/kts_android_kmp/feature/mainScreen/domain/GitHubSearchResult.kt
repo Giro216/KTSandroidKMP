@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.mainScreen.models
+package com.example.kts_android_kmp.feature.mainScreen.domain
 
 import androidx.compose.runtime.Immutable
 
@@ -7,4 +7,3 @@ data class GitHubSearchResult(
     val totalCount: Int,
     val items: List<GitHubRepoEntity>,
 )
-

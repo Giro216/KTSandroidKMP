@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.mainScreen
+package com.example.kts_android_kmp.feature.mainScreen.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.kts_android_kmp.feature.mainScreen.models.MainUiEvent
+import com.example.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
+import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.example.kts_android_kmp.theme.Strings.LOAD_REPO_ERR
 import kotlinx.coroutines.delay
