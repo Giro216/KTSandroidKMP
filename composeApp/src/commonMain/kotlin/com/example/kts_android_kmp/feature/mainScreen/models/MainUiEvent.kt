@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.main.models
+package com.example.kts_android_kmp.feature.mainScreen.models
 
 sealed interface MainUiEvent {
     data class QueryChanged(val query: String) : MainUiEvent

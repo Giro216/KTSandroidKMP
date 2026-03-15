@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.main
+package com.example.kts_android_kmp.feature.mainScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.kts_android_kmp.feature.main.models.HintContent
+import com.example.kts_android_kmp.feature.mainScreen.models.HintContent
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
 import com.example.kts_android_kmp.theme.Dimens.ScreenVerticalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium

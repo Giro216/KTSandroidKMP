@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.main.models
+package com.example.kts_android_kmp.feature.mainScreen.models
 
 import com.example.kts_android_kmp.network.GitHubApi
 import com.example.kts_android_kmp.network.IGitHubApi

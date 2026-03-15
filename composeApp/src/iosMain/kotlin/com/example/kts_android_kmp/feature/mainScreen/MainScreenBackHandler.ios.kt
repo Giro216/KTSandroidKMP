@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.main
+package com.example.kts_android_kmp.feature.mainScreen
 
 import androidx.compose.runtime.Composable
 
