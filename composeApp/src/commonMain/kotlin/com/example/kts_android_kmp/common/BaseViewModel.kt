@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<Label, State>(initialState: State) : ViewModel() {
+abstract class BaseViewModel<Label, State>(initialState: State, extraBufferCapacity: Int = 0,) : ViewModel() {
 
-    private val mutableEvents = MutableSharedFlow<Label>()
+    private val mutableEvents = MutableSharedFlow<Label>(extraBufferCapacity = extraBufferCapacity)
 
-    private val mutableState = MutableStateFlow(initialState)
+    private val mutableState = MutableStateFlow(value = initialState)
 
     val state: StateFlow<State>
         get() = mutableState.asStateFlow()
