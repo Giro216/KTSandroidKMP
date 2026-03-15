@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.mainScreen
+package com.example.kts_android_kmp.feature.mainScreen.platform
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable

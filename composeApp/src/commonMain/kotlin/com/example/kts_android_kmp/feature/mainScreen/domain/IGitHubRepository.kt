@@ -1,6 +1,5 @@
 package com.example.kts_android_kmp.feature.mainScreen.domain
 
-import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.feature.mainScreen.data.network.GitHubApi
 
 interface IGitHubRepository {
