@@ -1,7 +1,8 @@
-package com.example.kts_android_kmp.feature.login.oauth
+package com.example.kts_android_kmp.feature.login.oauth.platform
 
 import android.content.Context
-import com.example.kts_android_kmp.feature.login.oauth.model.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.AppAuth
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
 import io.github.aakira.napier.Napier
 import net.openid.appauth.AuthorizationService
 

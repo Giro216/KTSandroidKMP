@@ -1,8 +1,8 @@
 package com.example.kts_android_kmp.feature.login.oauth
 
 import androidx.core.net.toUri
-import com.example.kts_android_kmp.feature.login.oauth.model.AuthConfig
-import com.example.kts_android_kmp.feature.login.oauth.model.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.data.network.AuthConfig
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationServiceConfiguration

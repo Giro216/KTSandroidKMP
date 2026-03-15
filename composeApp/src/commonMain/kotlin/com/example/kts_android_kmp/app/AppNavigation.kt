@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.kts_android_kmp.feature.intro.HelloScreen
-import com.example.kts_android_kmp.feature.login.oauth.LoginScreen
+import com.example.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.example.kts_android_kmp.feature.mainScreen.MainScreen
 import com.example.kts_android_kmp.platform.exitApp
 

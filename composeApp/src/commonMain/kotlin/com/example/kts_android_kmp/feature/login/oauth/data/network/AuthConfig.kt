@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.login.oauth.model
+package com.example.kts_android_kmp.feature.login.oauth.data.network
 
 object AuthConfig {
     const val AUTH_URI = "https://github.com/login/oauth/authorize"

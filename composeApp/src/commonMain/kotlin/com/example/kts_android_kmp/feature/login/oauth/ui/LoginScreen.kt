@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.login.oauth
+package com.example.kts_android_kmp.feature.login.oauth.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
+import com.example.kts_android_kmp.feature.login.oauth.presentation.LoginViewModel
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.login_screen_loading_gif
 import ktsandroidkmp.composeapp.generated.resources.login_waiting_subtitle

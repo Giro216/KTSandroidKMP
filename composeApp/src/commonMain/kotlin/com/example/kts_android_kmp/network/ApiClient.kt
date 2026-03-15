@@ -1,6 +1,6 @@
 package com.example.kts_android_kmp.network
 
-import com.example.kts_android_kmp.feature.login.oauth.TokenStorage
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokenStorage
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

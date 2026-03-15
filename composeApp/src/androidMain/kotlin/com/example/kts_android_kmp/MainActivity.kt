@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.kts_android_kmp.app.App
 import com.example.kts_android_kmp.di.initKoin
 import com.example.kts_android_kmp.di.platformModule
-import com.example.kts_android_kmp.feature.login.oauth.AppAuthHandler
+import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.platform.setActivity
 
 class MainActivity : ComponentActivity() {

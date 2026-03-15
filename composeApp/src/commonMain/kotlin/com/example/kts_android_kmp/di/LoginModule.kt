@@ -1,7 +1,7 @@
 package com.example.kts_android_kmp.di
 
-import com.example.kts_android_kmp.feature.login.oauth.AuthRepository
-import com.example.kts_android_kmp.feature.login.oauth.LoginViewModel
+import com.example.kts_android_kmp.feature.login.oauth.data.repo.AuthRepository
+import com.example.kts_android_kmp.feature.login.oauth.presentation.LoginViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
