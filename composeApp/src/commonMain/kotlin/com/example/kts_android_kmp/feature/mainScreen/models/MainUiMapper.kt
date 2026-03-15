@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.main.models
+package com.example.kts_android_kmp.feature.mainScreen.models
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable

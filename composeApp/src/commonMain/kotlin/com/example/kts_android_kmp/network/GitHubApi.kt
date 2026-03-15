@@ -1,6 +1,6 @@
 package com.example.kts_android_kmp.network
 
-import com.example.kts_android_kmp.feature.main.models.GithubRepoSearchResponseDto
+import com.example.kts_android_kmp.feature.mainScreen.models.GithubRepoSearchResponseDto
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
