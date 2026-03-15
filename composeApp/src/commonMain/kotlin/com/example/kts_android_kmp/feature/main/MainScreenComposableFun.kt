@@ -22,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.kts_android_kmp.feature.main.models.HintContent
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
 import com.example.kts_android_kmp.theme.Dimens.ScreenVerticalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium
@@ -31,10 +33,8 @@ import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_data_loading_error
 import ktsandroidkmp.composeapp.generated.resources.main_screen_next_page_loading_error
 import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_button
-import ktsandroidkmp.composeapp.generated.resources.main_screen_search_advice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_button
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_exp
-import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
 import ktsandroidkmp.composeapp.generated.resources.main_screen_title
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -42,10 +42,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun MainHeader(
     query: String,
-    isLoading: Boolean,
     isInitialError: Boolean,
-    totalCount: Int?,
-    reposSize: Int,
+    hint: HintContent?,
     onQueryChanged: (String) -> Unit,
     onSearch: () -> Unit,
     onRetry: () -> Unit,
@@ -54,8 +52,9 @@ fun MainHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = ScreenHorizontalPaddingMedium,
-                vertical = ScreenVerticalPaddingSmall,
+                top = ScreenVerticalPaddingSmall,
+                start = ScreenHorizontalPaddingMedium,
+                end = ScreenHorizontalPaddingMedium,
             ),
     ) {
         Text(
@@ -80,19 +79,19 @@ fun MainHeader(
 
         Spacer(Modifier.height(SpacingSmall))
 
-        val hintText = when {
-            query.isBlank() -> stringResource(Res.string.main_screen_search_advice)
-            isLoading || isInitialError -> ""
-            reposSize == 0 -> stringResource(Res.string.main_screen_search_nothing_found)
-            totalCount != null -> "Найдено: $reposSize из $totalCount"
-            else -> "Найдено: $reposSize"
-        }
-        if (hintText.isNotEmpty()) {
-            Text(
-                text = hintText,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+        if (hint != null) {
+            val hintText = when (hint) {
+                is HintContent.Resource -> stringResource(hint.resource)
+                is HintContent.PlainText -> hint.text
+            }
+            
+            if (hintText.isNotEmpty()) {
+                Text(
+                    text = hintText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }
@@ -184,4 +183,17 @@ fun LoadingIndicator() {
     ) {
         CircularProgressIndicator()
     }
+}
+
+@Preview
+@Composable
+fun MainHeaderPreview() {
+    MainHeader(
+        query = "Kotlin",
+        isInitialError = false,
+        hint = HintContent.PlainText("Найдено: 30 из 100"),
+        onQueryChanged = {},
+        onSearch = {},
+        onRetry = {},
+    )
 }

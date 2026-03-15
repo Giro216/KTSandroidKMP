@@ -32,10 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.kts_android_kmp.feature.main.models.MainUiEvent
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingSmall
+import com.example.kts_android_kmp.theme.Strings.LOAD_REPO_ERR
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
+import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_search_hint
+import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -57,13 +60,9 @@ fun MainScreen(
         }
     }
 
+
     LaunchedEffect(shouldLoadNext) {
-        if (shouldLoadNext &&
-            state.canPaginate &&
-            !state.isPaginationLoading &&
-            !state.isLoading &&
-            !state.isPaginationError
-        ) {
+        if (shouldLoadNext && mainViewModel.canLoadNextPage() ) {
             mainViewModel.loadNextPage()
         }
     }
@@ -75,10 +74,10 @@ fun MainScreen(
         mainViewModel.events.collectLatest { event: MainUiEvent ->
             when (event) {
                 MainUiEvent.ErrorLoadingRepos -> {
-                    snackbarHostState.showSnackbar("Не удалось загрузить репозитории")
+                    snackbarHostState.showSnackbar(LOAD_REPO_ERR)
                 }
 
-                MainUiEvent.ReposLoaded -> Unit
+                else -> Unit
             }
         }
     }
@@ -119,10 +118,8 @@ fun MainScreen(
                 item(key = "header") {
                     MainHeader(
                         query = state.query,
-                        isLoading = state.isLoading,
                         isInitialError = state.isInitialError,
-                        totalCount = state.totalCount,
-                        reposSize = state.repos.size,
+                        hint = state.hint,
                         onQueryChanged = mainViewModel::onQueryChanged,
                         onSearch = mainViewModel::onSearch,
                         onRetry = mainViewModel::retry,
@@ -138,18 +135,17 @@ fun MainScreen(
                         !state.isLoading && state.repos.isEmpty()  -> {
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(24.dp),
+                                    .fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text(
-                                    text = "Ничего не найдено",
+                                    text = stringResource(Res.string.main_screen_search_nothing_found),
                                     style = MaterialTheme.typography.titleMedium,
                                     textAlign = TextAlign.Center,
                                 )
                                 Spacer(Modifier.height(8.dp))
                                 Text(
-                                    text = "Попробуйте изменить запрос",
+                                    text = stringResource(Res.string.main_screen_retry_search_hint),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center,
@@ -166,13 +162,15 @@ fun MainScreen(
                     RepoCard(
                         repo = repo,
                         modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
+                        onFormatMetric = mainViewModel::formatMetric,
+                        onColorMapping = mainViewModel::colorMapping,
                     )
                 }
 
                 item(key = "pagination_loader") {
                     PaginationLoader(
-                        isPaginationLoading = state.isPaginationLoading,
-                        isPaginationError = state.isPaginationError,
+                        isPaginationLoading = state.pagination.isPaginationLoading,
+                        isPaginationError = state.pagination.isPaginationError,
                         onRetry = mainViewModel::loadNextPage,
                     )
                 }

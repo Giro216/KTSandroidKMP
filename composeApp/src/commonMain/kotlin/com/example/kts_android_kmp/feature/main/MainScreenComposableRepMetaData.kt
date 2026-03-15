@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -39,11 +39,12 @@ import org.jetbrains.compose.resources.stringResource
 fun RepoCard(
     repo: GitHubRepoEntity,
     modifier: Modifier = Modifier,
+    onFormatMetric: (emoji: String, count: Int) -> String,
+    onColorMapping: (language: String) -> Color,
 ) {
-    Surface(
+    Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(RoundedCornerShapeSize),
-        tonalElevation = 1.dp,
     ) {
         Column(modifier = Modifier.padding(ScreenTotalPaddingSmall)) {
             Text(
@@ -72,23 +73,37 @@ fun RepoCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                PrintMetaData(repo.language, repo.stars, repo.forks, repo.updatedAt)
+                PrintMetaData(
+                    repo.language,
+                    repo.stars,
+                    repo.forks,
+                    repo.updatedAt,
+                    onFormatMetric,
+                    onColorMapping,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun PrintMetaData(language: String?, stars: Int, forks: Int, updatedAt: String) {
+private fun PrintMetaData(
+    language: String?,
+    stars: Int,
+    forks: Int,
+    updatedAt: String,
+    onFormatMetric: (emoji: String, count: Int) -> String,
+    onColorMapping: (language: String) -> Color,
+) {
     val starEmoji = stringResource(Res.string.star_logo)
     val forkEmoji = stringResource(Res.string.fork_logo)
 
 
 
-    val likeText = remember(starEmoji, stars) { formatMetric(starEmoji, stars) }
-    val commentText = remember(forkEmoji, forks) { formatMetric(forkEmoji, forks) }
+    val likeText = remember(starEmoji, stars) { onFormatMetric(starEmoji, stars) }
+    val commentText = remember(forkEmoji, forks) { onFormatMetric(forkEmoji, forks) }
 
-    RepoMetaLanguage(language)
+    RepoMetaLanguage(language, onColorMapping)
     RepoMetaText(text = likeText)
     RepoMetaText(text = commentText)
     RepoMetaText(text = updatedAt)
@@ -96,7 +111,7 @@ private fun PrintMetaData(language: String?, stars: Int, forks: Int, updatedAt: 
 }
 
 @Composable
-private fun RepoMetaLanguage(language: String?) {
+private fun RepoMetaLanguage(language: String?, onColorMapping: (language: String) -> Color) {
     if (language.isNullOrBlank()) return
 
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -104,7 +119,7 @@ private fun RepoMetaLanguage(language: String?) {
             modifier = Modifier
                 .size(10.dp)
                 .clip(CircleShape)
-                .background(colorForLanguage(language)),
+                .background(onColorMapping(language)),
         )
         Spacer(Modifier.width(6.dp))
         RepoMetaText(text = language)
@@ -120,37 +135,4 @@ private fun RepoMetaText(text: String) {
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
     )
-}
-
-
-@Stable
-private fun colorForLanguage(language: String): Color {
-    return when (language.lowercase()) {
-        "kotlin" -> Color(0xFFA97BFF)
-        "java" -> Color(0xFFB07219)
-        "swift" -> Color(0xFFFFAC45)
-        "javascript" -> Color(0xFFF1E05A)
-        "typescript" -> Color(0xFF3178C6)
-        "c" -> Color(0xFF555555)
-        "c++" -> Color(0xFFF34B7D)
-        "python" -> Color(0xFF3572A5)
-        else -> AvatarBackground
-    }
-}
-
-@Stable
-private fun formatMetric(emoji: String, count: Int): String {
-    return buildString {
-        append(emoji)
-        append(formatCount(count))
-    }
-}
-
-@Stable
-private fun formatCount(count: Int): String {
-    return when {
-        count >= 1_000_000 -> "${count / 1_000_000}M"
-        count >= 1_000 -> "${count / 1_000}K"
-        else -> count.toString()
-    }
 }
