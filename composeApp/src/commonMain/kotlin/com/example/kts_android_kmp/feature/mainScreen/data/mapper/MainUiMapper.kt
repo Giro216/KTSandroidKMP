@@ -1,29 +1,15 @@
-package com.example.kts_android_kmp.feature.mainScreen.models
+package com.example.kts_android_kmp.feature.mainScreen.data.mapper
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import com.example.kts_android_kmp.feature.mainScreen.domain.IMainUiMapper
+import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 import com.example.kts_android_kmp.theme.AppColors.AvatarBackground
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_advice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
 import org.jetbrains.compose.resources.StringResource
-
-interface IMainUiMapper {
-    fun calculateHint(
-        query: String,
-        reposSize: Int,
-        totalCount: Int,
-    ): HintContent?
-
-    fun toSearchQuery(event: MainUiEvent, currentQuery: String): String?
-
-    fun formatCount(count: Int): String
-
-    fun formatMetric(emoji: String, count: Int): String
-
-    fun colorForLanguage(language: String): Color
-}
 
 class MainUiMapper : IMainUiMapper {
     @Stable

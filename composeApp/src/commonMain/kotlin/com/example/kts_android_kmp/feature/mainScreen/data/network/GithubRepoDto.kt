@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.mainScreen.models
+package com.example.kts_android_kmp.feature.mainScreen.data.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
