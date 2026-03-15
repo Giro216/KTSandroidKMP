@@ -10,9 +10,16 @@ data class MainUiState(
 
     val isLoading: Boolean = true,
     val isInitialError: Boolean = false,
+    val hint: HintContent? = null,
 
-    val page: Int = 1,
-    val isPaginationLoading: Boolean = false,
-    val canPaginate: Boolean = true,
-    val isPaginationError: Boolean = false,
-)
+    val pagination: PaginationUiState = PaginationUiState(),
+) {
+
+    data class PaginationUiState(
+        val page: Int = 1,
+        val isPaginationLoading: Boolean = false,
+        val canPaginate: Boolean = true,
+        val isPaginationError: Boolean = false,
+    )
+}
+

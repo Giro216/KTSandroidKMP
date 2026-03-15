@@ -24,10 +24,11 @@ import ktsandroidkmp.composeapp.generated.resources.login_screen_loading_gif
 import ktsandroidkmp.composeapp.generated.resources.login_waiting_subtitle
 import ktsandroidkmp.composeapp.generated.resources.login_waiting_title
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel,
+    loginViewModel: LoginViewModel = koinViewModel(),
     onNavigateToMain: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -36,6 +37,8 @@ fun LoginScreen(
     LaunchedEffect(state.isLoggedIn) {
         if (state.isLoggedIn) {
             onNavigateToMain()
+        }else{
+            loginViewModel.openLoginPage()
         }
     }
 

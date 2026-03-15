@@ -1,23 +1,19 @@
 package com.example.kts_android_kmp.feature.main
 
 import androidx.lifecycle.viewModelScope
+import androidx.compose.ui.graphics.Color
 import com.example.kts_android_kmp.common.BaseViewModel
+import com.example.kts_android_kmp.feature.main.models.GitHubSearchResult
+import com.example.kts_android_kmp.feature.main.models.HintContent
 import com.example.kts_android_kmp.feature.main.models.IGitHubRepository
+import com.example.kts_android_kmp.feature.main.models.IMainUiMapper
 import com.example.kts_android_kmp.feature.main.models.MainUiEvent
 import com.example.kts_android_kmp.feature.main.models.MainUiState
-import com.example.kts_android_kmp.network.GitHubApi
-import kotlinx.coroutines.Dispatchers
+import com.example.kts_android_kmp.feature.main.models.MainUiState.PaginationUiState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 
 private const val SEARCH_DEBOUNCE_MS = 1000L
@@ -26,94 +22,56 @@ private const val PER_PAGE = 20
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class MainViewModel(
     private val repo: IGitHubRepository,
-) : BaseViewModel<MainUiEvent, MainUiState>(MainUiState()) {
-
-    private val searchRequests = MutableSharedFlow<String>(extraBufferCapacity = 1)
-    private val retryRequests = MutableSharedFlow<String>(extraBufferCapacity = 1)
-
+    private val uiMapper: IMainUiMapper,
+) : BaseViewModel<MainUiEvent, MainUiState>(initialState = MainUiState(), extraBufferCapacity = 1) {
+    
     init {
         viewModelScope.launch {
-            merge(
-                searchRequests
-                    .debounce(SEARCH_DEBOUNCE_MS)
-                    .distinctUntilChanged(),
-                retryRequests.debounce(SEARCH_DEBOUNCE_MS),
-            )
-                .filter { it.isNotBlank() }
-                .flatMapLatest { query ->
-                    flow {
-                        emit(loadPage(query = query, page = 1))
-                    }
-                        .onStart {
-                            updateState {
-                                copy(
-                                    isLoading = true,
-                                    isInitialError = false,
-                                    isPaginationError = false,
-                                    page = 1,
-                                    canPaginate = true,
-                                    isPaginationLoading = false,
-                                    repos = emptyList(),
-                                    totalCount = null,
-                                )
-                            }
-                        }
-                        .flowOn(Dispatchers.Default)
+            events
+                .debounce(SEARCH_DEBOUNCE_MS)
+                .transformLatest { event ->
+                    val query = uiMapper.toSearchQuery(event,state.value.query)
+                        ?: return@transformLatest
+                    emit(loadFirstPage(query))
                 }
-                .collect { result ->
-                    result
-                        .onSuccess { searchResult ->
-                            val repos = searchResult.items
-                            updateState {
-                                copy(
-                                    repos = repos,
-                                    totalCount = searchResult.totalCount,
-                                    isLoading = false,
-                                    isInitialError = false,
-                                    isPaginationError = false,
-                                    page = 1,
-                                    canPaginate = repos.isNotEmpty() && repos.size < searchResult.totalCount,
-                                )
-                            }
-                            acceptLabel(MainUiEvent.ReposLoaded)
-                        }
-                        .onFailure {
-                            updateState { copy(isLoading = false, isInitialError = true, totalCount = null) }
-                            acceptLabel(MainUiEvent.ErrorLoadingRepos)
-                        }
-                }
+                .collect { result -> applyFirstPageResult(result) }
         }
 
-        setQuery("kotlin")
+        onQueryChanged("kotlin")
     }
 
     fun onQueryChanged(value: String) {
-        setQuery(value)
+        val trimmed = value.trim()
+        updateState { copy(query = trimmed) }
+        acceptLabel(MainUiEvent.QueryChanged(trimmed))
     }
 
     fun onSearch() {
-        setQuery(state.value.query)
+        acceptLabel(MainUiEvent.SearchClicked)
     }
 
     fun retry() {
         val query = state.value.query.trim().ifBlank { "kotlin" }
         updateState { copy(query = query) }
-        retryRequests.tryEmit(query)
+        acceptLabel(MainUiEvent.RetryClicked)
     }
 
     fun loadNextPage() {
         val current = state.value
         val query = current.query.trim()
 
-        if (query.isBlank()) return
-        if (!current.canPaginate) return
-        if (current.isLoading || current.isPaginationLoading) return
-        if (current.isInitialError) return
-
-        val nextPage = current.page + 1
+        canLoadNextPage()
+        val nextPage = current.pagination.page + 1
 
         viewModelScope.launch {
-            updateState { copy(isPaginationLoading = true, isPaginationError = false) }
+            updateState {
+                copy(
+                    pagination = pagination.copy(
+                        isPaginationLoading = true,
+                        isPaginationError = false,
+                    )
+                )
+            }
 
             val result = loadPage(query = query, page = nextPage)
 
@@ -126,31 +84,102 @@ class MainViewModel(
                         copy(
                             repos = merged,
                             totalCount = total,
-                            page = nextPage,
-                            isPaginationLoading = false,
-                            canPaginate = newRepos.isNotEmpty() && merged.size < total,
-                            isPaginationError = false,
+                            pagination = pagination.copy(
+                                page = nextPage,
+                                isPaginationLoading = false,
+                                canPaginate = newRepos.isNotEmpty() && merged.size < total,
+                                isPaginationError = false,
+                            ),
                         )
                     }
                 }
                 .onFailure {
-                    updateState { copy(isPaginationLoading = false, isPaginationError = true) }
+                    updateState {
+                        copy(
+                            pagination = pagination.copy(
+                                isPaginationLoading = false,
+                                isPaginationError = true,
+                            )
+                        )
+                    }
                     acceptLabel(MainUiEvent.ErrorLoadingRepos)
                 }
         }
     }
 
-    private fun setQuery(raw: String) {
-        val trimmed = raw.trim()
-        updateState { copy(query = trimmed) }
-        searchRequests.tryEmit(trimmed)
+
+    fun canLoadNextPage(): Boolean {
+        val current = state.value
+        val query = current.query.trim()
+
+        if (query.isBlank()) return false
+
+        return current.pagination.canPaginate &&
+                !current.pagination.isPaginationLoading &&
+                !current.isLoading &&
+                !current.pagination.isPaginationError
+    }
+
+    fun formatMetric(emoji: String, count: Int): String = uiMapper.formatMetric(emoji, count)
+
+    fun colorMapping(language: String): Color = uiMapper.colorForLanguage(language)
+
+    private suspend fun loadFirstPage(query: String): Result<GitHubSearchResult> {
+        setFirstPageLoading(query)
+        return loadPage(query = query, page = 1)
+    }
+
+    private fun setFirstPageLoading(query: String) {
+        updateState {
+            copy(
+                query = query,
+                isLoading = true,
+                isInitialError = false,
+                repos = emptyList(),
+                totalCount = null,
+                hint = HintContent.PlainText(""),
+                pagination = PaginationUiState(
+                    page = 1,
+                    canPaginate = true,
+                    isPaginationLoading = false,
+                    isPaginationError = false,
+                ),
+            )
+        }
+    }
+
+    private fun applyFirstPageResult(result: Result<GitHubSearchResult>) {
+        result
+            .onSuccess { searchResult ->
+                val repos = searchResult.items
+                updateState {
+                    copy(
+                        repos = repos,
+                        totalCount = searchResult.totalCount,
+                        isLoading = false,
+                        isInitialError = false,
+                        pagination = pagination.copy(
+                            page = 1,
+                            isPaginationError = false,
+                            canPaginate = repos.isNotEmpty() && repos.size < searchResult.totalCount,
+                        ),
+                        hint = uiMapper.calculateHint(
+                            query = state.value.query,
+                            reposSize = repos.size,
+                            totalCount = searchResult.totalCount,
+                        ),
+                    )
+                }
+            }
+            .onFailure {
+                updateState { copy(isLoading = false, isInitialError = true, totalCount = null) }
+                acceptLabel(MainUiEvent.ErrorLoadingRepos)
+            }
     }
 
     private suspend fun loadPage(query: String, page: Int) = repo.loadEntities(
-        GitHubApi.LoadReposRequestParam(
+        repo.initGitHubApiReposRequestParam(
             query = query,
-            sort = GitHubApi.LoadReposRequestParam.SortType.STARS,
-            order = "desc",
             perPage = PER_PAGE,
             page = page,
         )
