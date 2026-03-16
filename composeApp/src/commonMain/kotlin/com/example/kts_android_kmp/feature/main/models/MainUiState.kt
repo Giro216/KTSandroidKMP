@@ -5,6 +5,14 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class MainUiState(
     val query: String = "",
-    val allRepos: List<GitHubRepo> = emptyList(),
-    val filteredRepos: List<GitHubRepo> = emptyList(),
+    val repos: List<GitHubRepoEntity> = emptyList(),
+    val totalCount: Int? = null,
+
+    val isLoading: Boolean = true,
+    val isInitialError: Boolean = false,
+
+    val page: Int = 1,
+    val isPaginationLoading: Boolean = false,
+    val canPaginate: Boolean = true,
+    val isPaginationError: Boolean = false,
 )

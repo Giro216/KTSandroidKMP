@@ -1,125 +1,158 @@
 package com.example.kts_android_kmp.feature.main
 
-import androidx.lifecycle.ViewModel
-import com.example.kts_android_kmp.feature.main.models.GitHubRepo
+import androidx.lifecycle.viewModelScope
+import com.example.kts_android_kmp.common.BaseViewModel
+import com.example.kts_android_kmp.feature.main.models.IGitHubRepository
+import com.example.kts_android_kmp.feature.main.models.MainUiEvent
 import com.example.kts_android_kmp.feature.main.models.MainUiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.example.kts_android_kmp.network.GitHubApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+private const val SEARCH_DEBOUNCE_MS = 1000L
+private const val PER_PAGE = 20
 
-    private val _state = MutableStateFlow(
-        MainUiState(
-            allRepos = demoRepos(),
-            filteredRepos = emptyList(),
-            query = "",
-        )
-    )
-    val state: StateFlow<MainUiState> = _state.asStateFlow()
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+class MainViewModel(
+    private val repo: IGitHubRepository,
+) : BaseViewModel<MainUiEvent, MainUiState>(MainUiState()) {
+
+    private val searchRequests = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    private val retryRequests = MutableSharedFlow<String>(extraBufferCapacity = 1)
+
+    init {
+        viewModelScope.launch {
+            merge(
+                searchRequests
+                    .debounce(SEARCH_DEBOUNCE_MS)
+                    .distinctUntilChanged(),
+                retryRequests.debounce(SEARCH_DEBOUNCE_MS),
+            )
+                .filter { it.isNotBlank() }
+                .flatMapLatest { query ->
+                    flow {
+                        emit(loadPage(query = query, page = 1))
+                    }
+                        .onStart {
+                            updateState {
+                                copy(
+                                    isLoading = true,
+                                    isInitialError = false,
+                                    isPaginationError = false,
+                                    page = 1,
+                                    canPaginate = true,
+                                    isPaginationLoading = false,
+                                    repos = emptyList(),
+                                    totalCount = null,
+                                )
+                            }
+                        }
+                        .flowOn(Dispatchers.Default)
+                }
+                .collect { result ->
+                    result
+                        .onSuccess { searchResult ->
+                            val repos = searchResult.items
+                            updateState {
+                                copy(
+                                    repos = repos,
+                                    totalCount = searchResult.totalCount,
+                                    isLoading = false,
+                                    isInitialError = false,
+                                    isPaginationError = false,
+                                    page = 1,
+                                    canPaginate = repos.isNotEmpty() && repos.size < searchResult.totalCount,
+                                )
+                            }
+                            acceptLabel(MainUiEvent.ReposLoaded)
+                        }
+                        .onFailure {
+                            updateState { copy(isLoading = false, isInitialError = true, totalCount = null) }
+                            acceptLabel(MainUiEvent.ErrorLoadingRepos)
+                        }
+                }
+        }
+
+        setQuery("kotlin")
+    }
 
     fun onQueryChanged(value: String) {
-        _state.update { it.copy(query = value) }
+        setQuery(value)
     }
 
     fun onSearch() {
-        val query = state.value.query.trim()
-        val all = state.value.allRepos
-
-        val filtered = if (query.isEmpty()) {
-            emptyList()
-        } else {
-            all.filter { repo ->
-                repo.name.contains(query, ignoreCase = true) ||
-                    repo.owner.contains(query, ignoreCase = true) ||
-                    (repo.description?.contains(query, ignoreCase = true) == true)
-            }
-        }
-
-        _state.update { it.copy(filteredRepos = filtered) }
+        setQuery(state.value.query)
     }
 
-    private fun demoRepos(): List<GitHubRepo> = listOf(
-        GitHubRepo(
-            id = 1,
-            owner = "JetBrains",
-            name = "kotlin",
-            description = "The Kotlin Programming Language.",
-            language = "Kotlin",
-            stars = 50000,
-            forks = 6000,
-            updatedAt = "Updated 2 days ago",
-        ),
-        GitHubRepo(
-            id = 2,
-            owner = "ktorio",
-            name = "ktor",
-            description = "Ktor: Framework for quickly creating connected applications.",
-            language = "Kotlin",
-            stars = 14000,
-            forks = 1200,
-            updatedAt = "Updated yesterday",
-        ),
-        GitHubRepo(
-            id = 3,
-            owner = "android",
-            name = "compose-samples",
-            description = "Official Jetpack Compose samples.",
-            language = "Kotlin",
-            stars = 22000,
-            forks = 5000,
-            updatedAt = "Updated 5 days ago",
-        ),
-        GitHubRepo(
-            id = 4,
-            owner = "square",
-            name = "okhttp",
-            description = "Square’s meticulous HTTP client.",
-            language = "Kotlin",
-            stars = 46000,
-            forks = 9200,
-            updatedAt = "Updated 3 days ago",
-        ),
-        GitHubRepo(
-            id = 5,
-            owner = "coil-kt",
-            name = "coil",
-            description = "Image loading for Android and Compose.",
-            language = "Kotlin",
-            stars = 12000,
-            forks = 700,
-            updatedAt = "Updated 1 week ago",
-        ),
-        GitHubRepo(
-            id = 6,
-            owner = "Kotlin",
-            name = "kotlinx.serialization",
-            description = "Kotlin multiplatform / multi-format serialization.",
-            language = "Kotlin",
-            stars = 6000,
-            forks = 700,
-            updatedAt = "Updated 4 days ago",
-        ),
-        GitHubRepo(
-            id = 7,
-            owner = "facebook",
-            name = "react",
-            description = "The library for web and native user interfaces.",
-            language = "JavaScript",
-            stars = 235000,
-            forks = 48000,
-            updatedAt = "Updated today",
-        ),
-        GitHubRepo(
-            id = 8,
-            owner = "torvalds",
-            name = "linux",
-            description = "Linux kernel source tree.",
-            language = "C",
-            stars = 190000000,
-            forks = 55000,
-            updatedAt = "Updated today",
-        ),
+    fun retry() {
+        val query = state.value.query.trim().ifBlank { "kotlin" }
+        updateState { copy(query = query) }
+        retryRequests.tryEmit(query)
+    }
+
+    fun loadNextPage() {
+        val current = state.value
+        val query = current.query.trim()
+
+        if (query.isBlank()) return
+        if (!current.canPaginate) return
+        if (current.isLoading || current.isPaginationLoading) return
+        if (current.isInitialError) return
+
+        val nextPage = current.page + 1
+
+        viewModelScope.launch {
+            updateState { copy(isPaginationLoading = true, isPaginationError = false) }
+
+            val result = loadPage(query = query, page = nextPage)
+
+            result
+                .onSuccess { searchResult ->
+                    val newRepos = searchResult.items
+                    updateState {
+                        val merged = repos + newRepos
+                        val total = totalCount ?: searchResult.totalCount
+                        copy(
+                            repos = merged,
+                            totalCount = total,
+                            page = nextPage,
+                            isPaginationLoading = false,
+                            canPaginate = newRepos.isNotEmpty() && merged.size < total,
+                            isPaginationError = false,
+                        )
+                    }
+                }
+                .onFailure {
+                    updateState { copy(isPaginationLoading = false, isPaginationError = true) }
+                    acceptLabel(MainUiEvent.ErrorLoadingRepos)
+                }
+        }
+    }
+
+    private fun setQuery(raw: String) {
+        val trimmed = raw.trim()
+        updateState { copy(query = trimmed) }
+        searchRequests.tryEmit(trimmed)
+    }
+
+    private suspend fun loadPage(query: String, page: Int) = repo.loadEntities(
+        GitHubApi.LoadReposRequestParam(
+            query = query,
+            sort = GitHubApi.LoadReposRequestParam.SortType.STARS,
+            order = "desc",
+            perPage = PER_PAGE,
+            page = page,
+        )
     )
 }

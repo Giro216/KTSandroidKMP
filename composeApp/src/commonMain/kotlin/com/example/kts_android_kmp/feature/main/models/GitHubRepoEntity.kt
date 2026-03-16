@@ -3,7 +3,7 @@ package com.example.kts_android_kmp.feature.main.models
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class GitHubRepo(
+data class GitHubRepoEntity(
     val id: Long,
     val owner: String,
     val name: String,
