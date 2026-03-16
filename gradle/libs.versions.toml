@@ -22,6 +22,9 @@ koin = "4.0.3"
 ktor = "3.4.1"
 kotlinx-serialization = "1.10.0"
 androidx-datastore = "1.1.7"
+room = "2.8.4"
+ksp = "2.1.10-1.0.31"
+sqlite = "2.5.0"
 
 [libraries]
 appauth = { module = "net.openid:appauth", version.ref = "appauth" }
@@ -52,6 +55,11 @@ navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-co
 # Android DataStore (используем в androidMain через expect/actual storage)
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 
+# Room (cache DB)
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+
 # Koin DI
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
@@ -78,3 +86,5 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 stability-analyzer = { id = "com.github.skydoves.compose.stability.analyzer", version = "0.7.0" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
