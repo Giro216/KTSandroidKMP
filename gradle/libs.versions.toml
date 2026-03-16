@@ -21,6 +21,7 @@ navigationCompose = "2.9.2"
 koin = "4.0.3"
 ktor = "3.4.1"
 kotlinx-serialization = "1.10.0"
+androidx-datastore = "1.1.7"
 
 [libraries]
 appauth = { module = "net.openid:appauth", version.ref = "appauth" }
@@ -47,6 +48,9 @@ compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-previ
 material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+# Android DataStore (используем в androidMain через expect/actual storage)
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 
 # Koin DI
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

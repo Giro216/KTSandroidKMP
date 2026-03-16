@@ -1,19 +1,18 @@
 package com.example.kts_android_kmp.feature.login.oauth.data.repo
 
-import com.example.kts_android_kmp.feature.login.oauth.data.network.TokenStorage
 import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
 import com.example.kts_android_kmp.feature.login.oauth.domain.IAuthRepository
+import com.example.kts_android_kmp.storage.domain.ISessionRepository
 
-class AuthRepository : IAuthRepository {
-    override fun saveTokens(tokens: TokensModel) {
-        TokenStorage.accessToken = tokens.accessToken
-        TokenStorage.refreshToken = tokens.refreshToken
-        TokenStorage.idToken = tokens.idToken
+class AuthRepository(
+    private val sessionRepository: ISessionRepository,
+) : IAuthRepository {
+
+    override suspend fun saveTokens(tokens: TokensModel) {
+        sessionRepository.saveTokens(tokens)
     }
 
-    override fun logout() {
-        TokenStorage.accessToken = null
-        TokenStorage.refreshToken = null
-        TokenStorage.idToken = null
+    override suspend fun logout() {
+        sessionRepository.clearTokens()
     }
 }

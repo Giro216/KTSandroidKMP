@@ -16,7 +16,7 @@ tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck"
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
     
@@ -38,7 +38,7 @@ kotlin {
             implementation(libs.coil.gif)
             implementation(libs.appauth)
 
-            // Ktor engine for Android
+            implementation(libs.androidx.datastore.preferences)
             implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
@@ -67,11 +67,9 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
 
-            // kotlinx.serialization Json
             implementation(libs.kotlinx.serialization.json)
         }
         iosMain.dependencies {
-            // Ktor engine for iOS
             implementation(libs.ktor.client.darwin)
         }
 
