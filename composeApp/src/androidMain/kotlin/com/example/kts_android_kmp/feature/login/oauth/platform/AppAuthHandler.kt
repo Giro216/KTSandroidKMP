@@ -10,6 +10,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
+import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
@@ -21,49 +22,68 @@ actual class AppAuthHandler(private val activity: ComponentActivity) {
 
     private var continuation: ((Result<TokensModel>) -> Unit)? = null
 
+    private fun dispatch(result: Result<TokensModel>) {
+        val cb = continuation ?: return
+        continuation = null
+        cb(result)
+    }
+
+    private fun onAuthResult(data: Intent?) {
+        if (data == null) {
+            dispatch(Result.failure(IllegalStateException("Authentication cancelled")))
+            return
+        }
+
+        AuthorizationException.fromIntent(data)?.let { ex ->
+            dispatch(Result.failure(ex))
+            return
+        }
+
+        val response = AuthorizationResponse.fromIntent(data)
+        if (response == null) {
+            dispatch(Result.failure(IllegalStateException("Missing authorization response")))
+            return
+        }
+
+        authService.performTokenRequest(
+            response.createTokenExchangeRequest(),
+            AppAuth.clientAuthentication,
+        ) { resp, ex ->
+            when {
+                ex != null -> dispatch(Result.failure(ex))
+                resp != null -> dispatch(
+                    Result.success(
+                        TokensModel(
+                            accessToken = resp.accessToken.orEmpty(),
+                            refreshToken = resp.refreshToken.orEmpty(),
+                            idToken = resp.idToken.orEmpty(),
+                        )
+                    )
+                )
+
+                else -> dispatch(Result.failure(IllegalStateException("unreachable")))
+            }
+        }
+    }
+
     fun init() {
         authResultLauncher = activity.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            val data = result.data
-            when {
-                data != null -> {
-                    val response = AuthorizationResponse.fromIntent(data)
-                    val error = AuthorizationException.fromIntent(data)
-                    when {
-                        response != null -> {
-                            authService.performTokenRequest(
-                                response.createTokenExchangeRequest(),
-                                AppAuth.clientAuthentication
-                            ) { resp, ex ->
-                                when {
-                                    resp != null -> {
-                                        val tokens = TokensModel(
-                                            accessToken = resp.accessToken.orEmpty(),
-                                            refreshToken = resp.refreshToken.orEmpty(),
-                                            idToken = resp.idToken.orEmpty()
-                                        )
-                                        continuation?.invoke(Result.success(tokens))
-                                    }
-                                    ex != null -> continuation?.invoke(Result.failure(ex))
-                                    else -> continuation?.invoke(Result.failure(IllegalStateException("unreachable")))
-                                }
-                            }
-                        }
-                        error != null -> continuation?.invoke(Result.failure(error))
-                        else -> continuation?.invoke(Result.failure(IllegalStateException("unreachable")))
-                    }
-                }
-                else -> continuation?.invoke(Result.failure(IllegalStateException("Authentication cancelled")))
-            }
+            onAuthResult(result.data)
         }
     }
 
     actual suspend fun performTokenRequest(): TokensModel? = suspendCancellableCoroutine { cont ->
         continuation = { result ->
-            result.onSuccess { cont.resume(it) { cause, _, _ -> null?.let { it1 -> it1(cause) } } }
+            result.onSuccess { cont.resume(it) }
             result.onFailure { cont.resumeWithException(it) }
         }
+
+        cont.invokeOnCancellation {
+            continuation = null
+        }
+
         val authRequest = AppAuth.getAuthRequest()
         val authIntent = authService.getAuthorizationRequestIntent(authRequest)
         authResultLauncher.launch(authIntent)
