@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.stability.analyzer)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck") }.configureEach {
@@ -55,6 +57,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.napier)
 
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
             // Koin DI
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -108,6 +112,13 @@ android {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    listOf("kspAndroid", "kspIosArm64", "kspIosSimulatorArm64").forEach {
+        add(it, libs.room.compiler)
+    }
 }
