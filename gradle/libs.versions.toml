@@ -22,6 +22,7 @@ koin = "4.0.3"
 ktor = "3.4.1"
 kotlinx-serialization = "1.10.0"
 androidx-datastore = "1.1.7"
+androidx-swiperefreshlayout = "1.1.0"
 room = "2.8.4"
 ksp = "2.1.10-1.0.31"
 sqlite = "2.5.0"
@@ -54,6 +55,9 @@ navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-co
 
 # Android DataStore (используем в androidMain через expect/actual storage)
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
+
+# SwipeRefreshLayout (pull-to-refresh)
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 
 # Room (cache DB)
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
