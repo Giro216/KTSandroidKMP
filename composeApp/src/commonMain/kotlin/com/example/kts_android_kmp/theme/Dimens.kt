@@ -29,9 +29,9 @@ object Dimens {
     val SpacingExtraLarge = 70.dp
 
     // Размеры кнопок
-    val ButtonHeight = 52.dp
-
+    val ButtonHeight = 56.dp
     val PostImageHeight = 190.dp
+    val headerHeight = 40.dp
 
     // Отступы для изображений
     val HelloImageTopPadding = 70.dp

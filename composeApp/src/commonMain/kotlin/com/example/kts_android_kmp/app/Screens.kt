@@ -15,4 +15,7 @@ sealed class Routes {
 
     @Serializable
     data object MainScreen : Routes()
+
+    @Serializable
+    data object ProfileScreen : Routes()
 }

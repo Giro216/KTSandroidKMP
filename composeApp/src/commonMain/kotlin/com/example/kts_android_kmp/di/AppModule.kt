@@ -9,6 +9,7 @@ val appModules = listOf(
     cacheModule,
     loginScreenModule,
     mainScreenModule,
+    profileModule,
 
 )
 

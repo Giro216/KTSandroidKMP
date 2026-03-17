@@ -8,6 +8,7 @@ import com.example.kts_android_kmp.feature.bootstrap.BootstrapScreen
 import com.example.kts_android_kmp.feature.intro.HelloScreen
 import com.example.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.example.kts_android_kmp.feature.mainScreen.ui.MainScreen
+import com.example.kts_android_kmp.feature.profile.ui.ProfileScreen
 import com.example.kts_android_kmp.platform.exitApp
 
 @Composable
@@ -52,7 +53,21 @@ fun AppNavigation() {
             MainScreen(
                 onBackPressed = {
                     exitApp()
-                }
+                },
+                onOpenProfile = {
+                    navController.navigate(Routes.ProfileScreen)
+                },
+            )
+        }
+
+        composable<Routes.ProfileScreen> {
+            ProfileScreen(
+                onNavigateToLogin = {
+                    navController.navigate(Routes.LoginScreen) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
     }
