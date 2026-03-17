@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 @Composable
 actual fun PullToRefreshContainer(
     isRefreshing: Boolean,
+    isAtTop: Boolean,
+    isScrollInProgress: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier,
     content: @Composable () -> Unit,
