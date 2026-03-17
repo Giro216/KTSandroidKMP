@@ -1,6 +1,6 @@
 package com.example.kts_android_kmp.network
 
-import com.example.kts_android_kmp.feature.login.oauth.data.network.TokenStorage
+import com.example.kts_android_kmp.network.platform.KtorEngineFactory
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -14,6 +14,11 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.json.Json
 
 object ApiClient {
@@ -24,8 +29,17 @@ object ApiClient {
         explicitNulls = false
     }
 
-    val httpClient: HttpClient by lazy {
-        HttpClient(KtorEngineFactory.create()) {
+    fun createHttpClient(
+        tokenProvider: AuthTokenProvider,
+        scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
+    ): HttpClient {
+        var latestAccessToken: String? = null
+
+        tokenProvider.accessTokenFlow()
+            .onEach { latestAccessToken = it }
+            .launchIn(scope)
+
+        return HttpClient(KtorEngineFactory.create()) {
             expectSuccess = true
 
             install(ContentNegotiation) {
@@ -50,7 +64,7 @@ object ApiClient {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.UserAgent, "KTS-android-KMP")
 
-                TokenStorage.accessToken?.let { token ->
+                latestAccessToken?.takeIf { it.isNotBlank() }?.let { token ->
                     header(HttpHeaders.Authorization, "Bearer $token")
                 }
             }

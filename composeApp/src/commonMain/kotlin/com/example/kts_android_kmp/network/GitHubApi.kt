@@ -1,6 +1,7 @@
-package com.example.kts_android_kmp.feature.mainScreen.data.network
+package com.example.kts_android_kmp.network
 
-import com.example.kts_android_kmp.network.ApiConfig
+import com.example.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
+import com.example.kts_android_kmp.feature.profile.data.network.GithubUserDto
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -10,6 +11,8 @@ import io.ktor.http.URLProtocol
 
 interface IGitHubApi {
     suspend fun loadRepos(param: GitHubApi.LoadReposRequestParam): GithubRepoSearchResponseDto
+
+    suspend fun getCurrentUser(): GithubUserDto
 }
 
 class GitHubApi(
@@ -32,6 +35,16 @@ class GitHubApi(
             param.page?.let { parameter("page", it.toString()) }
             Napier.i(tag = "GithubApi") { "Request URL: ${url.buildString()}" }
         }.body()
+    }
+
+    override suspend fun getCurrentUser(): GithubUserDto {
+        return client.get("/user") {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = ApiConfig.GITHUB_API_HOST
+            }
+            Napier.i(tag = "GithubApi") { "Request URL: ${url.buildString()}" }
+        }.body<GithubUserDto>()
     }
 
     class LoadReposRequestParam(
