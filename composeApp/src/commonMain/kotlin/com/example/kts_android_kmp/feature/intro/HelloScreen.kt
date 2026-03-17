@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,13 +37,14 @@ fun HelloScreen(
             .fillMaxSize()
             .padding(horizontal = Dimens.ScreenHorizontalPaddingLarge),
         verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         PrintCoilImage(
             imageUrlRes = Res.string.hello_screen_img_url,
             contentDescription = "Приветственное изображение",
             modifier = Modifier
                 .scale(1.8f)
-                .padding(top = 40.dp, start = 45.dp)
+                .padding(top = 40.dp)
         )
 
         Spacer(Modifier.height(SpacingExtraLarge))
@@ -56,7 +56,6 @@ fun HelloScreen(
             fontWeight = FontWeight.Bold,
             lineHeight = 58.sp,
             color = AppColors.PrimaryBlue,
-            textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = Dimens.SpacingLarge)
         )
@@ -65,15 +64,15 @@ fun HelloScreen(
             text = stringResource(Res.string.hello_screen_subtitle),
             style = MaterialTheme.typography.headlineMedium,
             color = AppColors.PrimaryBlue,
-            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
 
         Button(
-            onClick = onLoginButtonClick,
+            onClick = {
+                onLoginButtonClick()
+            },
             shape = MaterialTheme.shapes.large,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
         ) {
             Text(
                 text = "LOGIN",

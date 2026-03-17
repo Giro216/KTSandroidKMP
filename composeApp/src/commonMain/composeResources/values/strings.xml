@@ -22,6 +22,9 @@
     <string name="password_error_min_length">Минимум %1$d символов</string>
     <string name="login_error_message">Неверный логин или пароль</string>
 
+
+    <string name="login_screen_loading_gif">https://media1.tenor.com/m/6bLqzMcCDzEAAAAC/marmalady-loading-cat.gif</string>
+
     <string name="main_screen_search_exp">Например: kotlin</string>
     <string name="main_screen_title">Поиск репозиториев GitHub</string>
     <string name="main_screen_click_back_twice">Нажмите назад ещё раз, чтобы выйти</string>
@@ -29,9 +32,12 @@
     <string name="main_screen_search_nothing_found">Ничего не найдено</string>
     <string name="main_screen_next_page_loading_error">Ошибка при загрузке следующей страницы</string>
     <string name="main_screen_data_loading_error">Не удалось загрузить данные</string>
+    <string name="main_screen_retry_search_hint">Попробуйте изменить запрос</string>
     <string name="main_screen_search_button">Поиск</string>
     <string name="main_screen_retry_button">Повторить</string>
     <string name="star_logo">★ </string>
     <string name="fork_logo">⑂ </string>
-</resources>
 
+    <string name="login_waiting_title">Ждём логина…</string>
+    <string name="login_waiting_subtitle">Авторизуйтесь через GitHub — и мы сразу пустим вас дальше</string>
+</resources>
