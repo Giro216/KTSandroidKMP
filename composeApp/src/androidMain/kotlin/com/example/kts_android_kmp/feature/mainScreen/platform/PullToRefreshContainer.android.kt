@@ -13,6 +13,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 @Composable
 actual fun PullToRefreshContainer(
     isRefreshing: Boolean,
+    isAtTop: Boolean,
+    isScrollInProgress: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier,
     content: @Composable () -> Unit,
@@ -33,6 +35,11 @@ actual fun PullToRefreshContainer(
             }
 
             swipeRefresh.addView(composeView)
+
+            swipeRefresh.setOnChildScrollUpCallback { _, _ ->
+                !isAtTop
+            }
+
             swipeRefresh.setOnRefreshListener {
                 onRefresh()
                 swipeRefresh.postDelayed({ swipeRefresh.isRefreshing = false }, 500L)
@@ -40,6 +47,8 @@ actual fun PullToRefreshContainer(
             swipeRefresh
         },
         update = { swipeRefresh ->
+            swipeRefresh.isEnabled = isAtTop && !isScrollInProgress
+
             if (swipeRefresh.isRefreshing != isRefreshing) {
                 swipeRefresh.isRefreshing = isRefreshing
             }
