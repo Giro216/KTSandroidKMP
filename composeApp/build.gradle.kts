@@ -36,6 +36,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.swiperefreshlayout)
             implementation(libs.coil.network.okhttp)
             implementation(libs.coil.gif)
             implementation(libs.appauth)
