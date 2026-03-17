@@ -1,7 +1,6 @@
 package com.example.kts_android_kmp.feature.mainScreen.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,10 +23,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
+import com.example.kts_android_kmp.theme.Dimens.ButtonHeight
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
 import com.example.kts_android_kmp.theme.Dimens.ScreenVerticalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingSmall
+import com.example.kts_android_kmp.utils.LoadingIndicator
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_data_loading_error
 import ktsandroidkmp.composeapp.generated.resources.main_screen_next_page_loading_error
@@ -52,7 +52,6 @@ fun MainHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                top = ScreenVerticalPaddingSmall,
                 start = ScreenHorizontalPaddingMedium,
                 end = ScreenHorizontalPaddingMedium,
             ),
@@ -121,7 +120,7 @@ private fun SearchBar(
 
         Button(
             onClick = onSearch,
-            modifier = Modifier.height(56.dp),
+            modifier = Modifier.height(ButtonHeight),
             shape = RoundedCornerShape(12.dp),
         ) {
             Text(stringResource(Res.string.main_screen_search_button))
@@ -137,7 +136,7 @@ fun PaginationLoader(
 ) {
     when {
         isPaginationLoading -> {
-            LoadingIndicator()
+            LoadingIndicator(24.dp)
         }
 
         isPaginationError -> {
@@ -170,18 +169,6 @@ private fun LoadingError(resource: StringResource, onRetry: () -> Unit) {
         TextButton(onClick = onRetry) {
             Text(stringResource(Res.string.main_screen_retry_button))
         }
-    }
-}
-
-@Composable
-fun LoadingIndicator() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 24.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator()
     }
 }
 

@@ -1,7 +1,7 @@
 package com.example.kts_android_kmp.di
 
-import com.example.kts_android_kmp.feature.mainScreen.data.network.GitHubApi
-import com.example.kts_android_kmp.feature.mainScreen.data.network.IGitHubApi
+import com.example.kts_android_kmp.network.GitHubApi
+import com.example.kts_android_kmp.network.IGitHubApi
 import com.example.kts_android_kmp.network.ApiClient
 import com.example.kts_android_kmp.network.AuthTokenProvider
 import com.example.kts_android_kmp.storage.domain.ISessionRepository
