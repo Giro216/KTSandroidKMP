@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -123,3 +125,43 @@ dependencies {
         add(it, libs.room.compiler)
     }
 }
+
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
+val clientId = localProps.getProperty("CLIENT_ID") ?: ""
+val clientSecret = localProps.getProperty("CLIENT_SECRET") ?: ""
+
+val genDir = layout.buildDirectory.dir("generated/authConfig")
+
+val generateAuthConfig by tasks.registering {
+    outputs.dir(genDir)
+    doLast {
+        val pkg = "com.example.kts_android_kmp.feature.login.oauth.data.network"
+        val outDir = genDir.get().asFile.resolve(pkg.replace('.', '/'))
+        outDir.mkdirs()
+        outDir.resolve("AuthSecrets.kt").writeText(
+            """
+            package $pkg
+
+            internal object AuthSecrets {
+                const val CLIENT_ID = "$clientId"
+                const val CLIENT_SECRET = "$clientSecret"
+            }
+            """.trimIndent()
+        )
+    }
+}
+
+kotlin {
+    sourceSets {
+        commonMain {
+            kotlin.srcDir(genDir)
+        }
+    }
+}
+
+tasks.named("compileKotlinMetadata").configure { dependsOn(generateAuthConfig) }
+

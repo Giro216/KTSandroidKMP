@@ -58,7 +58,7 @@ class MainViewModel(
         val current = state.value
         val query = current.query.trim()
 
-        canLoadNextPage()
+        if (!canLoadNextPage()) return
         val nextPage = current.pagination.page + 1
 
         viewModelScope.launch {

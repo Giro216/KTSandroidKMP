@@ -6,8 +6,9 @@ object AuthConfig {
     const val END_SESSION_URI = "https://github.com/logout"
     const val SCOPE = "user,repo"
 
-    const val CLIENT_ID = "Ov23lifEwVtjNUs2khSP"
-    const val CLIENT_SECRET = "c8acf6114d38ed324439a1b541e3e82864be3be1"
+    const val CLIENT_ID = AuthSecrets.CLIENT_ID
+    const val CLIENT_SECRET = AuthSecrets.CLIENT_SECRET
+
     const val CALLBACK_URL = "ru.kts.giro216.oauth://github.com/callback"
     const val LOGOUT_CALLBACK_URL = "ru.kts.oauth://github.com/logout_callback"
 }
