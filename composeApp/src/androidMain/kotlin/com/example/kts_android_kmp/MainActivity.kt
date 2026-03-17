@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kts_android_kmp.app.App
 import com.example.kts_android_kmp.di.initKoin
+import com.example.kts_android_kmp.di.roomModule
 import com.example.kts_android_kmp.di.storageModule
 import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.platform.setActivity
 import com.example.kts_android_kmp.storage.platform.initContext
+import org.koin.dsl.module
 
 class MainActivity : ComponentActivity() {
     private val appAuthHandler by lazy { AppAuthHandler(this) }
@@ -23,7 +25,14 @@ class MainActivity : ComponentActivity() {
         setActivity(this)
         appAuthHandler.init()
 
-        initKoin(storageModule(appAuthHandler, this))
+        initKoin(
+            module {
+                includes(
+                    storageModule(appAuthHandler, this@MainActivity),
+                    roomModule(this@MainActivity),
+                )
+            }
+        )
         initContext(this)
 
         setContent {

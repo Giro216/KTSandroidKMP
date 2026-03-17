@@ -6,6 +6,7 @@ import org.koin.core.module.Module
 val appModules = listOf(
     bootstrapModule,
     networkModule,
+    cacheModule,
     loginScreenModule,
     mainScreenModule,
 

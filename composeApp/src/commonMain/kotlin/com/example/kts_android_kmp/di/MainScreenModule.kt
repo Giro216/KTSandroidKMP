@@ -11,6 +11,6 @@ import org.koin.dsl.module
 val mainScreenModule = module {
     viewModel { MainViewModel(repo = get(), uiMapper = get()) }
     single<IMainUiMapper> { MainUiMapper() }
-    single<IGitHubRepository> { GitHubRepositoryImpl(api = get()) }
+    single<IGitHubRepository> { GitHubRepositoryImpl(api = get(), cache = get()) }
 
 }
