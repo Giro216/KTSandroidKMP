@@ -6,8 +6,8 @@ import com.example.kts_android_kmp.feature.profile.domain.IProfileRepository
 import com.example.kts_android_kmp.feature.profile.domain.LogoutUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileViewModel(
     private val repository: IProfileRepository,

@@ -9,6 +9,7 @@
 
     <string name="login_screen_title">Войдите в аккаунт, чтобы продолжить</string>
     <string name="ru_login">Войти</string>
+    <string name="en_login">LOGIN</string>
     <string name="login_screen_title_main">Вход</string>
     <string name="logo_content_description">Логотип</string>
     <string name="email_label">Email</string>
@@ -26,7 +27,7 @@
     <string name="login_screen_loading_gif">https://media1.tenor.com/m/6bLqzMcCDzEAAAAC/marmalady-loading-cat.gif</string>
 
     <string name="main_screen_search_exp">Например: kotlin</string>
-    <string name="main_screen_title">Поиск репозиториев GitHub</string>
+    <string name="main_screen_title">Поиск репозиториев</string>
     <string name="main_screen_click_back_twice">Нажмите назад ещё раз, чтобы выйти</string>
     <string name="main_screen_search_advice">Введите запрос и нажмите Поиск</string>
     <string name="main_screen_search_nothing_found">Ничего не найдено</string>
@@ -40,4 +41,12 @@
 
     <string name="login_waiting_title">Ждём логина…</string>
     <string name="login_waiting_subtitle">Авторизуйтесь через GitHub — и мы сразу пустим вас дальше</string>
+
+    <string name="profile_title">Профиль</string>
+    <string name="profile_avatar_content_description">Аватар</string>
+    <string name="profile_load_error">Не удалось загрузить профиль</string>
+    <string name="profile_retry">Retry</string>
+    <string name="profile_logout">Logut</string>
+    <string name="profile_stat_repos">Репозитории</string>
+    <string name="profile_stat_followers">Подписчики</string>
 </resources>

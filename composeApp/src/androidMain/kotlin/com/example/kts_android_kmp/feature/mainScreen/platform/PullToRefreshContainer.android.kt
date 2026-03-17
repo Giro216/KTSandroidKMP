@@ -3,6 +3,8 @@ package com.example.kts_android_kmp.feature.mainScreen.platform
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
@@ -21,9 +23,13 @@ actual fun PullToRefreshContainer(
 ) {
     val context = LocalContext.current
 
+    val latestIsAtTop by rememberUpdatedState(isAtTop)
+    val latestIsScrollInProgress by rememberUpdatedState(isScrollInProgress)
+    val latestOnRefresh by rememberUpdatedState(onRefresh)
+
     AndroidView(
         modifier = modifier,
-        factory = {
+        factory = { _ ->
             val swipeRefresh = SwipeRefreshLayout(context).apply {
                 layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             }
@@ -37,17 +43,16 @@ actual fun PullToRefreshContainer(
             swipeRefresh.addView(composeView)
 
             swipeRefresh.setOnChildScrollUpCallback { _, _ ->
-                !isAtTop
+                !latestIsAtTop
             }
 
             swipeRefresh.setOnRefreshListener {
-                onRefresh()
-                swipeRefresh.postDelayed({ swipeRefresh.isRefreshing = false }, 500L)
+                latestOnRefresh()
             }
             swipeRefresh
         },
         update = { swipeRefresh ->
-            swipeRefresh.isEnabled = isAtTop && !isScrollInProgress
+            swipeRefresh.isEnabled = latestIsAtTop && !latestIsScrollInProgress
 
             if (swipeRefresh.isRefreshing != isRefreshing) {
                 swipeRefresh.isRefreshing = isRefreshing
