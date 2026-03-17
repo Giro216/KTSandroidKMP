@@ -22,6 +22,7 @@ import com.example.kts_android_kmp.theme.Dimens
 import com.example.kts_android_kmp.theme.Dimens.SpacingExtraLarge
 import com.example.kts_android_kmp.utils.PrintCoilImage
 import ktsandroidkmp.composeapp.generated.resources.Res
+import ktsandroidkmp.composeapp.generated.resources.en_login
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_subtitle
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_title
@@ -75,7 +76,7 @@ fun HelloScreen(
             shape = MaterialTheme.shapes.large,
         ) {
             Text(
-                text = "LOGIN",
+                text = stringResource(Res.string.en_login),
                 style = MaterialTheme.typography.headlineMedium
             )
         }

@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
 import com.example.kts_android_kmp.theme.Dimens.ButtonHeight
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
-import com.example.kts_android_kmp.theme.Dimens.ScreenVerticalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingSmall
 import com.example.kts_android_kmp.utils.LoadingIndicator

@@ -1,12 +1,12 @@
 package com.example.kts_android_kmp.feature.mainScreen.data.repo
 
-import com.example.kts_android_kmp.network.GitHubApi
 import com.example.kts_android_kmp.feature.mainScreen.data.network.GithubRepoDto
-import com.example.kts_android_kmp.network.IGitHubApi
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepoEntity
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
 import com.example.kts_android_kmp.feature.mainScreen.domain.cache.IGitHubRepoCache
+import com.example.kts_android_kmp.network.GitHubApi
+import com.example.kts_android_kmp.network.IGitHubApi
 import com.example.kts_android_kmp.utils.coRunCatching
 
 class GitHubRepositoryImpl(
