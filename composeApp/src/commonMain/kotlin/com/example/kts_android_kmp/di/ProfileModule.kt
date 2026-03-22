@@ -12,7 +12,7 @@ val profileModule = module {
     single<IProfileRepository> { ProfileRepositoryImpl(api = get()) }
 
     single { LogoutUseCase(appDataCleaner = get()) }
-    single{ LoadUseCase(profileRepository = get()) }
+    single { LoadUseCase(profileRepository = get()) }
 
     viewModel {
         ProfileViewModel(

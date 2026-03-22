@@ -55,7 +55,7 @@ class MainUiMapper : IMainUiMapper {
     override fun formatMetric(emoji: String, count: Int): String {
         return buildString {
             append(emoji)
-            append( formatCount(count))
+            append(formatCount(count))
         }
     }
 

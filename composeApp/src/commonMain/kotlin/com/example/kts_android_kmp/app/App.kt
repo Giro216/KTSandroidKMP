@@ -16,10 +16,10 @@ import io.github.aakira.napier.Napier
 @Preview
 fun App() {
     MaterialTheme {
-        Scaffold{ innerPadding,  ->
+        Scaffold { innerPadding ->
             Surface(
                 modifier = Modifier.padding(innerPadding)
-            ){
+            ) {
                 Napier.base(DebugAntilog())
                 AppNavigation()
             }
