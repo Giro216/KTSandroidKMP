@@ -7,7 +7,13 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val loginViewModelModule = module {
-    viewModel { LoginViewModel(authRepository = get(), appAuthHandler = get(), sessionRepository = get()) }
+    viewModel {
+        LoginViewModel(
+            authRepository = get(),
+            appAuthHandler = get(),
+            sessionRepository = get()
+        )
+    }
 }
 
 val loginAuthModule = module {

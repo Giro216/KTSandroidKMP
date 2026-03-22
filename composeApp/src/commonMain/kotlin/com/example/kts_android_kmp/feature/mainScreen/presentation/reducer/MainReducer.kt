@@ -19,7 +19,10 @@ class MainReducer(
         }
     }
 
-    private fun reduceFirstPageLoading(state: MainUiState, action: MainAction.FirstPageLoading): MainUiState {
+    private fun reduceFirstPageLoading(
+        state: MainUiState,
+        action: MainAction.FirstPageLoading
+    ): MainUiState {
         return state.copy(
             query = action.query,
             isLoading = true,
@@ -36,7 +39,10 @@ class MainReducer(
         )
     }
 
-    private fun reduceFirstPageSuccess(state: MainUiState, action: MainAction.FirstPageSuccess): MainUiState {
+    private fun reduceFirstPageSuccess(
+        state: MainUiState,
+        action: MainAction.FirstPageSuccess
+    ): MainUiState {
         val repos = action.result.items
         val total = action.result.totalCount
 
@@ -60,7 +66,10 @@ class MainReducer(
         )
     }
 
-    private fun reduceFirstPageError(state: MainUiState, action: MainAction.FirstPageError): MainUiState {
+    private fun reduceFirstPageError(
+        state: MainUiState,
+        action: MainAction.FirstPageError
+    ): MainUiState {
         return state.copy(
             query = action.query,
             isLoading = false,
@@ -78,7 +87,10 @@ class MainReducer(
         )
     }
 
-    private fun reduceNextPageSuccess(state: MainUiState, action: MainAction.NextPageSuccess): MainUiState {
+    private fun reduceNextPageSuccess(
+        state: MainUiState,
+        action: MainAction.NextPageSuccess
+    ): MainUiState {
         val newRepos = action.result.items
         val merged = state.repos + newRepos
         val total = state.totalCount ?: action.result.totalCount

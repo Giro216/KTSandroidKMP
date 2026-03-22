@@ -38,7 +38,7 @@ fun LoginScreen(
     LaunchedEffect(state.isLoggedIn) {
         if (state.isLoggedIn) {
             onNavigateToMain()
-        }else{
+        } else {
             loginViewModel.openLoginPage()
         }
     }

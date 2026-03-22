@@ -47,7 +47,10 @@ class MainViewModel(
                             updateState {
                                 reducer.reduce(
                                     this,
-                                    MainAction.FirstPageSuccess(query = query, result = searchResult),
+                                    MainAction.FirstPageSuccess(
+                                        query = query,
+                                        result = searchResult
+                                    ),
                                 )
                             }
 
@@ -123,9 +126,9 @@ class MainViewModel(
         if (query.isBlank()) return false
 
         return current.pagination.canPaginate &&
-            !current.pagination.isPaginationLoading &&
-            !current.isLoading &&
-            !current.pagination.isPaginationError
+                !current.pagination.isPaginationLoading &&
+                !current.isLoading &&
+                !current.pagination.isPaginationError
     }
 
     fun formatMetric(emoji: String, count: Int): String = uiMapper.formatMetric(emoji, count)
