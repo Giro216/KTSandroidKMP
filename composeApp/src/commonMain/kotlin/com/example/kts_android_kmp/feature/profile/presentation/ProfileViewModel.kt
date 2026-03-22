@@ -2,15 +2,15 @@ package com.example.kts_android_kmp.feature.profile.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
-import com.example.kts_android_kmp.feature.profile.domain.IProfileRepository
-import com.example.kts_android_kmp.feature.profile.domain.LogoutUseCase
+import com.example.kts_android_kmp.feature.profile.domain.useCase.LoadUseCase
+import com.example.kts_android_kmp.feature.profile.domain.useCase.LogoutUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileViewModel(
-    private val repository: IProfileRepository,
+    private val loadUseCase: LoadUseCase,
     private val logoutUseCase: LogoutUseCase,
 ) : BaseViewModel<ProfileUiEvent, ProfileUiState>(ProfileUiState()) {
 
@@ -22,7 +22,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             updateState { copy(isLoading = true, isError = false) }
 
-            val result = repository.loadProfile()
+            val result = loadUseCase.loadProfile()
             result
                 .onSuccess { profile ->
                     updateState { copy(isLoading = false, profile = profile, isError = false) }
