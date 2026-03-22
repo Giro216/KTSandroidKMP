@@ -6,7 +6,7 @@ import com.example.kts_android_kmp.db.AppDatabase
 import com.example.kts_android_kmp.feature.mainScreen.cache.RoomGitHubSearchCacheImpl
 import com.example.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
 import com.example.kts_android_kmp.feature.profile.data.AndroidAppDataCleaner
-import com.example.kts_android_kmp.feature.profile.domain.IAppDataCleaner
+import com.example.kts_android_kmp.feature.profile.platform.IAppDataCleaner
 import org.koin.dsl.module
 
 fun roomModule(context: Context) = module {

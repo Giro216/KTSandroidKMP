@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.feature.profile.domain
+package com.example.kts_android_kmp.feature.profile.platform
 
 
 interface IAppDataCleaner {
