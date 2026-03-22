@@ -1,7 +1,6 @@
 package com.example.kts_android_kmp.feature.mainScreen.presentation
 
 import androidx.compose.runtime.Immutable
-import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 
 @Immutable

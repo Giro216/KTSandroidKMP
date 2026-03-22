@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kts_android_kmp.common.ui.LoadingIndicator
-import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
+import com.example.kts_android_kmp.feature.mainScreen.presentation.HintContent
 import com.example.kts_android_kmp.theme.Dimens.ButtonHeight
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium

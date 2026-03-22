@@ -1,7 +1,7 @@
 package com.example.kts_android_kmp.feature.mainScreen.domain
 
 import androidx.compose.ui.graphics.Color
-import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
+import com.example.kts_android_kmp.feature.mainScreen.presentation.HintContent
 import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 
 interface IMainUiMapper {
