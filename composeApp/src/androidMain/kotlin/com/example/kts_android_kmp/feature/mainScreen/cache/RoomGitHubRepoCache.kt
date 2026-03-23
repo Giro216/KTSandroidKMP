@@ -2,20 +2,21 @@ package com.example.kts_android_kmp.feature.mainScreen.cache
 
 import com.example.kts_android_kmp.db.dao.GitHubRepoDao
 import com.example.kts_android_kmp.db.entity.GitHubRepoCacheEntity
-import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepoEntity
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 import com.example.kts_android_kmp.feature.mainScreen.domain.cache.IGitHubRepoCache
 
 class RoomGitHubRepoCache(
     private val dao: GitHubRepoDao,
 ) : IGitHubRepoCache {
 
-    override suspend fun saveSearchResultCache(query: String, repos: List<GitHubRepoEntity>) {
+    override suspend fun saveSearchResultCache(query: String, repos: List<GitHubRepo>) {
         dao.deleteQuery(query)
-        val entities = repos.mapIndexed { index, repo -> repo.toCacheEntity(query = query, position = index) }
+        val entities =
+            repos.mapIndexed { index, repo -> repo.toCacheEntity(query = query, position = index) }
         dao.upsertAll(entities)
     }
 
-    override suspend fun getCachedSearchResult(query: String): List<GitHubRepoEntity> {
+    override suspend fun getCachedSearchResult(query: String): List<GitHubRepo> {
         return dao.getByQuery(query).map { it.toDomain() }
     }
 
@@ -24,7 +25,7 @@ class RoomGitHubRepoCache(
     }
 }
 
-private fun GitHubRepoEntity.toCacheEntity(query: String, position: Int): GitHubRepoCacheEntity {
+private fun GitHubRepo.toCacheEntity(query: String, position: Int): GitHubRepoCacheEntity {
     return GitHubRepoCacheEntity(
         query = query,
         repoId = id,
@@ -39,8 +40,8 @@ private fun GitHubRepoEntity.toCacheEntity(query: String, position: Int): GitHub
     )
 }
 
-private fun GitHubRepoCacheEntity.toDomain(): GitHubRepoEntity {
-    return GitHubRepoEntity(
+private fun GitHubRepoCacheEntity.toDomain(): GitHubRepo {
+    return GitHubRepo(
         id = repoId,
         owner = owner,
         name = name,

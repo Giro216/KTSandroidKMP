@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.kts_android_kmp.feature.profile.domain.UserProfileEntity
+import com.example.kts_android_kmp.feature.profile.domain.UserProfile
 import com.example.kts_android_kmp.feature.profile.presentation.ProfileUiEvent
 import com.example.kts_android_kmp.feature.profile.presentation.ProfileViewModel
 import com.example.kts_android_kmp.theme.Dimens
@@ -104,7 +104,7 @@ fun ProfileScreen(
 
 @Composable
 fun PrintProfile(
-    nullableProfile: UserProfileEntity?,
+    nullableProfile: UserProfile?,
     onLogout: () -> Unit,
     imageModifier: Modifier,
 ) {

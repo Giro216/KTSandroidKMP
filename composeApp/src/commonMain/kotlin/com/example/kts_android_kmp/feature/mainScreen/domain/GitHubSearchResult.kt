@@ -5,5 +5,5 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class GitHubSearchResult(
     val totalCount: Int,
-    val items: List<GitHubRepoEntity>,
+    val items: List<GitHubRepo>,
 )

@@ -12,7 +12,6 @@ import com.example.kts_android_kmp.di.initKoin
 import com.example.kts_android_kmp.di.roomModule
 import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.platform.setActivity
-import com.example.kts_android_kmp.storage.platform.initContext
 import org.koin.dsl.module
 
 class MainActivity : ComponentActivity() {
@@ -33,7 +32,6 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
-        initContext(this)
 
         setContent {
             App()

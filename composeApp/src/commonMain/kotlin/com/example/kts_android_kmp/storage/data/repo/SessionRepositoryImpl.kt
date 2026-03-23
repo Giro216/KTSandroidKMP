@@ -1,6 +1,6 @@
 package com.example.kts_android_kmp.storage.data.repo
 
-import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import com.example.kts_android_kmp.storage.domain.IAppPreferences
 import com.example.kts_android_kmp.storage.domain.ISessionRepository
 import com.example.kts_android_kmp.storage.domain.PrefKeys
@@ -19,7 +19,7 @@ class SessionRepositoryImpl(
         prefs.putBoolean(PrefKeys.ONBOARDING_SHOWN, shown)
     }
 
-    override suspend fun saveTokens(tokens: TokensModel): Result<Unit> = coRunCatching {
+    override suspend fun saveTokens(tokens: TokensModelDto): Result<Unit> = coRunCatching {
         prefs.saveTokens(tokens).getOrThrow()
     }
 

@@ -1,14 +1,11 @@
 package com.example.kts_android_kmp.storage.platform
 
 import android.content.Context
+import org.koin.core.context.GlobalContext
 
-lateinit var appContext: Context
-    private set
-
-fun initContext(context: Context) {
-    appContext = context.applicationContext
+actual fun getFilesDir(): String {
+    val context: Context = GlobalContext.get().get()
+    return context.filesDir.absolutePath
 }
-
-actual fun getFilesDir(): String = appContext.filesDir.absolutePath
 
 

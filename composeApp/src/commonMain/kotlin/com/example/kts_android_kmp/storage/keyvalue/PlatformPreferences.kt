@@ -1,6 +1,6 @@
 package com.example.kts_android_kmp.storage.keyvalue
 
-import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import com.example.kts_android_kmp.storage.domain.IAppPreferences
 import com.example.kts_android_kmp.storage.domain.PrefKeys
 import kotlinx.coroutines.flow.Flow
@@ -46,7 +46,7 @@ class PlatformPreferences(
         }
     }
 
-    override suspend fun saveTokens(tokens: TokensModel): Result<Unit> =
+    override suspend fun saveTokens(tokens: TokensModelDto): Result<Unit> =
         storage.saveTokens(
             accessToken = tokens.accessToken,
             refreshToken = tokens.refreshToken,
