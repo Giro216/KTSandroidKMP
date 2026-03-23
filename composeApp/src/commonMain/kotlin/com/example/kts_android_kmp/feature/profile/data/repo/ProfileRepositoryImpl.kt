@@ -4,13 +4,14 @@ import com.example.kts_android_kmp.feature.profile.data.network.GithubUserDto
 import com.example.kts_android_kmp.feature.profile.domain.IProfileRepository
 import com.example.kts_android_kmp.feature.profile.domain.UserProfileEntity
 import com.example.kts_android_kmp.network.IGitHubApi
+import com.example.kts_android_kmp.utils.coRunCatching
 
 class ProfileRepositoryImpl(
     private val api: IGitHubApi,
 ) : IProfileRepository {
 
     override suspend fun loadProfile(): Result<UserProfileEntity> {
-        return runCatching {
+        return coRunCatching {
             api.getCurrentUser().toDomain()
         }
     }

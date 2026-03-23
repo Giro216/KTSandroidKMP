@@ -21,8 +21,14 @@ fun AppNavigation() {
     ) {
         composable<Routes.Bootstrap> {
             BootstrapScreen(
-                onNavigate = { destination ->
-                    navController.navigate(destination as Routes) {
+                onNavigateToHello = {
+                    navController.navigate(Routes.HelloScreen) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToMain = {
+                    navController.navigate(Routes.MainScreen) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -62,8 +68,8 @@ fun AppNavigation() {
 
         composable<Routes.ProfileScreen> {
             ProfileScreen(
-                onNavigateToLogin = {
-                    navController.navigate(Routes.LoginScreen) {
+                onNavigateToBootstrap = {
+                    navController.navigate(Routes.Bootstrap) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }

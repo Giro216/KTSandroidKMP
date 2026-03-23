@@ -48,7 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ProfileScreen(
-    onNavigateToLogin: () -> Unit,
+    onNavigateToBootstrap: () -> Unit,
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel = koinViewModel(),
 ) {
@@ -57,7 +57,7 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         profileViewModel.events.collectLatest { event ->
             when (event) {
-                ProfileUiEvent.LogoutSuccess -> onNavigateToLogin()
+                ProfileUiEvent.LogoutSuccess -> onNavigateToBootstrap()
             }
         }
     }
@@ -90,7 +90,7 @@ fun ProfileScreen(
 
             state.profile != null -> {
                 PrintProfile(
-                    nullableProfile =  state.profile,
+                    nullableProfile = state.profile,
                     onLogout = profileViewModel::logout,
                     imageModifier = Modifier
                         .size(120.dp)
@@ -194,7 +194,7 @@ private fun Stat(
 @Composable
 fun ProfileScreenPreview() {
     MaterialTheme {
-        ProfileScreen(onNavigateToLogin = {})
+        ProfileScreen(onNavigateToBootstrap = {})
     }
 }
 

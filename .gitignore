@@ -17,4 +17,3 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
-composeApp/src/commonMain/kotlin/com/example/kts_android_kmp/feature/profile/data/network/apiGetUserShema.json
