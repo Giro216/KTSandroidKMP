@@ -35,7 +35,10 @@ class LoginViewModel(
 
                     Napier.i("tokens: $tokens", tag = "LoginViewModel")
                     sessionRepository.setOnboardingShown(true)
+                        .onFailure { Napier.e("Failed to set onboarding shown: ${it.message}", it) }
+
                     authRepository.saveTokens(tokens)
+                        .onFailure { Napier.e("Failed to save tokens: ${it.message}", it) }
                 }
             }.onFailure {
                 Napier.e("Failed to perform token request: ${it.message}", throwable = it)

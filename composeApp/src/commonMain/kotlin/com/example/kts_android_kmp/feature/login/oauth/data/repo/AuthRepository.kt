@@ -8,11 +8,9 @@ class AuthRepository(
     private val sessionRepository: ISessionRepository,
 ) : IAuthRepository {
 
-    override suspend fun saveTokens(tokens: TokensModel) {
+    override suspend fun saveTokens(tokens: TokensModel): Result<Unit> =
         sessionRepository.saveTokens(tokens)
-    }
 
-    override suspend fun logout() {
+    override suspend fun logout(): Result<Unit> =
         sessionRepository.clearTokens()
-    }
 }

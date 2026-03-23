@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface ISessionRepository {
     fun onboardingShown(): Flow<Boolean>
-    suspend fun setOnboardingShown(shown: Boolean)
+    suspend fun setOnboardingShown(shown: Boolean): Result<Unit>
 
-    suspend fun saveTokens(tokens: TokensModel)
-    suspend fun clearTokens()
+    suspend fun saveTokens(tokens: TokensModel): Result<Unit>
+    suspend fun clearTokens(): Result<Unit>
 
     fun isLoggedIn(): Flow<Boolean>
     fun accessToken(): Flow<String?>
