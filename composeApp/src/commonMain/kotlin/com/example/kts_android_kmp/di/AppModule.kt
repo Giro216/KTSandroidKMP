@@ -7,12 +7,12 @@ import org.koin.dsl.module
 val appModules = listOf(
     bootstrapModule,
     networkModule,
-    cacheModule,
+    storageModule,
     loginScreenModule,
     mainScreenModule,
     profileModule,
 
-)
+    )
 
 fun initKoin(platformSpecific: Module = module {}) {
     startKoin {

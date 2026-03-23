@@ -20,15 +20,11 @@ class SessionRepositoryImpl(
     }
 
     override suspend fun saveTokens(tokens: TokensModel): Result<Unit> = coRunCatching {
-        prefs.putString(PrefKeys.ACCESS_TOKEN, tokens.accessToken)
-        prefs.putString(PrefKeys.REFRESH_TOKEN, tokens.refreshToken)
-        prefs.putString(PrefKeys.ID_TOKEN, tokens.idToken)
+        prefs.saveTokens(tokens).getOrThrow()
     }
 
-    override suspend fun clearTokens(): Result<Unit> = runCatching {
-        prefs.putString(PrefKeys.ACCESS_TOKEN, null)
-        prefs.putString(PrefKeys.REFRESH_TOKEN, null)
-        prefs.putString(PrefKeys.ID_TOKEN, null)
+    override suspend fun clearTokens(): Result<Unit> = coRunCatching {
+        prefs.clearTokens().getOrThrow()
     }
 
     override fun isLoggedIn(): Flow<Boolean> = accessToken().map { !it.isNullOrBlank() }
