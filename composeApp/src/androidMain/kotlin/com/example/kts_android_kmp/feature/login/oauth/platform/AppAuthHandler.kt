@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.kts_android_kmp.feature.login.oauth.AppAuth
-import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
@@ -20,9 +20,9 @@ actual class AppAuthHandler(private val activity: ComponentActivity) {
 
     private lateinit var authResultLauncher: ActivityResultLauncher<Intent>
 
-    private var continuation: ((Result<TokensModel>) -> Unit)? = null
+    private var continuation: ((Result<TokensModelDto>) -> Unit)? = null
 
-    private fun dispatch(result: Result<TokensModel>) {
+    private fun dispatch(result: Result<TokensModelDto>) {
         val cb = continuation ?: return
         continuation = null
         cb(result)
@@ -61,7 +61,7 @@ actual class AppAuthHandler(private val activity: ComponentActivity) {
                 ex != null -> dispatch(Result.failure(ex))
                 resp != null -> dispatch(
                     Result.success(
-                        TokensModel(
+                        TokensModelDto(
                             accessToken = resp.accessToken.orEmpty(),
                             refreshToken = resp.refreshToken.orEmpty(),
                             idToken = resp.idToken.orEmpty(),
@@ -74,36 +74,37 @@ actual class AppAuthHandler(private val activity: ComponentActivity) {
         }
     }
 
-    actual suspend fun performTokenRequest(): TokensModel? = suspendCancellableCoroutine { cont ->
-        if (continuation != null) {
-            cont.resumeWithException(IllegalStateException("Authentication already in progress"))
-            return@suspendCancellableCoroutine
-        }
-        
-        val token = Any()
-        cont.invokeOnCancellation {
-            val current = continuation
-            if (current is TaggedContinuation && current.token === token) {
-                continuation = null
+    actual suspend fun performTokenRequest(): TokensModelDto? =
+        suspendCancellableCoroutine { cont ->
+            if (continuation != null) {
+                cont.resumeWithException(IllegalStateException("Authentication already in progress"))
+                return@suspendCancellableCoroutine
             }
-        }
 
-        val cb: (Result<TokensModel>) -> Unit = cb@{ result ->
-            if (!cont.isActive) return@cb
-            result.onSuccess { cont.resume(it) }
-            result.onFailure { cont.resumeWithException(it) }
-        }
-        continuation = TaggedContinuation(token, cb)
+            val token = Any()
+            cont.invokeOnCancellation {
+                val current = continuation
+                if (current is TaggedContinuation && current.token === token) {
+                    continuation = null
+                }
+            }
 
-        val authRequest = AppAuth.getAuthRequest()
-        val authIntent = authService.getAuthorizationRequestIntent(authRequest)
-        authResultLauncher.launch(authIntent)
-    }
+            val cb: (Result<TokensModelDto>) -> Unit = cb@{ result ->
+                if (!cont.isActive) return@cb
+                result.onSuccess { cont.resume(it) }
+                result.onFailure { cont.resumeWithException(it) }
+            }
+            continuation = TaggedContinuation(token, cb)
+
+            val authRequest = AppAuth.getAuthRequest()
+            val authIntent = authService.getAuthorizationRequestIntent(authRequest)
+            authResultLauncher.launch(authIntent)
+        }
 
     private class TaggedContinuation(
         val token: Any,
-        private val delegate: (Result<TokensModel>) -> Unit,
-    ) : (Result<TokensModel>) -> Unit {
-        override fun invoke(result: Result<TokensModel>) = delegate(result)
+        private val delegate: (Result<TokensModelDto>) -> Unit,
+    ) : (Result<TokensModelDto>) -> Unit {
+        override fun invoke(result: Result<TokensModelDto>) = delegate(result)
     }
 }

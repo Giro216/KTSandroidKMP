@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepoEntity
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 import com.example.kts_android_kmp.theme.Dimens.RoundedCornerShapeSize
 import com.example.kts_android_kmp.theme.Dimens.ScreenTotalPaddingSmall
 import ktsandroidkmp.composeapp.generated.resources.Res
@@ -35,7 +35,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RepoCard(
-    repo: GitHubRepoEntity,
+    repo: GitHubRepo,
     modifier: Modifier = Modifier,
     onFormatMetric: (emoji: String, count: Int) -> String,
     onColorMapping: (language: String) -> Color,
@@ -95,7 +95,6 @@ private fun PrintMetaData(
 ) {
     val starEmoji = stringResource(Res.string.star_logo)
     val forkEmoji = stringResource(Res.string.fork_logo)
-
 
 
     val likeText = remember(starEmoji, stars) { onFormatMetric(starEmoji, stars) }

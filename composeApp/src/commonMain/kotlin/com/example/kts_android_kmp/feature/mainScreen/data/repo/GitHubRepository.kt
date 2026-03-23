@@ -1,7 +1,7 @@
 package com.example.kts_android_kmp.feature.mainScreen.data.repo
 
 import com.example.kts_android_kmp.feature.mainScreen.data.network.GithubRepoDto
-import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepoEntity
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
 import com.example.kts_android_kmp.feature.mainScreen.domain.cache.IGitHubRepoCache
@@ -55,8 +55,8 @@ class GitHubRepositoryImpl(
     }
 }
 
-private fun GithubRepoDto.toEntity(): GitHubRepoEntity {
-    return GitHubRepoEntity(
+private fun GithubRepoDto.toEntity(): GitHubRepo {
+    return GitHubRepo(
         id = id,
         owner = owner.login,
         name = name,

@@ -2,7 +2,7 @@ package com.example.kts_android_kmp.feature.login.oauth
 
 import androidx.core.net.toUri
 import com.example.kts_android_kmp.feature.login.oauth.data.network.AuthConfig
-import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationServiceConfiguration
@@ -55,21 +55,23 @@ internal object AppAuth {
     suspend fun performTokenRequest(
         authService: net.openid.appauth.AuthorizationService,
         tokenRequest: TokenRequest,
-    ): TokensModel {
+    ): TokensModelDto {
         return suspendCancellableCoroutine { continuation ->
             authService.performTokenRequest(tokenRequest, clientAuthentication) { response, ex ->
                 when {
                     response != null -> {
-                        val tokens = TokensModel(
+                        val tokens = TokensModelDto(
                             accessToken = response.accessToken.orEmpty(),
                             refreshToken = response.refreshToken.orEmpty(),
                             idToken = response.idToken.orEmpty()
                         )
                         continuation.resumeWith(Result.success(tokens))
                     }
+
                     ex != null -> {
                         continuation.resumeWith(Result.failure(ex))
                     }
+
                     else -> error("unreachable")
                 }
             }
