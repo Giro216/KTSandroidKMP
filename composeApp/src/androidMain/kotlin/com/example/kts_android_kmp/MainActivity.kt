@@ -7,9 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kts_android_kmp.app.App
+import com.example.kts_android_kmp.di.authModule
 import com.example.kts_android_kmp.di.initKoin
 import com.example.kts_android_kmp.di.roomModule
-import com.example.kts_android_kmp.di.storageModule
 import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.platform.setActivity
 import com.example.kts_android_kmp.storage.platform.initContext
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         initKoin(
             module {
                 includes(
-                    storageModule(appAuthHandler, this@MainActivity),
+                    authModule(appAuthHandler, this@MainActivity),
                     roomModule(this@MainActivity),
                 )
             }

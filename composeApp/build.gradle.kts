@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
-import kotlin.apply
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -23,7 +22,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -33,7 +32,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -43,7 +42,6 @@ kotlin {
             implementation(libs.coil.gif)
             implementation(libs.appauth)
 
-            implementation(libs.androidx.datastore.preferences)
             implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
@@ -75,6 +73,8 @@ kotlin {
             implementation(libs.ktor.client.auth)
 
             implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.androidx.datastore.preferences)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

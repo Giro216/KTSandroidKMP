@@ -1,5 +1,6 @@
 package com.example.kts_android_kmp.storage.domain
 
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
 import kotlinx.coroutines.flow.Flow
 
 interface IAppPreferences {
@@ -8,6 +9,9 @@ interface IAppPreferences {
 
     fun getString(key: String, default: String? = null): Flow<String?>
     suspend fun putString(key: String, value: String?)
+
+    suspend fun saveTokens(tokens: TokensModel): Result<Unit>
+    suspend fun clearTokens(): Result<Unit>
 }
 
 object PrefKeys {
