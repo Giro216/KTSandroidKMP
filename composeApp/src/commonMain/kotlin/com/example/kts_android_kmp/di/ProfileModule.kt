@@ -10,7 +10,7 @@ import org.koin.dsl.module
 val profileModule = module {
     single<IProfileRepository> { ProfileRepositoryImpl(api = get()) }
 
-    single { LogoutUseCase(sessionRepository = get(), appDataCleaner = get()) }
+    single { LogoutUseCase(appDataCleaner = get()) }
 
     viewModel {
         ProfileViewModel(

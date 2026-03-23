@@ -20,10 +20,15 @@ fun roomModule(context: Context) = module {
             .build()
     }
 
-    single { get<AppDatabase>().gitHubRepoDao() }
+    factory { get<AppDatabase>().gitHubRepoDao() }
 
-    single<IGitHubRepoCache> { RoomGitHubRepoCache(dao = get()) }
+    factory<IGitHubRepoCache> { RoomGitHubRepoCache(dao = get()) }
 
-    single<IAppDataCleaner> { AndroidAppDataCleaner(db = get()) }
+    factory<IAppDataCleaner> {
+        AndroidAppDataCleaner(
+            db = get(),
+            sessionRepository = get(),
+        )
+    }
 }
 
