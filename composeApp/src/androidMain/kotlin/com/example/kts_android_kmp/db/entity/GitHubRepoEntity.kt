@@ -1,16 +1,12 @@
 package com.example.kts_android_kmp.db.entity
 
 import androidx.room.Entity
-import androidx.room.Index
-
 
 @Entity(
-    tableName = GitHubRepoCacheEntity.TABLE,
+    tableName = GitHubRepoEntity.TABLE,
     primaryKeys = ["repoId"],
-    indices = [Index("query")],
 )
-data class GitHubRepoCacheEntity(
-    val query: String,
+data class GitHubRepoEntity(
     val repoId: Long,
 
     val owner: String,
@@ -20,11 +16,9 @@ data class GitHubRepoCacheEntity(
     val stars: Int,
     val forks: Int,
     val updatedAt: String,
-
-    val position: Int,
 ) {
     companion object {
-        const val TABLE: String = "github_repo_cache"
+        const val TABLE: String = "github_repo"
     }
 }
 

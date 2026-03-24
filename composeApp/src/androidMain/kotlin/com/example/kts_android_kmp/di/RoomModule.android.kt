@@ -3,8 +3,8 @@ package com.example.kts_android_kmp.di
 import android.content.Context
 import androidx.room.Room
 import com.example.kts_android_kmp.db.AppDatabase
-import com.example.kts_android_kmp.feature.mainScreen.cache.RoomGitHubRepoCache
-import com.example.kts_android_kmp.feature.mainScreen.domain.cache.IGitHubRepoCache
+import com.example.kts_android_kmp.feature.mainScreen.cache.RoomGitHubSearchCacheImpl
+import com.example.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
 import com.example.kts_android_kmp.feature.profile.data.AndroidAppDataCleaner
 import com.example.kts_android_kmp.feature.profile.domain.IAppDataCleaner
 import org.koin.dsl.module
@@ -20,9 +20,11 @@ fun roomModule(context: Context) = module {
             .build()
     }
 
-    factory { get<AppDatabase>().gitHubRepoDao() }
+//    factory { get<AppDatabase>().gitHubRepoDao() }
 
-    factory<IGitHubRepoCache> { RoomGitHubRepoCache(dao = get()) }
+    factory { get<AppDatabase>().gitHubSearchCacheDao() }
+
+    factory<GitHubRepoCache> { RoomGitHubSearchCacheImpl(dao = get()) }
 
     factory<IAppDataCleaner> {
         AndroidAppDataCleaner(
