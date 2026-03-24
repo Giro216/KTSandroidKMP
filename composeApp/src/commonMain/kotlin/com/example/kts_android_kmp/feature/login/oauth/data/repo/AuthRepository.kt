@@ -1,8 +1,8 @@
 package com.example.kts_android_kmp.feature.login.oauth.data.repo
 
+import com.example.kts_android_kmp.core.data.storage.domain.ISessionRepository
 import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import com.example.kts_android_kmp.feature.login.oauth.domain.IAuthRepository
-import com.example.kts_android_kmp.storage.domain.ISessionRepository
 
 class AuthRepository(
     private val sessionRepository: ISessionRepository,

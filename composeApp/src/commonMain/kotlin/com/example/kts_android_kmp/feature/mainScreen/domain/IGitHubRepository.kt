@@ -1,6 +1,6 @@
 package com.example.kts_android_kmp.feature.mainScreen.domain
 
-import com.example.kts_android_kmp.network.GitHubApi
+import com.example.kts_android_kmp.core.data.network.GitHubApi
 
 interface IGitHubRepository {
     suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult>

@@ -18,9 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kts_android_kmp.common.ui.PrintCoilImage
-import com.example.kts_android_kmp.theme.AppColors
-import com.example.kts_android_kmp.theme.Dimens
-import com.example.kts_android_kmp.theme.Dimens.SpacingExtraLarge
+import com.example.kts_android_kmp.common.ui.theme.AppColors
+import com.example.kts_android_kmp.common.ui.theme.Dimens
+import com.example.kts_android_kmp.common.ui.theme.Dimens.SpacingExtraLarge
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.en_login
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url

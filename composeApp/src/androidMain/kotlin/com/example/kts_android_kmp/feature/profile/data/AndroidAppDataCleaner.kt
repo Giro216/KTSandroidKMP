@@ -1,8 +1,8 @@
 package com.example.kts_android_kmp.feature.profile.data
 
+import com.example.kts_android_kmp.core.data.storage.domain.ISessionRepository
 import com.example.kts_android_kmp.db.AppDatabase
 import com.example.kts_android_kmp.feature.profile.platform.IAppDataCleaner
-import com.example.kts_android_kmp.storage.domain.ISessionRepository
 import io.github.aakira.napier.Napier
 
 class AndroidAppDataCleaner(
