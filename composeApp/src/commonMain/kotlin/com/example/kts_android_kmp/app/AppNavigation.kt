@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.kts_android_kmp.feature.bootstrap.BootstrapScreen
 import com.example.kts_android_kmp.feature.intro.HelloScreen
 import com.example.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.example.kts_android_kmp.feature.mainScreen.ui.MainScreen
+import com.example.kts_android_kmp.feature.profile.ui.ProfileScreen
 import com.example.kts_android_kmp.platform.exitApp
 
 @Composable
@@ -15,8 +17,25 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Routes.HelloScreen
+        startDestination = Routes.Bootstrap
     ) {
+        composable<Routes.Bootstrap> {
+            BootstrapScreen(
+                onNavigateToHello = {
+                    navController.navigate(Routes.HelloScreen) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToMain = {
+                    navController.navigate(Routes.MainScreen) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
+
         composable<Routes.HelloScreen> {
             HelloScreen(
                 onLoginButtonClick = {
@@ -40,7 +59,21 @@ fun AppNavigation() {
             MainScreen(
                 onBackPressed = {
                     exitApp()
-                }
+                },
+                onOpenProfile = {
+                    navController.navigate(Routes.ProfileScreen)
+                },
+            )
+        }
+
+        composable<Routes.ProfileScreen> {
+            ProfileScreen(
+                onNavigateToBootstrap = {
+                    navController.navigate(Routes.Bootstrap) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
     }

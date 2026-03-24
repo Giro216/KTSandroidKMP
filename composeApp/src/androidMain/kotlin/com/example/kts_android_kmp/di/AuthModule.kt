@@ -5,7 +5,8 @@ import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.feature.login.oauth.platform.TokenRefresher
 import org.koin.dsl.module
 
-fun platformModule(appAuthHandler: AppAuthHandler, context: Context) = module {
+fun authModule(appAuthHandler: AppAuthHandler, context: Context) = module {
+    single<Context> { context.applicationContext }
     single { appAuthHandler }
     single { TokenRefresher(context.applicationContext) }
 }

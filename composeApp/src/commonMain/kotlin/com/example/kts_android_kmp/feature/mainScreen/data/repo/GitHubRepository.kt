@@ -1,23 +1,40 @@
 package com.example.kts_android_kmp.feature.mainScreen.data.repo
 
-import com.example.kts_android_kmp.feature.mainScreen.data.network.GitHubApi
 import com.example.kts_android_kmp.feature.mainScreen.data.network.GithubRepoDto
-import com.example.kts_android_kmp.feature.mainScreen.data.network.IGitHubApi
-import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepoEntity
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
+import com.example.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
+import com.example.kts_android_kmp.network.GitHubApi
+import com.example.kts_android_kmp.network.IGitHubApi
 import com.example.kts_android_kmp.utils.coRunCatching
 
 class GitHubRepositoryImpl(
     private val api: IGitHubApi,
+    private val cache: GitHubRepoCache,
 ) : IGitHubRepository {
     override suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult> {
-        return coRunCatching {
+        val query = param.query
+
+        val networkResult = coRunCatching {
             val response = api.loadRepos(param)
+            val items = response.items.map { it.toEntity() }
+
+            coRunCatching { cache.saveSearchResultCache(query = query, repos = items) }
+
             GitHubSearchResult(
                 totalCount = response.totalCount,
-                items = response.items.map { it.toEntity() },
+                items = items,
             )
+        }
+
+        if (networkResult.isSuccess) return networkResult
+
+        val cached = coRunCatching { cache.getCachedSearchResult(query) }.getOrDefault(emptyList())
+        return if (cached.isNotEmpty()) {
+            Result.success(GitHubSearchResult(totalCount = cached.size, items = cached))
+        } else {
+            networkResult
         }
     }
 
@@ -38,8 +55,8 @@ class GitHubRepositoryImpl(
     }
 }
 
-private fun GithubRepoDto.toEntity(): GitHubRepoEntity {
-    return GitHubRepoEntity(
+private fun GithubRepoDto.toEntity(): GitHubRepo {
+    return GitHubRepo(
         id = id,
         owner = owner.login,
         name = name,

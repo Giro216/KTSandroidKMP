@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -7,6 +8,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.stability.analyzer)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck") }.configureEach {
@@ -16,10 +19,10 @@ tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck"
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -29,16 +32,16 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.swiperefreshlayout)
             implementation(libs.coil.network.okhttp)
             implementation(libs.coil.gif)
             implementation(libs.appauth)
 
-            // Ktor engine for Android
             implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
@@ -55,6 +58,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.napier)
 
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
             // Koin DI
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -67,11 +72,11 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
 
-            // kotlinx.serialization Json
             implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.androidx.datastore.preferences)
         }
         iosMain.dependencies {
-            // Ktor engine for iOS
             implementation(libs.ktor.client.darwin)
         }
 
@@ -110,6 +115,53 @@ android {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    listOf("kspAndroid", "kspIosArm64", "kspIosSimulatorArm64").forEach {
+        add(it, libs.room.compiler)
+    }
 }
+
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
+val clientId = localProps.getProperty("CLIENT_ID") ?: ""
+val clientSecret = localProps.getProperty("CLIENT_SECRET") ?: ""
+
+val genDir = layout.buildDirectory.dir("generated/authConfig")
+
+val generateAuthConfig by tasks.registering {
+    outputs.dir(genDir)
+    doLast {
+        val pkg = "com.example.kts_android_kmp.feature.login.oauth.data.network"
+        val outDir = genDir.get().asFile.resolve(pkg.replace('.', '/'))
+        outDir.mkdirs()
+        outDir.resolve("AuthSecrets.kt").writeText(
+            """
+            package $pkg
+
+            internal object AuthSecrets {
+                const val CLIENT_ID = "$clientId"
+                const val CLIENT_SECRET = "$clientSecret"
+            }
+            """.trimIndent()
+        )
+    }
+}
+
+kotlin {
+    sourceSets {
+        commonMain {
+            kotlin.srcDir(genDir)
+        }
+    }
+}
+
+tasks.named("compileKotlinMetadata").configure { dependsOn(generateAuthConfig) }
+

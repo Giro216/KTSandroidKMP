@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.network
+package com.example.kts_android_kmp.network.platform
 
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp

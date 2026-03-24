@@ -7,10 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kts_android_kmp.app.App
+import com.example.kts_android_kmp.di.authModule
 import com.example.kts_android_kmp.di.initKoin
-import com.example.kts_android_kmp.di.platformModule
+import com.example.kts_android_kmp.di.roomModule
 import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.platform.setActivity
+import org.koin.dsl.module
 
 class MainActivity : ComponentActivity() {
     private val appAuthHandler by lazy { AppAuthHandler(this) }
@@ -22,7 +24,14 @@ class MainActivity : ComponentActivity() {
         setActivity(this)
         appAuthHandler.init()
 
-        initKoin(platformModule(appAuthHandler, this))
+        initKoin(
+            module {
+                includes(
+                    authModule(appAuthHandler, this@MainActivity),
+                    roomModule(this@MainActivity),
+                )
+            }
+        )
 
         setContent {
             App()

@@ -5,11 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.kts_android_kmp.feature.login.oauth.AppAuth
-import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModel
+import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
+import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
@@ -19,53 +20,91 @@ actual class AppAuthHandler(private val activity: ComponentActivity) {
 
     private lateinit var authResultLauncher: ActivityResultLauncher<Intent>
 
-    private var continuation: ((Result<TokensModel>) -> Unit)? = null
+    private var continuation: ((Result<TokensModelDto>) -> Unit)? = null
+
+    private fun dispatch(result: Result<TokensModelDto>) {
+        val cb = continuation ?: return
+        continuation = null
+        cb(result)
+    }
 
     fun init() {
         authResultLauncher = activity.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            val data = result.data
+            onAuthResult(result.data)
+        }
+    }
+
+    private fun onAuthResult(data: Intent?) {
+        if (data == null) {
+            dispatch(Result.failure(IllegalStateException("Authentication cancelled")))
+            return
+        }
+
+        AuthorizationException.fromIntent(data)?.let { ex ->
+            dispatch(Result.failure(ex))
+            return
+        }
+
+        val response = AuthorizationResponse.fromIntent(data)
+        if (response == null) {
+            dispatch(Result.failure(IllegalStateException("Missing authorization response")))
+            return
+        }
+
+        authService.performTokenRequest(
+            response.createTokenExchangeRequest(),
+            AppAuth.clientAuthentication,
+        ) { resp, ex ->
             when {
-                data != null -> {
-                    val response = AuthorizationResponse.fromIntent(data)
-                    val error = AuthorizationException.fromIntent(data)
-                    when {
-                        response != null -> {
-                            authService.performTokenRequest(
-                                response.createTokenExchangeRequest(),
-                                AppAuth.clientAuthentication
-                            ) { resp, ex ->
-                                when {
-                                    resp != null -> {
-                                        val tokens = TokensModel(
-                                            accessToken = resp.accessToken.orEmpty(),
-                                            refreshToken = resp.refreshToken.orEmpty(),
-                                            idToken = resp.idToken.orEmpty()
-                                        )
-                                        continuation?.invoke(Result.success(tokens))
-                                    }
-                                    ex != null -> continuation?.invoke(Result.failure(ex))
-                                    else -> continuation?.invoke(Result.failure(IllegalStateException("unreachable")))
-                                }
-                            }
-                        }
-                        error != null -> continuation?.invoke(Result.failure(error))
-                        else -> continuation?.invoke(Result.failure(IllegalStateException("unreachable")))
-                    }
-                }
-                else -> continuation?.invoke(Result.failure(IllegalStateException("Authentication cancelled")))
+                ex != null -> dispatch(Result.failure(ex))
+                resp != null -> dispatch(
+                    Result.success(
+                        TokensModelDto(
+                            accessToken = resp.accessToken.orEmpty(),
+                            refreshToken = resp.refreshToken.orEmpty(),
+                            idToken = resp.idToken.orEmpty(),
+                        )
+                    )
+                )
+
+                else -> dispatch(Result.failure(IllegalStateException("unreachable")))
             }
         }
     }
 
-    actual suspend fun performTokenRequest(): TokensModel? = suspendCancellableCoroutine { cont ->
-        continuation = { result ->
-            result.onSuccess { cont.resume(it) { cause, _, _ -> null?.let { it1 -> it1(cause) } } }
-            result.onFailure { cont.resumeWithException(it) }
+    actual suspend fun performTokenRequest(): TokensModelDto? =
+        suspendCancellableCoroutine { cont ->
+            if (continuation != null) {
+                cont.resumeWithException(IllegalStateException("Authentication already in progress"))
+                return@suspendCancellableCoroutine
+            }
+
+            val token = Any()
+            cont.invokeOnCancellation {
+                val current = continuation
+                if (current is TaggedContinuation && current.token === token) {
+                    continuation = null
+                }
+            }
+
+            val cb: (Result<TokensModelDto>) -> Unit = cb@{ result ->
+                if (!cont.isActive) return@cb
+                result.onSuccess { cont.resume(it) }
+                result.onFailure { cont.resumeWithException(it) }
+            }
+            continuation = TaggedContinuation(token, cb)
+
+            val authRequest = AppAuth.getAuthRequest()
+            val authIntent = authService.getAuthorizationRequestIntent(authRequest)
+            authResultLauncher.launch(authIntent)
         }
-        val authRequest = AppAuth.getAuthRequest()
-        val authIntent = authService.getAuthorizationRequestIntent(authRequest)
-        authResultLauncher.launch(authIntent)
+
+    private class TaggedContinuation(
+        val token: Any,
+        private val delegate: (Result<TokensModelDto>) -> Unit,
+    ) : (Result<TokensModelDto>) -> Unit {
+        override fun invoke(result: Result<TokensModelDto>) = delegate(result)
     }
 }
