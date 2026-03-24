@@ -29,10 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.kts_android_kmp.common.ui.PrintCoilImage
+import com.example.kts_android_kmp.common.ui.theme.Dimens
 import com.example.kts_android_kmp.feature.profile.domain.UserProfile
 import com.example.kts_android_kmp.feature.profile.presentation.ProfileUiEvent
 import com.example.kts_android_kmp.feature.profile.presentation.ProfileViewModel
-import com.example.kts_android_kmp.theme.Dimens
 import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.profile_avatar_content_description

@@ -3,8 +3,8 @@ package com.example.kts_android_kmp.feature.mainScreen.presentation
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import com.example.kts_android_kmp.common.ui.theme.AppColors.AvatarBackground
 import com.example.kts_android_kmp.feature.mainScreen.domain.IMainUiMapper
-import com.example.kts_android_kmp.theme.AppColors.AvatarBackground
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_advice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found

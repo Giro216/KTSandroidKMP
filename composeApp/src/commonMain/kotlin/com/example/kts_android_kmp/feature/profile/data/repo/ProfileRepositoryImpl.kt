@@ -1,9 +1,9 @@
 package com.example.kts_android_kmp.feature.profile.data.repo
 
+import com.example.kts_android_kmp.core.data.network.IGitHubApi
 import com.example.kts_android_kmp.feature.profile.data.network.GithubUserDto
 import com.example.kts_android_kmp.feature.profile.domain.IProfileRepository
 import com.example.kts_android_kmp.feature.profile.domain.UserProfile
-import com.example.kts_android_kmp.network.IGitHubApi
 import com.example.kts_android_kmp.utils.coRunCatching
 
 class ProfileRepositoryImpl(

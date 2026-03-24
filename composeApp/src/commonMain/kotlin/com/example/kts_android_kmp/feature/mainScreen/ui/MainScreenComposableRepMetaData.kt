@@ -25,9 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.kts_android_kmp.common.ui.theme.Dimens.RoundedCornerShapeSize
+import com.example.kts_android_kmp.common.ui.theme.Dimens.ScreenTotalPaddingSmall
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
-import com.example.kts_android_kmp.theme.Dimens.RoundedCornerShapeSize
-import com.example.kts_android_kmp.theme.Dimens.ScreenTotalPaddingSmall
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.fork_logo
 import ktsandroidkmp.composeapp.generated.resources.star_logo
