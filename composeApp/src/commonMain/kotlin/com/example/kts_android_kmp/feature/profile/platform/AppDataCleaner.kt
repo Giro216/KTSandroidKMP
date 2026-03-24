@@ -1,10 +1,10 @@
 package com.example.kts_android_kmp.feature.profile.platform
 
 
-interface IAppDataCleaner {
+interface AppDataCleaner {
     suspend fun clearAll()
 }
 
-class NoOpAppDataCleaner : IAppDataCleaner {
+class NoOpAppDataCleanerImpl : AppDataCleaner {
     override suspend fun clearAll() = Unit
 }

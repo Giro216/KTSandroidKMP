@@ -3,7 +3,7 @@ package com.example.kts_android_kmp.feature.mainScreen.presentation
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
-import com.example.kts_android_kmp.feature.mainScreen.domain.IMainUiMapper
+import com.example.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
 import com.example.kts_android_kmp.feature.mainScreen.domain.usecase.SearchReposPageUseCase
 import com.example.kts_android_kmp.feature.mainScreen.presentation.reducer.MainAction
 import com.example.kts_android_kmp.feature.mainScreen.presentation.reducer.MainReducer
@@ -19,7 +19,7 @@ private const val PER_PAGE = 20
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class MainViewModel(
     private val searchReposPageUseCase: SearchReposPageUseCase,
-    private val uiMapper: IMainUiMapper,
+    private val uiMapper: MainUiMapper,
     private val reducer: MainReducer,
 ) : BaseViewModel<MainUiEvent, MainUiState>(initialState = MainUiState(), extraBufferCapacity = 1) {
 

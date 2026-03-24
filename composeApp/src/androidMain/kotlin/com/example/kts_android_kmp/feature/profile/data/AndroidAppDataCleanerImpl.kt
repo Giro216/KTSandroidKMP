@@ -1,15 +1,15 @@
 package com.example.kts_android_kmp.feature.profile.data
 
-import com.example.kts_android_kmp.core.data.storage.domain.ISessionRepository
+import com.example.kts_android_kmp.core.data.storage.domain.SessionRepository
 import com.example.kts_android_kmp.db.AppDatabase
-import com.example.kts_android_kmp.feature.profile.platform.IAppDataCleaner
+import com.example.kts_android_kmp.feature.profile.platform.AppDataCleaner
 import io.github.aakira.napier.Napier
 
-class AndroidAppDataCleaner(
+class AndroidAppDataCleanerImpl(
     private val db: AppDatabase,
-    private val sessionRepository: ISessionRepository,
+    private val sessionRepository: SessionRepository,
 
-    ) : IAppDataCleaner {
+    ) : AppDataCleaner {
     override suspend fun clearAll() {
         db.clearAllTables()
         sessionRepository.setOnboardingShown(false)

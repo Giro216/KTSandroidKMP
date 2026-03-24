@@ -2,8 +2,8 @@ package com.example.kts_android_kmp.feature.login.oauth.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.example.kts_android_kmp.common.BaseViewModel
-import com.example.kts_android_kmp.core.data.storage.domain.ISessionRepository
-import com.example.kts_android_kmp.feature.login.oauth.domain.IAuthRepository
+import com.example.kts_android_kmp.core.data.storage.domain.SessionRepository
+import com.example.kts_android_kmp.feature.login.oauth.domain.AuthRepository
 import com.example.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.example.kts_android_kmp.utils.coRunCatching
 import io.github.aakira.napier.Napier
@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val authRepository: IAuthRepository,
+    private val authRepository: AuthRepository,
     private val appAuthHandler: AppAuthHandler,
-    private val sessionRepository: ISessionRepository,
+    private val sessionRepository: SessionRepository,
 ) : BaseViewModel<Nothing, LoginState>(
     LoginState(isLoggedIn = false)
 ) {

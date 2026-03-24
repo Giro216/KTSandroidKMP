@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.example.kts_android_kmp.feature.mainScreen.presentation.HintContent
 import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 
-interface IMainUiMapper {
+interface MainUiMapper {
     fun calculateHint(
         query: String,
         reposSize: Int,
