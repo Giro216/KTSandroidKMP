@@ -4,14 +4,14 @@ import com.example.kts_android_kmp.feature.mainScreen.data.network.GithubRepoDto
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
 import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
-import com.example.kts_android_kmp.feature.mainScreen.domain.cache.IGitHubRepoCache
+import com.example.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
 import com.example.kts_android_kmp.network.GitHubApi
 import com.example.kts_android_kmp.network.IGitHubApi
 import com.example.kts_android_kmp.utils.coRunCatching
 
 class GitHubRepositoryImpl(
     private val api: IGitHubApi,
-    private val cache: IGitHubRepoCache,
+    private val cache: GitHubRepoCache,
 ) : IGitHubRepository {
     override suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult> {
         val query = param.query

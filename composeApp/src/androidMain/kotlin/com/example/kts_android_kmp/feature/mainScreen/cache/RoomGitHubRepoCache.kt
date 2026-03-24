@@ -3,11 +3,11 @@ package com.example.kts_android_kmp.feature.mainScreen.cache
 import com.example.kts_android_kmp.db.dao.GitHubRepoDao
 import com.example.kts_android_kmp.db.entity.GitHubRepoCacheEntity
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
-import com.example.kts_android_kmp.feature.mainScreen.domain.cache.IGitHubRepoCache
+import com.example.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
 
 class RoomGitHubRepoCache(
     private val dao: GitHubRepoDao,
-) : IGitHubRepoCache {
+) : GitHubRepoCache {
 
     override suspend fun saveSearchResultCache(query: String, repos: List<GitHubRepo>) {
         dao.deleteQuery(query)
