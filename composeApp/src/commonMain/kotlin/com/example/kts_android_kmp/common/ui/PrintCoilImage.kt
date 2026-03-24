@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.utils
+package com.example.kts_android_kmp.common.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme

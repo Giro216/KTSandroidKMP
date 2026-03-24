@@ -22,12 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.kts_android_kmp.common.ui.LoadingIndicator
 import com.example.kts_android_kmp.feature.mainScreen.data.mapper.HintContent
 import com.example.kts_android_kmp.theme.Dimens.ButtonHeight
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingMedium
 import com.example.kts_android_kmp.theme.Dimens.SpacingSmall
-import com.example.kts_android_kmp.utils.LoadingIndicator
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_data_loading_error
 import ktsandroidkmp.composeapp.generated.resources.main_screen_next_page_loading_error
@@ -82,7 +82,7 @@ fun MainHeader(
                 is HintContent.Resource -> stringResource(hint.resource)
                 is HintContent.PlainText -> hint.text
             }
-            
+
             if (hintText.isNotEmpty()) {
                 Text(
                     text = hintText,

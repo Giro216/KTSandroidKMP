@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.kts_android_kmp.common.ui.LoadingIndicator
 import com.example.kts_android_kmp.feature.mainScreen.platform.MainScreenBackHandler
 import com.example.kts_android_kmp.feature.mainScreen.platform.PullToRefreshContainer
 import com.example.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
@@ -40,7 +41,6 @@ import com.example.kts_android_kmp.theme.AppColors.PrimaryBlue
 import com.example.kts_android_kmp.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.example.kts_android_kmp.theme.Dimens.headerHeight
 import com.example.kts_android_kmp.theme.Strings.LOAD_REPO_ERR
-import com.example.kts_android_kmp.utils.LoadingIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
@@ -73,7 +73,7 @@ fun MainScreen(
 
 
     LaunchedEffect(shouldLoadNext) {
-        if (shouldLoadNext && mainViewModel.canLoadNextPage() ) {
+        if (shouldLoadNext && mainViewModel.canLoadNextPage()) {
             mainViewModel.loadNextPage()
         }
     }

@@ -1,4 +1,4 @@
-package com.example.kts_android_kmp.utils
+package com.example.kts_android_kmp.common.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
