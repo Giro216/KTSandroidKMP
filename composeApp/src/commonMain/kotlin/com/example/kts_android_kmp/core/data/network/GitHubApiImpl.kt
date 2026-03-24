@@ -7,15 +7,15 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-interface IGitHubApi {
-    suspend fun loadRepos(param: GitHubApi.LoadReposRequestParam): GithubRepoSearchResponseDto
+interface GitHubApi {
+    suspend fun loadRepos(param: GitHubApiImpl.LoadReposRequestParam): GithubRepoSearchResponseDto
 
     suspend fun getCurrentUser(): GithubUserDto
 }
 
-class GitHubApi(
+class GitHubApiImpl(
     private val client: HttpClient,
-) : IGitHubApi {
+) : GitHubApi {
 
     override suspend fun loadRepos(param: LoadReposRequestParam): GithubRepoSearchResponseDto {
         return client.get("/search/repositories") {

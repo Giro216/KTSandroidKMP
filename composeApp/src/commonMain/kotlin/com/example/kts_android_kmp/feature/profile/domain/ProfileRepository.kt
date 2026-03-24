@@ -1,5 +1,5 @@
 package com.example.kts_android_kmp.feature.profile.domain
 
-interface IProfileRepository {
+interface ProfileRepository {
     suspend fun loadProfile(): Result<UserProfile>
 }

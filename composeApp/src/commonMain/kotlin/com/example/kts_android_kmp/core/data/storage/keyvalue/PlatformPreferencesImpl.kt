@@ -1,14 +1,14 @@
 package com.example.kts_android_kmp.core.data.storage.keyvalue
 
-import com.example.kts_android_kmp.core.data.storage.domain.IAppPreferences
+import com.example.kts_android_kmp.core.data.storage.domain.AppPreferences
 import com.example.kts_android_kmp.core.data.storage.domain.PrefKeys
 import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class PlatformPreferences(
+class PlatformPreferencesImpl(
     private val storage: DataStoreKeyValueStorage = DataStoreKeyValueStorage(),
-) : IAppPreferences {
+) : AppPreferences {
 
     override fun getBoolean(key: String, default: Boolean): Flow<Boolean> =
         when (key) {

@@ -1,16 +1,16 @@
 package com.example.kts_android_kmp.core.data.storage.data.repo
 
-import com.example.kts_android_kmp.core.data.storage.domain.IAppPreferences
-import com.example.kts_android_kmp.core.data.storage.domain.ISessionRepository
+import com.example.kts_android_kmp.core.data.storage.domain.AppPreferences
 import com.example.kts_android_kmp.core.data.storage.domain.PrefKeys
+import com.example.kts_android_kmp.core.data.storage.domain.SessionRepository
 import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import com.example.kts_android_kmp.utils.coRunCatching
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class SessionRepositoryImpl(
-    private val prefs: IAppPreferences,
-) : ISessionRepository {
+    private val prefs: AppPreferences,
+) : SessionRepository {
 
     override fun onboardingShown(): Flow<Boolean> =
         prefs.getBoolean(PrefKeys.ONBOARDING_SHOWN, default = false)

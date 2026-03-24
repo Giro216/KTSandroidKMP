@@ -1,19 +1,19 @@
 package com.example.kts_android_kmp.feature.mainScreen.data.repo
 
 import com.example.kts_android_kmp.core.data.network.GitHubApi
-import com.example.kts_android_kmp.core.data.network.IGitHubApi
+import com.example.kts_android_kmp.core.data.network.GitHubApiImpl
 import com.example.kts_android_kmp.feature.mainScreen.data.network.GithubRepoDto
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepository
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
-import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
 import com.example.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
 import com.example.kts_android_kmp.utils.coRunCatching
 
 class GitHubRepositoryImpl(
-    private val api: IGitHubApi,
+    private val api: GitHubApi,
     private val cache: GitHubRepoCache,
-) : IGitHubRepository {
-    override suspend fun loadEntities(param: GitHubApi.LoadReposRequestParam): Result<GitHubSearchResult> {
+) : GitHubRepository {
+    override suspend fun loadEntities(param: GitHubApiImpl.LoadReposRequestParam): Result<GitHubSearchResult> {
         val query = param.query
 
         val networkResult = coRunCatching {
@@ -40,12 +40,12 @@ class GitHubRepositoryImpl(
 
     override fun initGitHubApiReposRequestParam(
         query: String,
-        sort: GitHubApi.LoadReposRequestParam.SortType?,
+        sort: GitHubApiImpl.LoadReposRequestParam.SortType?,
         order: String?,
         perPage: Int?,
         page: Int?,
-    ): GitHubApi.LoadReposRequestParam {
-        return GitHubApi.LoadReposRequestParam(
+    ): GitHubApiImpl.LoadReposRequestParam {
+        return GitHubApiImpl.LoadReposRequestParam(
             query = query,
             sort = sort,
             order = order,

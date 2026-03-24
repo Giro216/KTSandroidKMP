@@ -3,7 +3,7 @@ package com.example.kts_android_kmp.core.data.storage.domain
 import com.example.kts_android_kmp.feature.login.oauth.data.network.TokensModelDto
 import kotlinx.coroutines.flow.Flow
 
-interface IAppPreferences {
+interface AppPreferences {
     fun getBoolean(key: String, default: Boolean = false): Flow<Boolean>
     suspend fun putBoolean(key: String, value: Boolean)
 

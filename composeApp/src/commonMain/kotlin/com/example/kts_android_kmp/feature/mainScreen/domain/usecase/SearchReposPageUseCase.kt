@@ -1,10 +1,10 @@
 package com.example.kts_android_kmp.feature.mainScreen.domain.usecase
 
+import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubRepository
 import com.example.kts_android_kmp.feature.mainScreen.domain.GitHubSearchResult
-import com.example.kts_android_kmp.feature.mainScreen.domain.IGitHubRepository
 
 class SearchReposPageUseCase(
-    private val repo: IGitHubRepository,
+    private val repo: GitHubRepository,
 ) {
     suspend operator fun invoke(
         query: String,
