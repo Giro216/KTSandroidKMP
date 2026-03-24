@@ -3,68 +3,81 @@
 Демонстрационный учебный проект на **Kotlin Multiplatform (KMP)** и **Compose Multiplatform**.
 
 ## Тема проекта
-**VK Profile Companion** (условная соц. сеть / мини‑клон VK: экран логина + главная лента постов).
+
+**Github Explorer** — приложение для просмотра популярных репозиториев на Github. Содержит экран
+приветствия, логина и главный экран с лентой репозиториев.
 
 ## Функциональность (по текущему состоянию)
+
 - Экран приветствия (Intro)
 - Экран логина
-  - MVVM, `StateFlow`‑стейт экрана (`LoginUiState`)
-  - события навигации через `SharedFlow` (успешный/ошибочный логин)
+    - Регистрация через Oauth в Github
+    - Сохранение токена в `SharedPreferences`
+- Экран загрузки (Bootstrap)
+    - Проверка наличия токена и его валидности
+    - Редирект на главный экран или экран логина в зависимости от результата проверки
 - Главный экран (Main)
-  - Лента постов (`LazyColumn` + `key`)
-  - загрузка изображений из сети через **Coil 3**
-  - обработка Back: с главного экрана нельзя вернуться назад (double‑back‑to‑exit)
+    - Лента популярных репозиториев
+    - Пагинация (загрузка следующей страницы при скролле)
+    - Поиск по названию
+    - Сортировка по умолчанию (по количеству звёзд) и по дате создания
+- Экран профиля (Profile)
+    - Информация о пользователе (аватар, имя, никнейм, биография, количество репозиториев и
+      подписчиков)
 
 ## Технологии
+
 - Kotlin Multiplatform
 - Compose Multiplatform
 - Navigation: Jetpack Navigation for Compose
-- Изображения: Coil 3 (`coil3-compose`, сеть через OkHttp на Android)
+- Изображения: Coil
 - Логирование: Napier
 - Архитектура: MVVM
+- Хранение данных: Room, dataStore (на Android)
+- DI: Koin
+- Сеть: Ktor Client (на Android с OkHttp, на iOS с Darvin)
 
 ## Структура проекта (актуально)
+
 Проект содержит **один gradle‑модуль**:
 
 - `:composeApp/` — основной модуль
-  - `src/commonMain/` — общий код (Compose UI, экранные компоненты, ViewModel/State, навигация, utils)
-  - `src/androidMain/` — Android‑специфичный код (например, BackHandler и т.п.)
-  - `src/iosMain/`, `src/iosArm64Main/`, `src/iosSimulatorArm64Main/` — iOS‑специфичные исходники (если используются)
-  - `build.gradle.kts` — KMP targets + Android application конфигурация
+    - `src/commonMain/` — общий код (Compose UI, экранные компоненты, ViewModel/State, навигация,
+      utils)
+    - `src/androidMain/` — Android‑специфичный код (например, BackHandler и т.п.)
+    - `src/iosMain/`, `src/iosArm64Main/`, `src/iosSimulatorArm64Main/` — iOS‑специфичные
+      исходники (если используются)
+    - `build.gradle.kts` — KMP targets + Android application конфигурация
 
 Дополнительно:
+
 - `iosApp/` — Xcode‑проект (обвязка под iOS)
 - `gradle/` — версии/каталог зависимостей + wrapper
 
 ## Пакеты в `commonMain`
+
 Код в `composeApp/src/commonMain/kotlin` — общий для платформ. Основные пакеты:
 
-- `com.example.kts_android_kmp.app`
-  - точка входа в UI (`App`) и корневая навигация (`AppNavigation`)
-
-- `com.example.kts_android_kmp.feature.*`
-  - фичи приложения (экраны и логика), каждая фича живёт в своём пакете
-  - примеры:
-    - `feature.intro` — экран приветствия
-    - `feature.login` — экран логина
-    - `feature.main` — главный экран с лентой
-
-- `com.example.kts_android_kmp.theme`
-  - дизайн‑система приложения: цвета, размеры/отступы (`Dimens`), константы оформления
-
-- `com.example.kts_android_kmp.utils`
-  - переиспользуемые UI/технические утилиты
-
-- `com.example.kts_android_kmp.common`
-  - базовые абстракции, которые используются в разных фичах
-
-- `com.example.kts_android_kmp.platform`
-  - мультиплатформенные API через `expect/actual`
-
-### Ресурсы (строки/картинки)
-В проекте используется Compose Resources (генерируется объект `Res`).
-Строки берутся как `stringResource(Res.string.some_key)`.
-Это работает в `commonMain` и позволяет не дублировать `strings.xml` на разных платформах.
-
-> Репозиторий сейчас собран вокруг одного модуля `:composeApp`, который содержит общий UI/логику и Android-приложение.
-> iOS-часть собирается как `framework` из KMP (см. `iosArm64/iosSimulatorArm64` в gradle).
+- `app`
+    - точка входа в UI (`App`) и корневая навигация (`AppNavigation`)
+- `common`
+    - базовые абстракции, которые используются в разных фичах
+- `core/data`
+    - кор механики для работы приложения:
+    - `network` — API‑клиент и модели данных для работы с сетью
+    - `storage` — API для работы с локальным хранилищем
+- `di`
+    - Реализация DI с использованием Koin
+- `feature.*`
+    - фичи приложения (экраны и логика), каждая фича живёт в своём пакете
+    - примеры:
+        - `intro` — экран приветствия
+        - `bootstrap` — экран загрузки и проверки авторизации при запуске приложения
+        - `login` — логин в Github через Oauth и заглушка на экране
+        - `mainScreen` — главный экран с лентой репозиториев, поиском и сортировкой
+        - `profile` — экран профиля пользователя
+        - `repoDetails` — экран с подробной информацией о репозитории (пока не реализован)
+- `utils`
+    - технические утилиты
+- `platform`
+    - мультиплатформенные API через `expect/actual`
