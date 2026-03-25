@@ -1,0 +1,25 @@
+package com.github_explorer.kts_android_kmp.di
+
+import com.github_explorer.kts_android_kmp.feature.profile.data.repo.ProfileRepositoryImpl
+import com.github_explorer.kts_android_kmp.feature.profile.domain.ProfileRepository
+import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LoadUseCase
+import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LogoutUseCase
+import com.github_explorer.kts_android_kmp.feature.profile.presentation.ProfileViewModel
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
+
+val profileModule = module {
+    single<ProfileRepository> { ProfileRepositoryImpl(api = get()) }
+
+    single { LogoutUseCase(appDataCleaner = get()) }
+    single { LoadUseCase(profileRepository = get()) }
+
+    viewModel {
+        ProfileViewModel(
+            loadUseCase = get(),
+            logoutUseCase = get(),
+        )
+    }
+}
+
+
