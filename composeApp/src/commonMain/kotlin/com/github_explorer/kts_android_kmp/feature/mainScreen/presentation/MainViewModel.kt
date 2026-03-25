@@ -9,6 +9,8 @@ import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reduc
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainReducer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
@@ -22,6 +24,8 @@ class MainViewModel(
     private val uiMapper: MainUiMapper,
     private val reducer: MainReducer,
 ) : BaseViewModel<MainUiEvent, MainUiState>(initialState = MainUiState(), extraBufferCapacity = 1) {
+
+    private val refreshRequests = Channel<Unit>(1)
 
     init {
         viewModelScope.launch {
@@ -67,6 +71,8 @@ class MainViewModel(
                         }
                 }
         }
+
+        viewModelScope.launch { observeRefreshRequests() }
 
         onQueryChanged("kotlin")
     }
@@ -131,7 +137,23 @@ class MainViewModel(
                 !current.pagination.isPaginationError
     }
 
+    fun refresh() {
+        refreshRequests.trySend(Unit)
+    }
+
     fun formatMetric(emoji: String, count: Int): String = uiMapper.formatMetric(emoji, count)
 
     fun colorMapping(language: String): Color = uiMapper.colorForLanguage(language)
+
+    private suspend fun observeRefreshRequests() {
+        for (r in refreshRequests) {
+            updateState { copy(isRefreshing = true) }
+            try {
+                retry()
+            } finally {
+                delay(1000)
+                updateState { copy(isRefreshing = false) }
+            }
+        }
+    }
 }

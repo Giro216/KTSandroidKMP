@@ -13,6 +13,8 @@ data class MainUiState(
     val isInitialError: Boolean = false,
     val hint: HintContent? = null,
 
+    val isRefreshing: Boolean = false,
+
     val pagination: PaginationUiState = PaginationUiState(),
 ) {
 
