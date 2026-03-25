@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.kts_android_kmp.common.ui.StatusBarSpacer
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -18,6 +19,7 @@ fun BootstrapScreen(
 ) {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        StatusBarSpacer()
         CircularProgressIndicator()
     }
 

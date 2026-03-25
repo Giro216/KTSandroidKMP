@@ -54,7 +54,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier,
+    lazyColumnModifier: Modifier = Modifier,
     mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
@@ -119,8 +119,10 @@ fun MainScreen(
         }
     )
 
-    Surface(modifier = modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
             PullToRefreshContainer(
                 isRefreshing = false,
                 isAtTop = listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0,
@@ -135,9 +137,9 @@ fun MainScreen(
                 ) {
                     item(key = "header") {
                         Row(
-                            modifier = Modifier
+                            modifier = lazyColumnModifier
                                 .fillMaxWidth()
-                                .padding(horizontal = ScreenHorizontalPaddingSmall, vertical = 8.dp)
+                                .padding(horizontal = ScreenHorizontalPaddingSmall)
                                 .height(headerHeight),
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {

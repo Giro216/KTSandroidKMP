@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.kts_android_kmp.common.ui.PrintCoilImage
+import com.example.kts_android_kmp.common.ui.StatusBarSpacer
 import com.example.kts_android_kmp.common.ui.theme.Dimens
 import com.example.kts_android_kmp.feature.profile.domain.UserProfile
 import com.example.kts_android_kmp.feature.profile.presentation.ProfileUiEvent
@@ -70,6 +71,8 @@ fun ProfileScreen(
             .padding(top = Dimens.ScreenVerticalPaddingMedium),
         verticalArrangement = Arrangement.Top,
     ) {
+        StatusBarSpacer()
+
         Text(
             text = stringResource(Res.string.profile_title),
             style = MaterialTheme.typography.headlineLarge,
