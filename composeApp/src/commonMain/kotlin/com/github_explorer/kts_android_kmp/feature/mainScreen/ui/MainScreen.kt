@@ -18,6 +18,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -38,7 +39,6 @@ import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenHorizont
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.headerHeight
 import com.github_explorer.kts_android_kmp.common.ui.theme.Strings.LOAD_REPO_ERR
 import com.github_explorer.kts_android_kmp.feature.mainScreen.platform.MainScreenBackHandler
-import com.github_explorer.kts_android_kmp.feature.mainScreen.platform.PullToRefreshContainer
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
 import kotlinx.coroutines.delay
@@ -123,12 +123,10 @@ fun MainScreen(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            PullToRefreshContainer(
-                isRefreshing = false,
-                isAtTop = listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0,
-                isScrollInProgress = listState.isScrollInProgress,
-                onRefresh = mainViewModel::retry,
+            PullToRefreshBox(
                 modifier = Modifier.fillMaxSize(),
+                isRefreshing = state.isRefreshing,
+                onRefresh = mainViewModel::refresh,
             ) {
                 LazyColumn(
                     state = listState,
