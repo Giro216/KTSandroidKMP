@@ -94,7 +94,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.kts_android_kmp"
+    namespace = "com.github_explorer.kts_android_kmp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
