@@ -10,6 +10,12 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    id("io.gitlab.arturbosch.detekt")
+}
+
+repositories {
+    google()
+    mavenCentral()
 }
 
 tasks.matching { it.name in setOf("debugStabilityCheck", "releaseStabilityCheck") }.configureEach {
@@ -43,6 +49,9 @@ kotlin {
             implementation(libs.appauth)
 
             implementation(libs.ktor.client.okhttp)
+
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -52,8 +61,6 @@ kotlin {
             implementation(libs.material.icons.extended)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.navigation.compose)
             implementation(libs.coil.compose)
             implementation(libs.napier)
@@ -87,7 +94,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.kts_android_kmp"
+    namespace = "com.github_explorer.kts_android_kmp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -125,6 +132,25 @@ dependencies {
         add(it, libs.room.compiler)
     }
 }
+
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    ignoreFailures = true
+
+
+    source.setFrom(
+        "src/commonMain/kotlin",
+        "src/androidMain/kotlin",
+        "src/commonTest/kotlin",
+        "src/androidUnitTest/kotlin"
+    )
+}
+
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
+}
+
 
 val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
