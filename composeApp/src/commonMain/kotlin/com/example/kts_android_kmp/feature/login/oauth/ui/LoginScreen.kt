@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
+import com.example.kts_android_kmp.common.ui.StatusBarSpacer
 import com.example.kts_android_kmp.feature.login.oauth.presentation.LoginViewModel
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.login_screen_loading_gif
@@ -66,6 +67,7 @@ private fun WaitingForLoginPlaceholder(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        StatusBarSpacer()
         Text(
             text = stringResource(Res.string.login_waiting_title),
             style = MaterialTheme.typography.headlineLarge,

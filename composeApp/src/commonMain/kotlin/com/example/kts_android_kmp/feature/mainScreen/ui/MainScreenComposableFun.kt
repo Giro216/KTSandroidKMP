@@ -135,7 +135,7 @@ fun PaginationLoader(
 ) {
     when {
         isPaginationLoading -> {
-            LoadingIndicator(24.dp)
+            LoadingIndicator(bottomPadding = 52.dp)
         }
 
         isPaginationError -> {

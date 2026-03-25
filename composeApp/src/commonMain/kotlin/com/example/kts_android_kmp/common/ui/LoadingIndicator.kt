@@ -11,11 +11,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingIndicator(verticalPadding: Dp = 0.dp) {
+fun LoadingIndicator(
+    verticalPadding: Dp = 0.dp,
+    bottomPadding: Dp = 0.dp,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = verticalPadding),
+            .padding(vertical = verticalPadding)
+            .padding(bottom = bottomPadding),
         contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator()

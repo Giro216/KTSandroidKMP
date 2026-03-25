@@ -1,6 +1,9 @@
 package com.example.kts_android_kmp.app
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,7 +15,7 @@ import com.example.kts_android_kmp.feature.profile.ui.ProfileScreen
 import com.example.kts_android_kmp.platform.exitApp
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(innerPadding: PaddingValues) {
     val navController = rememberNavController()
 
     NavHost(
@@ -63,6 +66,7 @@ fun AppNavigation() {
                 onOpenProfile = {
                     navController.navigate(Routes.ProfileScreen)
                 },
+                lazyColumnModifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             )
         }
 
