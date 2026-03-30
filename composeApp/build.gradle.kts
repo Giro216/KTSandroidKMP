@@ -128,6 +128,7 @@ room {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
     listOf("kspAndroid", "kspIosArm64", "kspIosSimulatorArm64").forEach {
         add(it, libs.room.compiler)
     }
