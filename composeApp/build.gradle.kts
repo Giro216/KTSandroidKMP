@@ -103,6 +103,29 @@ android {
     namespace = "com.github_explorer.kts_android_kmp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:/Users/maks0/source/Kotlin_Projects/KTS_keystore/local-keystore")
+            storePassword = project.property("RELEASE_STORE_PASSWORD") as String
+            keyPassword = project.property("RELEASE_KEY_PASSWORD") as String
+            keyAlias = project.property("RELEASE_KEY_ALIAS") as String
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            isShrinkResources = true
+            isMinifyEnabled = true
+
+            signingConfig = signingConfigs.getByName("release")
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                file("proguard-rules.pro")
+            )
+        }
+    }
+
     defaultConfig {
         manifestPlaceholders += mapOf()
         applicationId = "com.github_explorer.kts_android_kmp"
@@ -116,11 +139,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
         }
     }
     compileOptions {
