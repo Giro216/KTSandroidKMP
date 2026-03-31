@@ -11,6 +11,9 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     id("io.gitlab.arturbosch.detekt")
+//    id("com.android.application")
+    id("com.google.gms.google-services")
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 repositories {
@@ -52,6 +55,9 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation("com.google.firebase:firebase-analytics")
+
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -98,7 +104,8 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.kts_android_kmp"
+        manifestPlaceholders += mapOf()
+        applicationId = "com.github_explorer.kts_android_kmp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -127,6 +134,11 @@ room {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+
+
     debugImplementation(libs.compose.uiTooling)
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
     listOf("kspAndroid", "kspIosArm64", "kspIosSimulatorArm64").forEach {
