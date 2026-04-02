@@ -21,6 +21,7 @@ import com.github_explorer.kts_android_kmp.common.ui.PrintCoilImage
 import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.SpacingExtraLarge
+import io.github.aakira.napier.Napier
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.en_login
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url
@@ -78,6 +79,19 @@ fun HelloScreen(
             Text(
                 text = stringResource(Res.string.en_login),
                 style = MaterialTheme.typography.headlineMedium
+            )
+        }
+
+        Button(
+            onClick = {
+                Napier.e("Napier text of test crash")
+            },
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.padding(top = Dimens.SpacingMedium)
+        ) {
+            Text(
+                text = "Test Crash",
+                style = MaterialTheme.typography.headlineSmall
             )
         }
     }

@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
+private const val stopWhileSubscribed = 3_000L
+
 class BootstrapViewModel(
     private val sessionRepository: SessionRepository,
 
@@ -29,7 +31,7 @@ class BootstrapViewModel(
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(3_000),
+        started = SharingStarted.WhileSubscribed(stopWhileSubscribed),
         initialValue = BootstrapState(isLoading = true),
     )
 
