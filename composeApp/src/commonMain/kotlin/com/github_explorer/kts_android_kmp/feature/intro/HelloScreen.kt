@@ -84,7 +84,7 @@ fun HelloScreen(
 
         Button(
             onClick = {
-                Napier.e("Napier text of test crash", RuntimeException("Test Crash"))
+                Napier.e("Napier text of test crash")
             },
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.padding(top = Dimens.SpacingMedium)

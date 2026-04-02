@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.github_explorer.kts_android_kmp.app.App
+import com.github_explorer.kts_android_kmp.core.config.logging.initLogger
 import com.github_explorer.kts_android_kmp.di.authModule
 import com.github_explorer.kts_android_kmp.di.initKoin
 import com.github_explorer.kts_android_kmp.di.roomModule
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
 
         setActivity(this)
         appAuthHandler.init()
+        initLogger()
         firebaseAnalytics = Firebase.analytics
 
         initKoin(

@@ -7,25 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:523066900137:android:7f6f3f16e21b312ed9f3b8",
-        "android_client_info": {
-          "package_name": "com.example.kts_android_kmp"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAg_ViHgp6rfNIf5VDah1kZL_x81p0CQk8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:523066900137:android:ef2fda43cd799eefd9f3b8",
         "android_client_info": {
           "package_name": "com.github_explorer.kts_android_kmp"

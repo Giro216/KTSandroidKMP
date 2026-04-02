@@ -6,7 +6,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.github_explorer.kts_android_kmp.platform.initLogger
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -15,7 +14,6 @@ fun App() {
     MaterialTheme {
         Scaffold { innerPadding ->
             Surface {
-                initLogger()
                 AppNavigation(innerPadding)
             }
         }
