@@ -7,4 +7,9 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.stability.analyzer) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.room) apply false
+    alias(libs.plugins.detekt) apply false
+    id("com.google.gms.google-services") version "4.4.4" apply false
+    alias(libs.plugins.google.firebase.crashlytics) apply false
 }

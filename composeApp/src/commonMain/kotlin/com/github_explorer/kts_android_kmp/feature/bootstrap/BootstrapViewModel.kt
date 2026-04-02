@@ -1,0 +1,54 @@
+package com.github_explorer.kts_android_kmp.feature.bootstrap
+
+import androidx.lifecycle.viewModelScope
+import com.github_explorer.kts_android_kmp.common.BaseViewModel
+import com.github_explorer.kts_android_kmp.core.data.storage.domain.SessionRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+
+
+private const val stopWhileSubscribed = 3_000L
+
+class BootstrapViewModel(
+    private val sessionRepository: SessionRepository,
+
+    ) : BaseViewModel<BootstrapUiEvent, BootstrapState>(
+    BootstrapState(isLoading = true),
+    extraBufferCapacity = 1
+) {
+
+    private val sessionState: StateFlow<BootstrapState> = combine(
+        sessionRepository.onboardingShown(),
+        sessionRepository.isLoggedIn(),
+    ) { onboardingShown, isLoggedIn ->
+        BootstrapState(
+            isLoading = false,
+            onboardingShown = onboardingShown,
+            isLoggedIn = isLoggedIn,
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopWhileSubscribed),
+        initialValue = BootstrapState(isLoading = true),
+    )
+
+    init {
+        viewModelScope.launch {
+            sessionState.collect { s ->
+                updateState { s }
+
+                if (!s.isLoading) {
+                    if (!s.onboardingShown && !s.isLoggedIn) {
+                        acceptLabel(BootstrapUiEvent.NavigateToHello)
+                    } else {
+                        acceptLabel(BootstrapUiEvent.NavigateToMain)
+                    }
+                }
+            }
+        }
+    }
+}
+
