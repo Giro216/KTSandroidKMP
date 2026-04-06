@@ -20,8 +20,6 @@ fun roomModule(context: Context) = module {
             .build()
     }
 
-//    factory { get<AppDatabase>().gitHubRepoDao() }
-
     factory { get<AppDatabase>().gitHubSearchCacheDao() }
 
     factory<GitHubRepoCache> { RoomGitHubSearchCacheImpl(dao = get()) }

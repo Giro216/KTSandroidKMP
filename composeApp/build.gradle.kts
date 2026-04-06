@@ -57,7 +57,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation("com.google.firebase:firebase-analytics")
-
+            implementation("io.noties.markwon:core:4.6.2")
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

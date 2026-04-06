@@ -12,6 +12,7 @@ import com.github_explorer.kts_android_kmp.feature.intro.HelloScreen
 import com.github_explorer.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainScreen
 import com.github_explorer.kts_android_kmp.feature.profile.ui.ProfileScreen
+import com.github_explorer.kts_android_kmp.feature.repoScreen.ui.RepoScreen
 import com.github_explorer.kts_android_kmp.platform.exitApp
 
 @Composable
@@ -20,7 +21,7 @@ fun AppNavigation(innerPadding: PaddingValues) {
 
     NavHost(
         navController = navController,
-        startDestination = Routes.Bootstrap
+        startDestination = Routes.Bootstrap,
     ) {
         composable<Routes.Bootstrap> {
             BootstrapScreen(
@@ -66,6 +67,15 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 onOpenProfile = {
                     navController.navigate(Routes.ProfileScreen)
                 },
+                onOpenRepo = { owner, repo ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("owner", owner)
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("repo", repo)
+                    navController.navigate(Routes.RepoScreen)
+                },
                 lazyColumnModifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             )
         }
@@ -78,6 +88,16 @@ fun AppNavigation(innerPadding: PaddingValues) {
                         launchSingleTop = true
                     }
                 },
+            )
+        }
+
+        composable<Routes.RepoScreen> {
+            RepoScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                owner = navController.previousBackStackEntry?.savedStateHandle?.get("owner") ?: "",
+                repo = navController.previousBackStackEntry?.savedStateHandle?.get("repo") ?: "",
             )
         }
     }

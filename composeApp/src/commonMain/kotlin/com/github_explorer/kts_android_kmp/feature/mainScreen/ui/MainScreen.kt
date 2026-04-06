@@ -58,6 +58,7 @@ fun MainScreen(
     mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
+    onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
 ) {
     val state by mainViewModel.state.collectAsStateWithLifecycle()
 
@@ -204,6 +205,7 @@ fun MainScreen(
                             modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
                             onFormatMetric = mainViewModel::formatMetric,
                             onColorMapping = mainViewModel::colorMapping,
+                            onClick = { onOpenRepo(repo.owner, repo.name) },
                         )
                     }
 

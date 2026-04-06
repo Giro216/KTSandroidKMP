@@ -1,6 +1,7 @@
 package com.github_explorer.kts_android_kmp.feature.mainScreen.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,9 +40,12 @@ fun RepoCard(
     modifier: Modifier = Modifier,
     onFormatMetric: (emoji: String, count: Int) -> String,
     onColorMapping: (language: String) -> Color,
+    onClick: () -> Unit,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(RoundedCornerShapeSize),
     ) {
         Column(modifier = Modifier.padding(ScreenTotalPaddingSmall)) {
