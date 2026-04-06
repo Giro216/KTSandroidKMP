@@ -49,4 +49,6 @@
     <string name="profile_logout">Logut</string>
     <string name="profile_stat_repos">Репозитории</string>
     <string name="profile_stat_followers">Подписчики</string>
+
+    <string name="repo_title">Репозиторий</string>
 </resources>
