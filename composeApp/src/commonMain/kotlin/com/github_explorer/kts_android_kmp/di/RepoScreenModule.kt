@@ -18,7 +18,7 @@ val RepoScreenModule = module {
         RepoViewModel(
             loadReadmeUseCase = get(),
             loadDetailsUseCase = get(),
-            markdownParser = get(),
+            toggleFavoriteUseCase = get(),
         )
     }
 }

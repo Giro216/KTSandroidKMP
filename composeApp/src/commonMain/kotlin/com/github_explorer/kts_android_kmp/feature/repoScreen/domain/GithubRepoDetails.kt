@@ -1,25 +1,23 @@
 package com.github_explorer.kts_android_kmp.feature.repoScreen.domain
 
-import kotlin.time.Instant
+import androidx.compose.runtime.Immutable
 
+@Immutable
 data class GithubRepoDetails(
     val id: Long,
+    val owner: String,
     val name: String,
     val fullName: String,
-    val ownerName: String,
-    val ownerAvatarUrl: String?,
     val description: String?,
-    val htmlUrl: String,
+    val language: String?,
     val starsCount: Int,
     val forksCount: Int,
     val openIssuesCount: Int,
+    val ownerAvatarUrl: String?,
+    val htmlUrl: String,
     val watchersCount: Int,
-    val language: String?,
     val licenseName: String?,
-    val topics: List<String>,
-    val homepage: String?,
     val defaultBranch: String,
-    val createdAt: Instant?,
-    val updatedAt: Instant?,
-    val pushedAt: Instant?,
+    val updatedAt: String,
 )
+

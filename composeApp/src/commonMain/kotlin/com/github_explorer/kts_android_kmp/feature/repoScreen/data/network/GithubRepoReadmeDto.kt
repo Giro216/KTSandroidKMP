@@ -1,5 +1,6 @@
 package com.github_explorer.kts_android_kmp.feature.repoScreen.data.network
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,4 +9,6 @@ data class GithubRepoReadmeDto(
     val name: String,
     val content: String,
     val sha: String,
+    @SerialName("html_url")
+    val htmlUrl: String,
 )

@@ -206,6 +206,8 @@ fun MainScreen(
                             onFormatMetric = mainViewModel::formatMetric,
                             onColorMapping = mainViewModel::colorMapping,
                             onClick = { onOpenRepo(repo.owner, repo.name) },
+                            isFavorite = state.favoriteRepoIds.contains(repo.id),
+                            onFavoriteClick = { mainViewModel.toggleFavorite(repo) },
                         )
                     }
 

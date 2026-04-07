@@ -18,13 +18,10 @@ data class GithubRepoDetailsDto(
     val topics: List<String> = emptyList(),
     val homepage: String? = null,
     @SerialName("default_branch") val defaultBranch: String,
+    @SerialName("updated_at") val updatedAt: String,
     val owner: OwnerDto,
     val license: LicenseDto? = null,
-    @SerialName("created_at") val createdAt: String? = null,
-    @SerialName("updated_at") val updatedAt: String? = null,
-    @SerialName("pushed_at") val pushedAt: String? = null,
 ) {
-
     @Serializable
     data class OwnerDto(
         val login: String,

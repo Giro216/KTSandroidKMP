@@ -14,7 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +46,8 @@ fun RepoCard(
     onFormatMetric: (emoji: String, count: Int) -> String,
     onColorMapping: (language: String) -> Color,
     onClick: () -> Unit,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
 ) {
     Card(
         modifier = modifier
@@ -49,13 +56,28 @@ fun RepoCard(
         shape = RoundedCornerShape(RoundedCornerShapeSize),
     ) {
         Column(modifier = Modifier.padding(ScreenTotalPaddingSmall)) {
-            Text(
-                text = "${repo.owner} / ${repo.name}",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = "${repo.owner} / ${repo.name}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+
+                IconButton(onClick = onFavoriteClick) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
+                        contentDescription = null,
+                        tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
 
             if (!repo.description.isNullOrBlank()) {
                 Spacer(Modifier.height(4.dp))

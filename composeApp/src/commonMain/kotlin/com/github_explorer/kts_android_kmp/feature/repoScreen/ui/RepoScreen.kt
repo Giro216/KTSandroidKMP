@@ -76,7 +76,8 @@ fun RepoScreenContent(
             TopAppBar(
                 title = {
                     Text(
-                        text = state.details?.fullName ?: stringResource(Res.string.repo_title),
+                        text = state.details?.let { "${it.owner} / ${it.name}" }
+                            ?: stringResource(Res.string.repo_title),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -166,27 +167,21 @@ fun RepoScreenContent(
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
                 when {
                     state.isReadmeLoading -> {
                         CircularProgressIndicator()
                     }
 
                     state.readme != null -> {
-//                        Text(
-//                            text = state.readme.decodeContent,
-//                            style = MaterialTheme.typography.bodySmall,
-//                        )
-//                        onMarkdownContent(state.readme.decodeContent)
-                        MarkdownBlock(
-                            markdown = state.readme.decodeContent,
-                        )
+                        MarkdownBlock(markdown = state.readme.decodeContent)
                     }
 
                     state.isError -> {
                         Text(
                             text = state.errorMessage ?: "Failed to load README",
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }

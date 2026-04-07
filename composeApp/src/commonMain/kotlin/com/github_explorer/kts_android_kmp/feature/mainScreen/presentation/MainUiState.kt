@@ -15,6 +15,8 @@ data class MainUiState(
 
     val isRefreshing: Boolean = false,
 
+    val favoriteRepoIds: Set<Long> = emptySet(),
+
     val pagination: PaginationUiState = PaginationUiState(),
 ) {
 
@@ -25,4 +27,3 @@ data class MainUiState(
         val isPaginationError: Boolean = false,
     )
 }
-

@@ -2,9 +2,9 @@ package com.github_explorer.kts_android_kmp.feature.repoScreen.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
+import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ToggleFavoriteUseCase
 import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.useCase.LoadDetailsUseCase
 import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.useCase.LoadReadmeUseCase
-import com.github_explorer.kts_android_kmp.feature.repoScreen.platform.MarkdownParser
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 class RepoViewModel(
     private val loadReadmeUseCase: LoadReadmeUseCase,
     private val loadDetailsUseCase: LoadDetailsUseCase,
-    private val markdownParser: MarkdownParser,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
 ) : BaseViewModel<RepoUiEvent, RepoUiState>(RepoUiState()) {
 
     fun onEvent(event: RepoUiEvent) {
@@ -33,8 +33,11 @@ class RepoViewModel(
             }
 
             RepoUiEvent.ToggleFavorite -> {
-                // TODO side-effect (toggle star on locale)
-//                updateState { copy(isStarredLocally = !isStarredLocally) }
+                val repo = state.value.details ?: return
+                viewModelScope.launch {
+                    val isFavorite = toggleFavoriteUseCase(repo)
+                    updateState { copy(isStarredLocally = isFavorite) }
+                }
             }
 
             RepoUiEvent.RetryLoadDetails -> {

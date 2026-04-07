@@ -8,7 +8,6 @@ import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoR
 import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoRepository
 import com.github_explorer.kts_android_kmp.utils.coRunCatching
 import kotlin.io.encoding.Base64
-import kotlin.time.Instant
 
 class GithubRepoRepositoryImpl(
     private val api: GitHubApi,
@@ -31,23 +30,22 @@ class GithubRepoRepositoryImpl(
 }
 
 private fun GithubRepoReadmeDto.toDomain(): GithubRepoReadme {
-    // GitHub API возвращает Base64 с перевода строк, нужно удалить все whitespace
     val cleanContent = content.replace("\\s".toRegex(), "")
     val decodedContent = Base64.decode(cleanContent).decodeToString()
 
     return GithubRepoReadme(
         decodeContent = decodedContent,
         path = name,
-        htmlUrl = null, // при необходимости можно добавить поле из API в DTO
+        htmlUrl = htmlUrl,
     )
 }
 
 private fun GithubRepoDetailsDto.toDomain(): GithubRepoDetails {
     return GithubRepoDetails(
         id = id,
+        owner = owner.login,
         name = name,
         fullName = fullName,
-        ownerName = owner.login,
         ownerAvatarUrl = owner.avatarUrl,
         description = description,
         htmlUrl = htmlUrl,
@@ -57,17 +55,8 @@ private fun GithubRepoDetailsDto.toDomain(): GithubRepoDetails {
         watchersCount = watchersCount,
         language = language,
         licenseName = license?.name,
-        topics = topics,
-        homepage = homepage,
         defaultBranch = defaultBranch,
-        createdAt = createdAt?.let { parseInstantOrNull(it) },
-        updatedAt = updatedAt?.let { parseInstantOrNull(it) },
-        pushedAt = pushedAt?.let { parseInstantOrNull(it) },
+        updatedAt = updatedAt,
     )
 }
 
-private fun parseInstantOrNull(value: String): Instant? = try {
-    Instant.parse(value)
-} catch (_: Throwable) {
-    null
-}
