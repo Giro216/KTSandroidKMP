@@ -18,6 +18,7 @@ val RepoScreenModule = module {
         RepoViewModel(
             loadReadmeUseCase = get(),
             loadDetailsUseCase = get(),
+            observeFavoritesUseCase = get(),
             toggleFavoriteUseCase = get(),
         )
     }

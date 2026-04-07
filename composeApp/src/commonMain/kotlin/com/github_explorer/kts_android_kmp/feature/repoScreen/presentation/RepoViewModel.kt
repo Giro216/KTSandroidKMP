@@ -2,6 +2,7 @@ package com.github_explorer.kts_android_kmp.feature.repoScreen.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
+import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ObserveFavoritesUseCase
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ToggleFavoriteUseCase
 import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.useCase.LoadDetailsUseCase
 import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.useCase.LoadReadmeUseCase
@@ -14,8 +15,21 @@ import kotlinx.coroutines.withContext
 class RepoViewModel(
     private val loadReadmeUseCase: LoadReadmeUseCase,
     private val loadDetailsUseCase: LoadDetailsUseCase,
+    private val observeFavoritesUseCase: ObserveFavoritesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
 ) : BaseViewModel<RepoUiEvent, RepoUiState>(RepoUiState()) {
+
+    private var favoriteRepoIds: Set<Long> = emptySet()
+
+    init {
+        viewModelScope.launch {
+            observeFavoritesUseCase().collect { favorites ->
+                favoriteRepoIds = favorites.map { it.id }.toSet()
+                val detailsId = state.value.details?.id ?: return@collect
+                updateState { copy(isStarredLocally = favoriteRepoIds.contains(detailsId)) }
+            }
+        }
+    }
 
     fun onEvent(event: RepoUiEvent) {
         when (event) {
@@ -99,6 +113,7 @@ class RepoViewModel(
                         isLoading = false,
                         isDetailsLoading = false,
                         details = details,
+                        isStarredLocally = favoriteRepoIds.contains(details.id),
                         isError = false,
                     )
                 }

@@ -15,6 +15,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 
@@ -35,7 +36,12 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             observeFavoritesUseCase().collect { favorites ->
-                updateState { copy(favoriteRepoIds = favorites.map { it.id }.toSet()) }
+                updateState {
+                    copy(
+                        favoriteRepos = favorites,
+                        favoriteRepoIds = favorites.map { it.id }.toSet(),
+                    )
+                }
             }
         }
 
@@ -91,6 +97,18 @@ class MainViewModel(
     fun toggleFavorite(repo: GitHubRepo) {
         viewModelScope.launch {
             toggleFavoriteUseCase(repo)
+        }
+    }
+
+    fun loadFavoritesFromStorage() {
+        viewModelScope.launch {
+            val favorites = observeFavoritesUseCase().first()
+            updateState {
+                copy(
+                    favoriteRepos = favorites,
+                    favoriteRepoIds = favorites.map { it.id }.toSet(),
+                )
+            }
         }
     }
 

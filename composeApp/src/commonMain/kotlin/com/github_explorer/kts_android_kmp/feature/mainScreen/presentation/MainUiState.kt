@@ -7,6 +7,7 @@ import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 data class MainUiState(
     val query: String = "",
     val repos: List<GitHubRepo> = emptyList(),
+    val favoriteRepos: List<GitHubRepo> = emptyList(),
     val totalCount: Int? = null,
 
     val isLoading: Boolean = true,

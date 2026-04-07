@@ -12,8 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -38,6 +45,7 @@ import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors.PrimaryBlue
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.headerHeight
 import com.github_explorer.kts_android_kmp.common.ui.theme.Strings.LOAD_REPO_ERR
+import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 import com.github_explorer.kts_android_kmp.feature.mainScreen.platform.MainScreenBackHandler
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
@@ -48,9 +56,16 @@ import ktsandroidkmp.composeapp.generated.resources.hello_screen_title
 import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_search_hint
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
+import ktsandroidkmp.composeapp.generated.resources.main_tab_favorites
+import ktsandroidkmp.composeapp.generated.resources.main_tab_repositories
 import ktsandroidkmp.composeapp.generated.resources.profile_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+
+private enum class MainBottomTab {
+    Repositories,
+    Favorites,
+}
 
 @Composable
 fun MainScreen(
@@ -61,6 +76,7 @@ fun MainScreen(
     onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
 ) {
     val state by mainViewModel.state.collectAsStateWithLifecycle()
+    var selectedTab by remember { mutableStateOf(MainBottomTab.Repositories) }
 
     val listState = rememberLazyListState()
     val shouldLoadNext by remember {
@@ -121,111 +137,193 @@ fun MainScreen(
     )
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            PullToRefreshBox(
-                modifier = Modifier.fillMaxSize(),
-                isRefreshing = state.isRefreshing,
-                onRefresh = mainViewModel::refresh,
+        Scaffold(
+            bottomBar = {
+                NavigationBar {
+                    NavigationBarItem(
+                        selected = selectedTab == MainBottomTab.Repositories,
+                        onClick = { selectedTab = MainBottomTab.Repositories },
+                        icon = { Icon(Icons.Filled.Search, contentDescription = null) },
+                        label = { Text(stringResource(Res.string.main_tab_repositories)) },
+                    )
+                    NavigationBarItem(
+                        selected = selectedTab == MainBottomTab.Favorites,
+                        onClick = {
+                            selectedTab = MainBottomTab.Favorites
+                            mainViewModel.loadFavoritesFromStorage()
+                        },
+                        icon = { Icon(Icons.Filled.Star, contentDescription = null) },
+                        label = { Text(stringResource(Res.string.main_tab_favorites)) },
+                    )
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = onOpenProfile,
+                        icon = { Icon(Icons.Filled.Person, contentDescription = null) },
+                        label = { Text(stringResource(Res.string.profile_title)) },
+                    )
+                }
+            },
+        ) { scaffoldPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = scaffoldPadding.calculateBottomPadding()),
             ) {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    item(key = "header") {
-                        Row(
-                            modifier = lazyColumnModifier
-                                .fillMaxWidth()
-                                .padding(horizontal = ScreenHorizontalPaddingSmall)
-                                .height(headerHeight),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                when (selectedTab) {
+                    MainBottomTab.Repositories -> {
+                        PullToRefreshBox(
+                            modifier = Modifier.fillMaxSize(),
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = mainViewModel::refresh,
                         ) {
-                            Text(
-                                text = stringResource(Res.string.hello_screen_title),
-                                style = MaterialTheme.typography.headlineMedium,
-                                color = PrimaryBlue,
-                            )
-
-                            OutlinedButton(
-                                onClick = onOpenProfile,
+                            LazyColumn(
+                                state = listState,
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(10.dp),
                             ) {
-                                Text(stringResource(Res.string.profile_title))
-                            }
-                        }
-                    }
+                                item(key = "header") {
+                                    Row(
+                                        modifier = lazyColumnModifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = ScreenHorizontalPaddingSmall)
+                                            .height(headerHeight),
+                                    ) {
+                                        Text(
+                                            text = stringResource(Res.string.hello_screen_title),
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            color = PrimaryBlue,
+                                        )
+                                    }
+                                }
 
-                    item(key = "title") {
-                        MainHeader(
-                            query = state.query,
-                            isInitialError = state.isInitialError,
-                            hint = state.hint,
-                            onQueryChanged = mainViewModel::onQueryChanged,
-                            onSearch = mainViewModel::onSearch,
-                            onRetry = mainViewModel::retry,
-                        )
-                    }
-
-                    item(key = "content") {
-                        when {
-                            state.isLoading -> {
-                                LoadingIndicator(24.dp)
-                            }
-
-                            !state.isLoading && state.repos.isEmpty() -> {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-                                    Text(
-                                        text = stringResource(Res.string.main_screen_search_nothing_found),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        textAlign = TextAlign.Center,
+                                item(key = "title") {
+                                    MainHeader(
+                                        query = state.query,
+                                        isInitialError = state.isInitialError,
+                                        hint = state.hint,
+                                        onQueryChanged = mainViewModel::onQueryChanged,
+                                        onSearch = mainViewModel::onSearch,
+                                        onRetry = mainViewModel::retry,
                                     )
-                                    Spacer(Modifier.height(8.dp))
-                                    Text(
-                                        text = stringResource(Res.string.main_screen_retry_search_hint),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        textAlign = TextAlign.Center,
+                                }
+
+                                item(key = "content") {
+                                    when {
+                                        state.isLoading -> LoadingIndicator(24.dp)
+                                        !state.isLoading && state.repos.isEmpty() -> {
+                                            Column(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                            ) {
+                                                Text(
+                                                    text = stringResource(Res.string.main_screen_search_nothing_found),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    textAlign = TextAlign.Center,
+                                                )
+                                                Spacer(Modifier.height(8.dp))
+                                                Text(
+                                                    text = stringResource(Res.string.main_screen_retry_search_hint),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    textAlign = TextAlign.Center,
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                items(items = state.repos, key = { it.id }) { repo ->
+                                    RepoCard(
+                                        repo = repo,
+                                        modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
+                                        onFormatMetric = mainViewModel::formatMetric,
+                                        onColorMapping = mainViewModel::colorMapping,
+                                        onClick = { onOpenRepo(repo.owner, repo.name) },
+                                        isFavorite = state.favoriteRepoIds.contains(repo.id),
+                                        onFavoriteClick = { mainViewModel.toggleFavorite(repo) },
+                                    )
+                                }
+
+                                item(key = "pagination_loader") {
+                                    PaginationLoader(
+                                        isPaginationLoading = state.pagination.isPaginationLoading,
+                                        isPaginationError = state.pagination.isPaginationError,
+                                        onRetry = mainViewModel::loadNextPage,
                                     )
                                 }
                             }
                         }
                     }
 
-                    items(
-                        items = state.repos,
-                        key = { it.id },
-                    ) { repo ->
-                        RepoCard(
-                            repo = repo,
-                            modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
+                    MainBottomTab.Favorites -> {
+                        FavoritesContent(
+                            repos = state.favoriteRepos,
+                            favoriteRepoIds = state.favoriteRepoIds,
+                            onOpenRepo = onOpenRepo,
+                            onToggleFavorite = mainViewModel::toggleFavorite,
                             onFormatMetric = mainViewModel::formatMetric,
                             onColorMapping = mainViewModel::colorMapping,
-                            onClick = { onOpenRepo(repo.owner, repo.name) },
-                            isFavorite = state.favoriteRepoIds.contains(repo.id),
-                            onFavoriteClick = { mainViewModel.toggleFavorite(repo) },
-                        )
-                    }
-
-                    item(key = "pagination_loader") {
-                        PaginationLoader(
-                            isPaginationLoading = state.pagination.isPaginationLoading,
-                            isPaginationError = state.pagination.isPaginationError,
-                            onRetry = mainViewModel::loadNextPage,
+                            lazyColumnModifier = lazyColumnModifier,
                         )
                     }
                 }
-            }
 
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 16.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FavoritesContent(
+    repos: List<GitHubRepo>,
+    favoriteRepoIds: Set<Long>,
+    onOpenRepo: (owner: String, repo: String) -> Unit,
+    onToggleFavorite: (GitHubRepo) -> Unit,
+    onFormatMetric: (emoji: String, count: Int) -> String,
+    onColorMapping: (language: String) -> androidx.compose.ui.graphics.Color,
+    lazyColumnModifier: Modifier,
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        item(key = "favorites_title") {
+            Text(
+                text = "Избранное",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = lazyColumnModifier
+                    .fillMaxWidth()
+                    .padding(horizontal = ScreenHorizontalPaddingSmall)
+            )
+        }
+
+        // TODO не использовать repos, а брать их из favoriteRepoIds
+        if (repos.isEmpty()) {
+            item(key = "favorites_empty") {
+                Text(
+                    text = "Пока нет избранных репозиториев",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
+                )
+            }
+        }
+
+        items(items = repos, key = { it.id }) { repo ->
+            RepoCard(
+                repo = repo,
+                modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
+                onFormatMetric = onFormatMetric,
+                onColorMapping = onColorMapping,
+                onClick = { onOpenRepo(repo.owner, repo.name) },
+                isFavorite = favoriteRepoIds.contains(repo.id),
+                onFavoriteClick = { onToggleFavorite(repo) },
             )
         }
     }

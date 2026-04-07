@@ -36,6 +36,9 @@
     <string name="main_screen_retry_search_hint">Попробуйте изменить запрос</string>
     <string name="main_screen_search_button">Поиск</string>
     <string name="main_screen_retry_button">Повторить</string>
+    <string name="main_tab_repositories">Репозитории</string>
+    <string name="main_tab_favorites">Избранное</string>
+    <string name="main_screen_empty_favorites">Пока нет избранных репозиториев</string>
     <string name="star_logo">★ </string>
     <string name="fork_logo">⑂ </string>
 
