@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -85,19 +85,19 @@ fun RepoScreenContent(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = onToggleFavorite) {
-                        val icon = if (state.isStarredLocally) {
-                            Icons.Filled.Star
+                        val (icon, tint) = if (state.isStarredLocally) {
+                            Icons.Filled.Star to MaterialTheme.colorScheme.primary
                         } else {
-                            Icons.Outlined.StarBorder
+                            Icons.Outlined.StarBorder to MaterialTheme.colorScheme.onSurfaceVariant
                         }
-                        Icon(imageVector = icon, contentDescription = null)
+                        Icon(imageVector = icon, tint = tint, contentDescription = null)
                     }
                 },
             )

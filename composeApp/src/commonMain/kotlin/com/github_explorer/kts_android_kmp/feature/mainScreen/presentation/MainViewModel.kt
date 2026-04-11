@@ -34,6 +34,13 @@ class MainViewModel(
     private val refreshRequests = Channel<Unit>(1)
 
     init {
+        observeFavorites()
+        searchRepos()
+        viewModelScope.launch { observeRefreshRequests() }
+        onQueryChanged("kotlin")
+    }
+
+    fun observeFavorites(){
         viewModelScope.launch {
             observeFavoritesUseCase().collect { favorites ->
                 updateState {
@@ -44,7 +51,9 @@ class MainViewModel(
                 }
             }
         }
+    }
 
+    fun searchRepos(){
         viewModelScope.launch {
             events
                 .debounce(SEARCH_DEBOUNCE_MS)
@@ -88,10 +97,6 @@ class MainViewModel(
                         }
                 }
         }
-
-        viewModelScope.launch { observeRefreshRequests() }
-
-        onQueryChanged("kotlin")
     }
 
     fun toggleFavorite(repo: GitHubRepo) {

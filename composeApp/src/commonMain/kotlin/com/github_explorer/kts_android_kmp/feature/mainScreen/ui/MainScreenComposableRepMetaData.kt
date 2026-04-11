@@ -80,7 +80,6 @@ fun RepoCard(
             }
 
             if (!repo.description.isNullOrBlank()) {
-                Spacer(Modifier.height(4.dp))
                 Text(
                     text = repo.description,
                     style = MaterialTheme.typography.bodyMedium,

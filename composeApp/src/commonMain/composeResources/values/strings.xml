@@ -36,8 +36,6 @@
     <string name="main_screen_retry_search_hint">Попробуйте изменить запрос</string>
     <string name="main_screen_search_button">Поиск</string>
     <string name="main_screen_retry_button">Повторить</string>
-    <string name="main_tab_repositories">Репозитории</string>
-    <string name="main_tab_favorites">Избранное</string>
     <string name="main_screen_empty_favorites">Пока нет избранных репозиториев</string>
     <string name="star_logo">★ </string>
     <string name="fork_logo">⑂ </string>
@@ -50,8 +48,11 @@
     <string name="profile_load_error">Не удалось загрузить профиль</string>
     <string name="profile_retry">Retry</string>
     <string name="profile_logout">Logut</string>
-    <string name="profile_stat_repos">Репозитории</string>
     <string name="profile_stat_followers">Подписчики</string>
 
+    <string name="favorite_title">Избранное</string>
+    <string name="favorite_no_repos">Пока нет избранных репозиториев</string>
+
     <string name="repo_title">Репозиторий</string>
+    <string name="repos_title">Репозитории</string>
 </resources>

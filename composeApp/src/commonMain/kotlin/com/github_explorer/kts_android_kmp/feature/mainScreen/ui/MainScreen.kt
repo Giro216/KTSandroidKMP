@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,26 +46,28 @@ import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors.PrimaryBlue
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.headerHeight
 import com.github_explorer.kts_android_kmp.common.ui.theme.Strings.LOAD_REPO_ERR
-import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
+import com.github_explorer.kts_android_kmp.feature.favorites.ui.FavoriteScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.platform.MainScreenBackHandler
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
+import com.github_explorer.kts_android_kmp.feature.profile.ui.ProfileScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
+import ktsandroidkmp.composeapp.generated.resources.favorite_title
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_title
 import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_search_hint
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
-import ktsandroidkmp.composeapp.generated.resources.main_tab_favorites
-import ktsandroidkmp.composeapp.generated.resources.main_tab_repositories
 import ktsandroidkmp.composeapp.generated.resources.profile_title
+import ktsandroidkmp.composeapp.generated.resources.repos_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-private enum class MainBottomTab {
+enum class MainBottomTab {
     Repositories,
     Favorites,
+    Profile,
 }
 
 @Composable
@@ -72,11 +75,21 @@ fun MainScreen(
     lazyColumnModifier: Modifier = Modifier,
     mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
-    onOpenProfile: () -> Unit = {},
+    onNavigateToBootstrap: () -> Unit = {},
+    forcedTab: String? = null,
+    onForcedTabConsumed: () -> Unit = {},
     onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
 ) {
     val state by mainViewModel.state.collectAsStateWithLifecycle()
-    var selectedTab by remember { mutableStateOf(MainBottomTab.Repositories) }
+    var selectedTab by rememberSaveable { mutableStateOf(MainBottomTab.Repositories) }
+
+    LaunchedEffect(forcedTab) {
+        if (forcedTab == MainBottomTab.Favorites.name) {
+            selectedTab = MainBottomTab.Favorites
+            mainViewModel.loadFavoritesFromStorage()
+            onForcedTabConsumed()
+        }
+    }
 
     val listState = rememberLazyListState()
     val shouldLoadNext by remember {
@@ -144,7 +157,7 @@ fun MainScreen(
                         selected = selectedTab == MainBottomTab.Repositories,
                         onClick = { selectedTab = MainBottomTab.Repositories },
                         icon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                        label = { Text(stringResource(Res.string.main_tab_repositories)) },
+                        label = { Text(stringResource(Res.string.repos_title)) },
                     )
                     NavigationBarItem(
                         selected = selectedTab == MainBottomTab.Favorites,
@@ -153,11 +166,11 @@ fun MainScreen(
                             mainViewModel.loadFavoritesFromStorage()
                         },
                         icon = { Icon(Icons.Filled.Star, contentDescription = null) },
-                        label = { Text(stringResource(Res.string.main_tab_favorites)) },
+                        label = { Text(stringResource(Res.string.favorite_title)) },
                     )
                     NavigationBarItem(
-                        selected = false,
-                        onClick = onOpenProfile,
+                        selected = selectedTab == MainBottomTab.Profile,
+                        onClick = { selectedTab = MainBottomTab.Profile },
                         icon = { Icon(Icons.Filled.Person, contentDescription = null) },
                         label = { Text(stringResource(Res.string.profile_title)) },
                     )
@@ -256,7 +269,7 @@ fun MainScreen(
                     }
 
                     MainBottomTab.Favorites -> {
-                        FavoritesContent(
+                        FavoriteScreen(
                             repos = state.favoriteRepos,
                             favoriteRepoIds = state.favoriteRepoIds,
                             onOpenRepo = onOpenRepo,
@@ -264,6 +277,13 @@ fun MainScreen(
                             onFormatMetric = mainViewModel::formatMetric,
                             onColorMapping = mainViewModel::colorMapping,
                             lazyColumnModifier = lazyColumnModifier,
+                        )
+                    }
+
+                    MainBottomTab.Profile -> {
+                        ProfileScreen(
+                            onNavigateToBootstrap = onNavigateToBootstrap,
+                            modifier = Modifier.fillMaxSize(),
                         )
                     }
                 }
@@ -275,56 +295,6 @@ fun MainScreen(
                         .padding(bottom = 16.dp),
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun FavoritesContent(
-    repos: List<GitHubRepo>,
-    favoriteRepoIds: Set<Long>,
-    onOpenRepo: (owner: String, repo: String) -> Unit,
-    onToggleFavorite: (GitHubRepo) -> Unit,
-    onFormatMetric: (emoji: String, count: Int) -> String,
-    onColorMapping: (language: String) -> androidx.compose.ui.graphics.Color,
-    lazyColumnModifier: Modifier,
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        item(key = "favorites_title") {
-            Text(
-                text = "Избранное",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = lazyColumnModifier
-                    .fillMaxWidth()
-                    .padding(horizontal = ScreenHorizontalPaddingSmall)
-            )
-        }
-
-        // TODO не использовать repos, а брать их из favoriteRepoIds
-        if (repos.isEmpty()) {
-            item(key = "favorites_empty") {
-                Text(
-                    text = "Пока нет избранных репозиториев",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
-                )
-            }
-        }
-
-        items(items = repos, key = { it.id }) { repo ->
-            RepoCard(
-                repo = repo,
-                modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
-                onFormatMetric = onFormatMetric,
-                onColorMapping = onColorMapping,
-                onClick = { onOpenRepo(repo.owner, repo.name) },
-                isFavorite = favoriteRepoIds.contains(repo.id),
-                onFavoriteClick = { onToggleFavorite(repo) },
-            )
         }
     }
 }
