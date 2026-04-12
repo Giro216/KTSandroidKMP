@@ -36,6 +36,9 @@ import com.github_explorer.kts_android_kmp.feature.repoScreen.presentation.RepoU
 import com.github_explorer.kts_android_kmp.feature.repoScreen.presentation.RepoViewModel
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.fork_logo
+import ktsandroidkmp.composeapp.generated.resources.repo_screen_Language
+import ktsandroidkmp.composeapp.generated.resources.repo_screen_readme_load_error
+import ktsandroidkmp.composeapp.generated.resources.repo_screen_readme_title
 import ktsandroidkmp.composeapp.generated.resources.repo_title
 import ktsandroidkmp.composeapp.generated.resources.star_logo
 import org.jetbrains.compose.resources.stringResource
@@ -154,7 +157,7 @@ fun RepoScreenContent(
                     Spacer(modifier = Modifier.height(8.dp))
                     details.language?.let { lang ->
                         Text(
-                            text = "Language: $lang",
+                            text = stringResource(Res.string.repo_screen_Language) + lang,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -163,7 +166,7 @@ fun RepoScreenContent(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "README",
+                    text = stringResource(Res.string.repo_screen_readme_title),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -179,7 +182,8 @@ fun RepoScreenContent(
 
                     state.isError -> {
                         Text(
-                            text = state.errorMessage ?: "Failed to load README",
+                            text = state.errorMessage
+                                ?: stringResource(Res.string.repo_screen_readme_load_error),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium,
                         )
@@ -189,3 +193,4 @@ fun RepoScreenContent(
         }
     }
 }
+

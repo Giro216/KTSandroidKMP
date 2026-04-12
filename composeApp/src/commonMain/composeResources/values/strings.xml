@@ -53,6 +53,10 @@
     <string name="favorite_title">Избранное</string>
     <string name="favorite_no_repos">Пока нет избранных репозиториев</string>
 
+    <string name="repo_screen_Language">Language: </string>
+    <string name="repo_screen_readme_title">README</string>
+    <string name="repo_screen_readme_load_error">Failed to load README</string>
+
     <string name="repo_title">Репозиторий</string>
     <string name="repos_title">Репозитории</string>
 </resources>
