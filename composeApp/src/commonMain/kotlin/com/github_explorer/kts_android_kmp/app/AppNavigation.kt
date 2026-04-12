@@ -12,7 +12,7 @@ import com.github_explorer.kts_android_kmp.feature.intro.HelloScreen
 import com.github_explorer.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainBottomTab
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainScreen
-import com.github_explorer.kts_android_kmp.feature.repoScreen.ui.RepoScreen
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui.RepoScreen
 import com.github_explorer.kts_android_kmp.platform.exitApp
 
 @Composable

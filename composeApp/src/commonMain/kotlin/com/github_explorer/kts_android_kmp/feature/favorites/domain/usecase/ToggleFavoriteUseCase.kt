@@ -3,7 +3,7 @@ package com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.FavoriteRepository
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.toGitHubRepo
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoDetails
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoDetails
 
 class ToggleFavoriteUseCase(
     private val repository: FavoriteRepository,

@@ -1,11 +1,11 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.data.repo
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.repo
 
 import com.github_explorer.kts_android_kmp.core.data.network.GitHubApi
-import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoDetailsDto
-import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoReadmeDto
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoDetails
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoReadme
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoRepository
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoDetailsDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoReadmeDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoDetails
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoReadme
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoRepository
 import com.github_explorer.kts_android_kmp.utils.coRunCatching
 import kotlin.io.encoding.Base64
 

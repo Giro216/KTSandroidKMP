@@ -1,11 +1,11 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.presentation
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ObserveFavoritesUseCase
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ToggleFavoriteUseCase
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.useCase.LoadDetailsUseCase
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.useCase.LoadReadmeUseCase
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.useCase.LoadDetailsUseCase
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.useCase.LoadReadmeUseCase
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

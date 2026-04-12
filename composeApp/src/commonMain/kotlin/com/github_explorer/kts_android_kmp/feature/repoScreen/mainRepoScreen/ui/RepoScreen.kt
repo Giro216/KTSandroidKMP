@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.ui
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,10 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github_explorer.kts_android_kmp.feature.repoScreen.platform.MarkdownBlock
-import com.github_explorer.kts_android_kmp.feature.repoScreen.presentation.RepoUiEvent
-import com.github_explorer.kts_android_kmp.feature.repoScreen.presentation.RepoUiState
-import com.github_explorer.kts_android_kmp.feature.repoScreen.presentation.RepoViewModel
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.platform.MarkdownBlock
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation.RepoUiEvent
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation.RepoUiState
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation.RepoViewModel
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.fork_logo
 import ktsandroidkmp.composeapp.generated.resources.repo_screen_Language

@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.platform
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.platform
 
 import android.widget.TextView
 import androidx.compose.foundation.layout.fillMaxWidth

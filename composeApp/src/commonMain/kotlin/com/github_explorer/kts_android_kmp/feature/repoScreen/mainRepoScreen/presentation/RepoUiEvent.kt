@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.presentation
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation
 
 sealed interface RepoUiEvent {
     data class Init(val owner: String, val repo: String) : RepoUiEvent

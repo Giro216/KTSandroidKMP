@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.domain
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain
 
 interface GithubRepoRepository {
     suspend fun loadCurRepoReadme(owner: String, repo: String): Result<GithubRepoReadme>

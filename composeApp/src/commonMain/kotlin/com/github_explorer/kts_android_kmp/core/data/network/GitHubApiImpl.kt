@@ -2,8 +2,8 @@ package com.github_explorer.kts_android_kmp.core.data.network
 
 import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
 import com.github_explorer.kts_android_kmp.feature.profile.data.network.GithubUserDto
-import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoDetailsDto
-import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoReadmeDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoDetailsDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoReadmeDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

@@ -1,8 +1,8 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.presentation
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation
 
 import androidx.compose.runtime.Immutable
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoDetails
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoReadme
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoDetails
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoReadme
 
 @Immutable
 data class RepoUiState(

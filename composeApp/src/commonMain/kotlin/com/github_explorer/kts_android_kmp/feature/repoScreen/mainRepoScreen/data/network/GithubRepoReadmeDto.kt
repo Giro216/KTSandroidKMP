@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.data.network
+package com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
