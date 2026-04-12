@@ -37,6 +37,7 @@ private fun GithubRepoReadmeDto.toDomain(): GithubRepoReadme {
         decodeContent = decodedContent,
         path = name,
         htmlUrl = htmlUrl,
+        downloadUrl = downloadUrl,
     )
 }
 

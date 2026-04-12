@@ -11,4 +11,6 @@ data class GithubRepoReadmeDto(
     val sha: String,
     @SerialName("html_url")
     val htmlUrl: String,
+    @SerialName("download_url")
+    val downloadUrl: String,
 )

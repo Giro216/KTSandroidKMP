@@ -177,7 +177,12 @@ fun RepoScreenContent(
                     }
 
                     state.readme != null -> {
-                        MarkdownBlock(markdown = state.readme.decodeContent)
+                        val resolveReadme = resolveRelativeImages(
+                            markdown = state.readme.decodeContent,
+                            baseUrl = state.readme.downloadUrl ?: ""
+                        )
+
+                        MarkdownBlock(markdown = resolveReadme)
                     }
 
                     state.isError -> {
@@ -193,4 +198,24 @@ fun RepoScreenContent(
         }
     }
 }
+
+fun resolveRelativeImages(
+    markdown: String,
+    baseUrl: String
+): String {
+    val normalizedBaseUrl = baseUrl
+        .replace(Regex("""/README\.md$""", RegexOption.IGNORE_CASE), "")
+        .trimEnd('/')
+
+    return markdown.replace(
+        Regex("""!\[(.*?)\]\((?!http)(.*?)\)""")
+    ) {
+        val alt = it.groupValues[1]
+        val path = it.groupValues[2]
+        val fullUrl = normalizedBaseUrl + "/" + path.trimStart('/')
+
+        "![$alt]($fullUrl)"
+    }
+}
+
 
