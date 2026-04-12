@@ -12,6 +12,7 @@ import com.github_explorer.kts_android_kmp.feature.intro.HelloScreen
 import com.github_explorer.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainBottomTab
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainScreen
+import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.ui.IssueScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui.RepoScreen
 import com.github_explorer.kts_android_kmp.platform.exitApp
 
@@ -88,8 +89,13 @@ fun AppNavigation(innerPadding: PaddingValues) {
                         ?.set(repoProperty, repo)
                     navController.currentBackStackEntry
                         ?.savedStateHandle
-                        ?.set(forcedTabProperty, MainBottomTab.Favorites.name)
+                        ?.set(forcedTabProperty, MainBottomTab.Repositories.name)
                     navController.navigate(Routes.RepoScreen)
+                },
+                onOpenFavorites = {
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(forcedTabProperty, MainBottomTab.Favorites.name)
                 },
                 lazyColumnModifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             )
@@ -101,10 +107,31 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 onBackClick = {
                     navController.popBackStack()
                 },
+                onOpenIssues = { owner, repo ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(ownerProperty, owner)
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(repoProperty, repo)
+                    navController.navigate(Routes.IssueScreen)
+                },
                 owner = navController.previousBackStackEntry?.savedStateHandle?.get(ownerProperty)
                     ?: "",
                 repo = navController.previousBackStackEntry?.savedStateHandle?.get(repoProperty)
                     ?: "",
+            )
+        }
+
+        composable<Routes.IssueScreen> {
+            IssueScreen(
+                owner = navController.previousBackStackEntry?.savedStateHandle?.get(ownerProperty)
+                    ?: "",
+                repo = navController.previousBackStackEntry?.savedStateHandle?.get(repoProperty)
+                    ?: "",
+                onBackClick = {
+                    navController.popBackStack()
+                },
             )
         }
     }

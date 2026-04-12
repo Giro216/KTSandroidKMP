@@ -22,4 +22,7 @@ sealed class Routes {
     @Serializable
     data object RepoScreen : Routes()
 
+    @Serializable
+    data object IssueScreen : Routes()
+
 }

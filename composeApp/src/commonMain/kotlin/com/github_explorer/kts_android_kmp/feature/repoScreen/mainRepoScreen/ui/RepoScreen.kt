@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -27,9 +28,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoDetails
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoReadme
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.platform.MarkdownBlock
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation.RepoUiEvent
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.presentation.RepoUiState
@@ -50,6 +56,7 @@ fun RepoScreen(
     owner: String,
     repo: String,
     onBackClick: () -> Unit,
+    onOpenIssues: (owner: String, repo: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -62,6 +69,7 @@ fun RepoScreen(
         state = state,
         onBackClick = onBackClick,
         onToggleFavorite = { viewModel.onEvent(RepoUiEvent.ToggleFavorite) },
+        onOpenIssues = { onOpenIssues(owner, repo) },
         modifier = modifier,
     )
 }
@@ -72,6 +80,10 @@ fun RepoScreenContent(
     state: RepoUiState,
     onBackClick: () -> Unit,
     onToggleFavorite: () -> Unit,
+    onOpenIssues: () -> Unit,
+    renderReadme: @Composable (String) -> Unit = { markdown ->
+        MarkdownBlock(markdown = markdown)
+    },
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -165,6 +177,32 @@ fun RepoScreenContent(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                OutlinedButton(
+                    onClick = onOpenIssues,
+                    enabled = (state.details?.openIssuesCount ?: 0) > 0,
+                    modifier = modifier
+                        .fillMaxWidth(),
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ){
+                        Text(
+                            text = "Issues",
+                            style = MaterialTheme.typography.bodyLargeEmphasized,
+                            color = AppColors.PrimaryBlue,
+                        )
+
+                        Text(
+                            text = "${state.details?.openIssuesCount ?: 0}",
+                            style = MaterialTheme.typography.bodyLargeEmphasized,
+                            color = AppColors.PrimaryBlue,
+                        )
+                    }
+
+                }
+
                 Text(
                     text = stringResource(Res.string.repo_screen_readme_title),
                     style = MaterialTheme.typography.titleMedium,
@@ -182,7 +220,7 @@ fun RepoScreenContent(
                             baseUrl = state.readme.downloadUrl ?: ""
                         )
 
-                        MarkdownBlock(markdown = resolveReadme)
+                        renderReadme(resolveReadme)
                     }
 
                     state.isError -> {
@@ -215,6 +253,52 @@ fun resolveRelativeImages(
         val fullUrl = normalizedBaseUrl + "/" + path.trimStart('/')
 
         "![$alt]($fullUrl)"
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun RepoScreenContentPreview() {
+    MaterialTheme {
+        RepoScreenContent(
+            state = RepoUiState(
+                isLoading = false,
+                isError = false,
+                details = GithubRepoDetails(
+                    id = 1L,
+                    owner = "octocat",
+                    name = "Hello-World",
+                    fullName = "octocat/Hello-World",
+                    description = "This your first repo!",
+                    language = "Kotlin",
+                    starsCount = 1532,
+                    forksCount = 321,
+                    openIssuesCount = 17,
+                    ownerAvatarUrl = null,
+                    htmlUrl = "https://github.com/octocat/Hello-World",
+                    watchersCount = 800,
+                    licenseName = "MIT",
+                    defaultBranch = "main",
+                    updatedAt = "2026-04-13T10:00:00Z",
+                ),
+                readme = GithubRepoReadme(
+                    decodeContent = "# Hello-World\n\nSample README for preview.",
+                    path = "README.md",
+                    htmlUrl = "https://github.com/octocat/Hello-World/blob/main/README.md",
+                    downloadUrl = "https://raw.githubusercontent.com/octocat/Hello-World/main/README.md",
+                ),
+                isStarredLocally = true,
+            ),
+            onBackClick = {},
+            onToggleFavorite = {},
+            onOpenIssues = {},
+            renderReadme = { markdown ->
+                Text(
+                    text = markdown,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+        )
     }
 }
 

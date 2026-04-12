@@ -12,6 +12,7 @@ val appModules = listOf(
     mainScreenModule,
     profileModule,
     RepoScreenModule,
+    IssueScreenModule,
 )
 
 fun initKoin(platformSpecific: Module = module {}) {

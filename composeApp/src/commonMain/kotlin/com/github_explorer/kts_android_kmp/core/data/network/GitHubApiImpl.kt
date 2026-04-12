@@ -2,6 +2,7 @@ package com.github_explorer.kts_android_kmp.core.data.network
 
 import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
 import com.github_explorer.kts_android_kmp.feature.profile.data.network.GithubUserDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.GithubIssueDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoDetailsDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoReadmeDto
 import io.ktor.client.HttpClient
@@ -17,6 +18,8 @@ interface GitHubApi {
     suspend fun getCurRepoReadme(owner: String, repo: String): GithubRepoReadmeDto
 
     suspend fun getCurRepoDetails(owner: String, repo: String): GithubRepoDetailsDto
+
+    suspend fun getCurRepoIssues(owner: String, repo: String): List<GithubIssueDto>
 }
 
 class GitHubApiImpl(
@@ -48,6 +51,11 @@ class GitHubApiImpl(
     override suspend fun getCurRepoDetails(owner: String, repo: String): GithubRepoDetailsDto {
         return client.get("/repos/$owner/$repo") {
         }.body<GithubRepoDetailsDto>()
+    }
+
+    override suspend fun getCurRepoIssues(owner: String, repo: String): List<GithubIssueDto> {
+        return client.get("/repos/$owner/$repo/issues") {
+        }.body<List<GithubIssueDto>>()
     }
 
 
