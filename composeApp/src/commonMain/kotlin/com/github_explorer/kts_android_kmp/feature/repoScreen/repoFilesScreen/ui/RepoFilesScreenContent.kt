@@ -34,6 +34,13 @@ import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.do
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFilesUiEvent
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFilesUiState
+import ktsandroidkmp.composeapp.generated.resources.Res
+import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_button
+import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_edit
+import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_file_icon
+import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_folder_icon
+import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_loading_error
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +92,7 @@ fun RepoFilesScreenContent(
 
                         RepoFileItemType.FILE -> {
                             IconButton(onClick = { onEvent(RepoFilesUiEvent.UpdateFileClicked) }) {
-                                Text(text = "Edit")
+                                Text(text = stringResource(Res.string.repo_files_screen_edit))
                             }
                         }
                     }
@@ -113,13 +120,14 @@ fun RepoFilesScreenContent(
 
             if (state.isError) {
                 Text(
-                    text = state.errorMessage ?: "Ошибка загрузки",
+                    text = state.errorMessage
+                        ?: stringResource(Res.string.repo_files_screen_loading_error),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(Modifier.height(8.dp))
                 TextButton(onClick = { onEvent(RepoFilesUiEvent.Retry) }) {
-                    Text("Повторить")
+                    Text(stringResource(Res.string.main_screen_retry_button))
                 }
                 Spacer(Modifier.height(12.dp))
             }
@@ -173,8 +181,8 @@ private fun RepoFileRow(
     modifier: Modifier = Modifier,
 ) {
     val prefix = when (item.type) {
-        RepoFileItemType.DIR -> "📁"
-        RepoFileItemType.FILE -> "📄"
+        RepoFileItemType.DIR -> stringResource(Res.string.repo_files_screen_folder_icon)
+        RepoFileItemType.FILE -> stringResource(Res.string.repo_files_screen_file_icon)
     }
 
     Row(

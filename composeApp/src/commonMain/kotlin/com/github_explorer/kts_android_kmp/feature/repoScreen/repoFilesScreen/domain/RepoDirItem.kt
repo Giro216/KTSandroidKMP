@@ -10,18 +10,3 @@ data class RepoDirItem(
     val sha: String? = null,
     val size: Long? = null,
 )
-
-/*
-        "required": [
-          "_links",
-          "git_url",
-          "html_url",
-          "download_url",
-          "name",
-          "path",
-          "sha",
-          "size",
-          "type",
-          "url"
-        ]
- */

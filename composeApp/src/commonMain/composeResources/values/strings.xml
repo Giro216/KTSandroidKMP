@@ -85,4 +85,31 @@
     <string name="cancel_ru">Отмена</string>
     <string name="cancel_en">Cancel</string>
     <string name="OK">OK</string>
+
+    <string name="repo_files_screen_new_file">Новый файл</string>
+    <string name="repo_files_screen_edit_file">Редактирование файла</string>
+    <string name="repo_files_screen_file_name">Имя файла</string>
+    <string name="repo_files_screen_content">Содержимое</string>
+    <string name="repo_files_screen_folder_icon">📁</string>
+    <string name="repo_files_screen_file_icon">📄</string>
+    <string name="repo_files_screen_file_not_implemented">Просмотр/редактирование файла пока не реализованы: %1$s</string>
+    <string name="repo_files_screen_enter_file_name">Введите имя файла</string>
+    <string name="repo_files_screen_invalid_file_name">Некорректное имя файла</string>
+    <string name="repo_files_screen_file_created">Файл создан: %1$s</string>
+    <string name="repo_files_screen_upload_error">Ошибка загрузки</string>
+    <string name="repo_files_screen_file_not_loaded">Файл еще не загружен</string>
+    <string name="repo_files_screen_edit_only_text">Редактирование доступно только для CODE/JSON/TEXT</string>
+    <string name="repo_files_screen_file_updated">Файл обновлен</string>
+    <string name="repo_files_screen_update_error">Ошибка обновления</string>
+    <string name="repo_files_screen_path_not_defined">Путь файла не определен</string>
+
+    <string name="repo_files_conflict_error">Конфликт: файл изменился на сервере (sha mismatch). Обновите данные и попробуйте снова.</string>
+    <string name="repo_files_validation_error">Ошибка валидации (422). Возможно, файл уже существует или путь/имя некорректны.</string>
+    <string name="repo_files_unauthorized_error">Не авторизован (401).</string>
+    <string name="repo_files_forbidden_error">Нет доступа (403). Проверьте права/скоупы токена.</string>
+    <string name="repo_files_not_found_error">Ресурс не найден (404).</string>
+    <string name="repo_files_server_error">Ошибка сервера GitHub: %1$s</string>
+    <string name="repo_files_screen_edit">Edit</string>
+    <string name="repo_files_screen_loading_error">Ошибка загрузки</string>
+    <string name="repo_files_screen_preview_not_available">Предварительный просмотр недоступен для %1$s</string>
 </resources>
