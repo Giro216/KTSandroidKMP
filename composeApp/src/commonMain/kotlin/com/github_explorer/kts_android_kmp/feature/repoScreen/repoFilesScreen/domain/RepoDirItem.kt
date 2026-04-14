@@ -11,11 +11,6 @@ data class RepoDirItem(
     val size: Long? = null,
 )
 
-enum class RepoFileItemType {
-    FILE,
-    DIR,
-}
-
 /*
         "required": [
           "_links",
