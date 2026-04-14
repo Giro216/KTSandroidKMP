@@ -10,6 +10,7 @@ import com.github_explorer.kts_android_kmp.app.App
 import com.github_explorer.kts_android_kmp.core.config.logging.initLogger
 import com.github_explorer.kts_android_kmp.di.authModule
 import com.github_explorer.kts_android_kmp.di.initKoin
+import com.github_explorer.kts_android_kmp.di.markwonModule
 import com.github_explorer.kts_android_kmp.di.roomModule
 import com.github_explorer.kts_android_kmp.feature.login.oauth.platform.AppAuthHandler
 import com.github_explorer.kts_android_kmp.platform.setActivity
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
                 includes(
                     authModule(appAuthHandler, this@MainActivity),
                     roomModule(this@MainActivity),
+                    markwonModule()
                 )
             }
         )

@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     id("io.gitlab.arturbosch.detekt")
-//    id("com.android.application")
     id("com.google.gms.google-services")
     alias(libs.plugins.google.firebase.crashlytics)
 }
@@ -46,6 +45,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.coil2.legacy)
             implementation(libs.androidx.swiperefreshlayout)
             implementation(libs.coil.network.okhttp)
             implementation(libs.coil.gif)
@@ -58,6 +58,8 @@ kotlin {
 
             implementation("com.google.firebase:firebase-analytics")
 
+            implementation(libs.markwon.core)
+            implementation(libs.markwon.image.coil)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

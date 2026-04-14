@@ -13,9 +13,17 @@ import org.koin.dsl.module
 val mainScreenModule = module {
     single<MainUiMapper> { MainUiMapperImpl() }
     single<GitHubRepository> { GitHubRepositoryImpl(api = get(), cache = get()) }
-    viewModel { MainViewModel(searchReposPageUseCase = get(), uiMapper = get(), reducer = get()) }
+
+    viewModel {
+        MainViewModel(
+            searchReposPageUseCase = get(),
+            observeFavoritesUseCase = get(),
+            toggleFavoriteUseCase = get(),
+            uiMapper = get(),
+            reducer = get(),
+        )
+    }
 
     factory { SearchReposPageUseCase(repo = get()) }
     factory { MainReducer(uiMapper = get()) }
-
 }

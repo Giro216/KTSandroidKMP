@@ -41,8 +41,8 @@ import ktsandroidkmp.composeapp.generated.resources.profile_load_error
 import ktsandroidkmp.composeapp.generated.resources.profile_logout
 import ktsandroidkmp.composeapp.generated.resources.profile_retry
 import ktsandroidkmp.composeapp.generated.resources.profile_stat_followers
-import ktsandroidkmp.composeapp.generated.resources.profile_stat_repos
 import ktsandroidkmp.composeapp.generated.resources.profile_title
+import ktsandroidkmp.composeapp.generated.resources.repos_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -145,7 +145,7 @@ fun PrintProfile(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         Stat(
-            title = stringResource(Res.string.profile_stat_repos),
+            title = stringResource(Res.string.repos_title),
             value = profile.publicRepos
         )
         Stat(

@@ -2,6 +2,8 @@ package com.github_explorer.kts_android_kmp.core.data.network
 
 import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
 import com.github_explorer.kts_android_kmp.feature.profile.data.network.GithubUserDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoDetailsDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoReadmeDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -11,6 +13,10 @@ interface GitHubApi {
     suspend fun loadRepos(param: GitHubApiImpl.LoadReposRequestParam): GithubRepoSearchResponseDto
 
     suspend fun getCurrentUser(): GithubUserDto
+
+    suspend fun getCurRepoReadme(owner: String, repo: String): GithubRepoReadmeDto
+
+    suspend fun getCurRepoDetails(owner: String, repo: String): GithubRepoDetailsDto
 }
 
 class GitHubApiImpl(
@@ -34,6 +40,17 @@ class GitHubApiImpl(
         }.body<GithubUserDto>()
     }
 
+    override suspend fun getCurRepoReadme(owner: String, repo: String): GithubRepoReadmeDto {
+        return client.get("/repos/$owner/$repo/readme") {
+        }.body<GithubRepoReadmeDto>()
+    }
+
+    override suspend fun getCurRepoDetails(owner: String, repo: String): GithubRepoDetailsDto {
+        return client.get("/repos/$owner/$repo") {
+        }.body<GithubRepoDetailsDto>()
+    }
+
+
     class LoadReposRequestParam(
         val query: String,
         val sort: SortType? = null,
@@ -41,7 +58,6 @@ class GitHubApiImpl(
         val perPage: Int? = null,
         val page: Int? = null,
     ) {
-
 
         enum class SortType(private val value: String) {
             STARS("stars"),

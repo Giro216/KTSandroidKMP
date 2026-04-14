@@ -3,7 +3,10 @@ package com.github_explorer.kts_android_kmp.feature.mainScreen.presentation
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
+import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ObserveFavoritesUseCase
+import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ToggleFavoriteUseCase
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
+import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.usecase.SearchReposPageUseCase
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainAction
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainReducer
@@ -12,6 +15,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 
@@ -21,6 +25,8 @@ private const val PER_PAGE = 20
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class MainViewModel(
     private val searchReposPageUseCase: SearchReposPageUseCase,
+    private val observeFavoritesUseCase: ObserveFavoritesUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val uiMapper: MainUiMapper,
     private val reducer: MainReducer,
 ) : BaseViewModel<MainUiEvent, MainUiState>(initialState = MainUiState(), extraBufferCapacity = 1) {
@@ -28,6 +34,26 @@ class MainViewModel(
     private val refreshRequests = Channel<Unit>(1)
 
     init {
+        observeFavorites()
+        searchRepos()
+        viewModelScope.launch { observeRefreshRequests() }
+        onQueryChanged("kotlin")
+    }
+
+    fun observeFavorites(){
+        viewModelScope.launch {
+            observeFavoritesUseCase().collect { favorites ->
+                updateState {
+                    copy(
+                        favoriteRepos = favorites,
+                        favoriteRepoIds = favorites.map { it.id }.toSet(),
+                    )
+                }
+            }
+        }
+    }
+
+    fun searchRepos(){
         viewModelScope.launch {
             events
                 .debounce(SEARCH_DEBOUNCE_MS)
@@ -71,10 +97,24 @@ class MainViewModel(
                         }
                 }
         }
+    }
 
-        viewModelScope.launch { observeRefreshRequests() }
+    fun toggleFavorite(repo: GitHubRepo) {
+        viewModelScope.launch {
+            toggleFavoriteUseCase(repo)
+        }
+    }
 
-        onQueryChanged("kotlin")
+    fun loadFavoritesFromStorage() {
+        viewModelScope.launch {
+            val favorites = observeFavoritesUseCase().first()
+            updateState {
+                copy(
+                    favoriteRepos = favorites,
+                    favoriteRepoIds = favorites.map { it.id }.toSet(),
+                )
+            }
+        }
     }
 
     fun onQueryChanged(value: String) {

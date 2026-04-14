@@ -7,6 +7,7 @@ import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
 data class MainUiState(
     val query: String = "",
     val repos: List<GitHubRepo> = emptyList(),
+    val favoriteRepos: List<GitHubRepo> = emptyList(),
     val totalCount: Int? = null,
 
     val isLoading: Boolean = true,
@@ -14,6 +15,8 @@ data class MainUiState(
     val hint: HintContent? = null,
 
     val isRefreshing: Boolean = false,
+
+    val favoriteRepoIds: Set<Long> = emptySet(),
 
     val pagination: PaginationUiState = PaginationUiState(),
 ) {
@@ -25,4 +28,3 @@ data class MainUiState(
         val isPaginationError: Boolean = false,
     )
 }
-
