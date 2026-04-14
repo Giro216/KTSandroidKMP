@@ -13,3 +13,20 @@ data class RepoFileContent(
     val encoding: String,
     val downloadUrl: String?
 )
+
+/*
+      "required": [
+        "_links",
+        "git_url",
+        "html_url",
+        "download_url",
+        "name",
+        "path",
+        "sha",
+        "size",
+        "type",
+        "url",
+        "content",
+        "encoding"
+      ]
+ */

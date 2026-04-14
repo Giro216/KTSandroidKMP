@@ -2,7 +2,6 @@ package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.p
 
 import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
-import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.RepoFilesStrings
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.FileType
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.useCase.CreateRepoFileUseCase
@@ -95,14 +94,14 @@ class RepoFilesViewModel(
     private fun openEditorForUpdate() {
         val file = state.value.fileContent
         if (file == null) {
-            acceptLabel(RepoFilesClickEvent.Snackbar(RepoFilesStrings.FILE_NOT_LOADED))
+            acceptLabel(RepoFilesClickEvent.Snackbar("Файл еще не загружен"))
             return
         }
 
         val type = getFileType(file.name)
         val isEditable = type == FileType.CODE || type == FileType.JSON || type == FileType.TEXT
         if (!isEditable) {
-            acceptLabel(RepoFilesClickEvent.Snackbar(RepoFilesStrings.EDIT_ONLY_TEXT))
+            acceptLabel(RepoFilesClickEvent.Snackbar("Редактирование доступно только для CODE/JSON/TEXT"))
             return
         }
 
@@ -205,11 +204,11 @@ class RepoFilesViewModel(
         val content = state.value.newFileContent
 
         if (fileName.isBlank()) {
-            acceptLabel(RepoFilesClickEvent.Snackbar(RepoFilesStrings.ENTER_FILE_NAME))
+            acceptLabel(RepoFilesClickEvent.Snackbar("Введите имя файла"))
             return
         }
         if (fileName.contains("..")) {
-            acceptLabel(RepoFilesClickEvent.Snackbar(RepoFilesStrings.INVALID_FILE_NAME))
+            acceptLabel(RepoFilesClickEvent.Snackbar("Некорректное имя файла"))
             return
         }
 
@@ -238,16 +237,12 @@ class RepoFilesViewModel(
                             newFileContent = "",
                         )
                     }
-                    acceptLabel(RepoFilesClickEvent.Snackbar(RepoFilesStrings.FILE_CREATED + fullPath))
+                    acceptLabel(RepoFilesClickEvent.Snackbar("Файл создан: $fullPath"))
                     load()
                 }
                 .onFailure { t ->
                     updateState { copy(isUploading = false) }
-                    acceptLabel(
-                        RepoFilesClickEvent.Snackbar(
-                            t.message ?: RepoFilesStrings.UPLOAD_ERROR
-                        )
-                    )
+                    acceptLabel(RepoFilesClickEvent.Snackbar(t.message ?: "Ошибка загрузки"))
                     Napier.e("Failed to create file", t)
                 }
         }
@@ -260,7 +255,7 @@ class RepoFilesViewModel(
         val content = state.value.newFileContent
 
         if (path.isBlank()) {
-            acceptLabel(RepoFilesClickEvent.Snackbar(RepoFilesStrings.PATH_NOT_DEFINED))
+            acceptLabel(RepoFilesClickEvent.Snackbar("Путь файла не определен"))
             return
         }
 
@@ -293,16 +288,12 @@ class RepoFilesViewModel(
                             newFileContent = "",
                         )
                     }
-                    acceptLabel(RepoFilesClickEvent.Snackbar(RepoFilesStrings.FILE_UPDATED))
+                    acceptLabel(RepoFilesClickEvent.Snackbar("Файл обновлен"))
                     load()
                 }
                 .onFailure { t ->
                     updateState { copy(isUploading = false) }
-                    acceptLabel(
-                        RepoFilesClickEvent.Snackbar(
-                            t.message ?: RepoFilesStrings.UPDATE_ERROR
-                        )
-                    )
+                    acceptLabel(RepoFilesClickEvent.Snackbar(t.message ?: "Ошибка обновления"))
                     Napier.e("Failed to update file", t)
                 }
         }

@@ -24,12 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFileEditorMode
-import ktsandroidkmp.composeapp.generated.resources.Res
-import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_content
-import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_edit_file
-import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_file_name
-import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_new_file
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +47,7 @@ fun FileEditorScreen(
                         onValueChange = onFileNameChanged,
                         singleLine = true,
                         enabled = !isUploading,
-                        label = { Text(stringResource(Res.string.repo_files_screen_file_name)) },
+                        label = { Text("Имя файла") },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 },
@@ -78,8 +72,7 @@ fun FileEditorScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = if (mode == RepoFileEditorMode.CREATE) stringResource(Res.string.repo_files_screen_new_file)
-                else stringResource(Res.string.repo_files_screen_edit_file),
+                text = if (mode == RepoFileEditorMode.CREATE) "Новый файл" else "Редактирование файла",
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(Modifier.height(12.dp))
@@ -87,7 +80,7 @@ fun FileEditorScreen(
                 value = content,
                 onValueChange = onContentChanged,
                 enabled = !isUploading,
-                label = { Text(stringResource(Res.string.repo_files_screen_content)) },
+                label = { Text("Содержимое") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),

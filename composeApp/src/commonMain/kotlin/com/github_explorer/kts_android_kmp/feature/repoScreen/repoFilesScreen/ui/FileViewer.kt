@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui
+package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui//package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,9 +13,6 @@ import coil3.compose.AsyncImage
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.platform.MarkdownBlock
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.FileType
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileContent
-import ktsandroidkmp.composeapp.generated.resources.Res
-import ktsandroidkmp.composeapp.generated.resources.repo_files_screen_preview_not_available
-import org.jetbrains.compose.resources.stringResource
 import kotlin.io.encoding.Base64
 
 @Composable
@@ -76,7 +73,7 @@ fun TextViewer(file: RepoFileContent) {
 
 @Composable
 fun UnknownViewer(file: RepoFileContent) {
-    Text(stringResource(Res.string.repo_files_screen_preview_not_available, file.name))
+    Text("Preview not available for ${file.name}")
 }
 
 fun getFileType(name: String): FileType {

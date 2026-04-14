@@ -1,7 +1,6 @@
 package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.repo
 
 import com.github_explorer.kts_android_kmp.core.data.network.GitHubApi
-import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.RepoFilesStrings
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.CreateOrUpdateFileRequestDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.RepoDirContentDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.RepoFileContentDto
@@ -184,27 +183,27 @@ private fun <T> Result<T>.mapFailureToDomainMessage(): Result<T> {
             is ClientRequestException -> {
                 when (throwable.response.status) {
                     HttpStatusCode.Conflict -> IllegalStateException(
-                        RepoFilesStrings.CONFLICT_ERROR,
+                        "Конфликт: файл изменился на сервере (sha mismatch). Обновите данные и попробуйте снова.",
                         throwable
                     )
 
                     HttpStatusCode.UnprocessableEntity -> IllegalStateException(
-                        RepoFilesStrings.VALIDATION_ERROR,
+                        "Ошибка валидации (422). Возможно, файл уже существует или путь/имя некорректны.",
                         throwable
                     )
 
                     HttpStatusCode.Unauthorized -> IllegalStateException(
-                        RepoFilesStrings.UNAUTHORIZED_ERROR,
+                        "Не авторизован (401).",
                         throwable
                     )
 
                     HttpStatusCode.Forbidden -> IllegalStateException(
-                        RepoFilesStrings.FORBIDDEN_ERROR,
+                        "Нет доступа (403). Проверьте права/скоупы токена.",
                         throwable
                     )
 
                     HttpStatusCode.NotFound -> IllegalStateException(
-                        RepoFilesStrings.NOT_FOUND_ERROR,
+                        "Ресурс не найден (404).",
                         throwable
                     )
 
@@ -213,7 +212,7 @@ private fun <T> Result<T>.mapFailureToDomainMessage(): Result<T> {
             }
 
             is ServerResponseException -> IllegalStateException(
-                RepoFilesStrings.SERVER_ERROR + throwable.response.status,
+                "Ошибка сервера GitHub: ${throwable.response.status}",
                 throwable
             )
 
