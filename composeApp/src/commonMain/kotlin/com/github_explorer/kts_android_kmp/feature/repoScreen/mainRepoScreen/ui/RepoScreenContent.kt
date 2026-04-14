@@ -26,6 +26,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors
@@ -50,6 +51,7 @@ fun RepoScreenContent(
     onBackClick: () -> Unit,
     onToggleFavorite: () -> Unit,
     onOpenIssues: () -> Unit,
+    onOpenCode: () -> Unit,
     renderReadme: @Composable (String) -> Unit = { markdown ->
         MarkdownBlock(markdown = markdown)
     },
@@ -111,6 +113,8 @@ fun RepoScreenContent(
 
                 IssueButton(state = state, onOpenIssues = onOpenIssues, modifier = modifier)
 
+                CodeButton(state = state, onOpenCode = onOpenCode)
+
                 PrintReadmeSection(state = state, renderReadme = renderReadme)
             }
         }
@@ -165,8 +169,7 @@ fun IssueButton(state: RepoUiState, onOpenIssues: () -> Unit, modifier: Modifier
     OutlinedButton(
         onClick = onOpenIssues,
         enabled = (state.details?.openIssuesCount ?: 0) > 0,
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
     ) {
         Row(
@@ -185,6 +188,26 @@ fun IssueButton(state: RepoUiState, onOpenIssues: () -> Unit, modifier: Modifier
                 color = AppColors.PrimaryBlue,
             )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun CodeButton(state: RepoUiState, onOpenCode: () -> Unit) {
+    Spacer(modifier = Modifier.height(12.dp))
+
+    OutlinedButton(
+        onClick = onOpenCode,
+        enabled = state.details != null,
+        shape = MaterialTheme.shapes.small,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text = "Code",
+            style = MaterialTheme.typography.bodyLargeEmphasized,
+            color = AppColors.PrimaryBlue,
+            textAlign = TextAlign.Start,
+        )
     }
 }
 

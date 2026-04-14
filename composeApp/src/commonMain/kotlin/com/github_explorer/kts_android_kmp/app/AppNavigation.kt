@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.toRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.github_explorer.kts_android_kmp.feature.bootstrap.BootstrapScreen
 import com.github_explorer.kts_android_kmp.feature.intro.HelloScreen
 import com.github_explorer.kts_android_kmp.feature.login.oauth.ui.LoginScreen
@@ -15,6 +15,7 @@ import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainBottomTab
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.ui.IssueScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui.RepoScreen
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui.RepoFilesScreen
 import com.github_explorer.kts_android_kmp.platform.exitApp
 
 @Composable
@@ -104,6 +105,9 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 onOpenIssues = { owner, repo ->
                     navController.navigate(Routes.IssueScreen(owner = owner, repo = repo))
                 },
+                onOpenCode = { owner, repo ->
+                    navController.navigate(Routes.RepoFilesScreen(owner = owner, repo = repo, path = ""))
+                },
                 owner = route.owner,
                 repo = route.repo,
             )
@@ -116,6 +120,27 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 repo = route.repo,
                 onBackClick = {
                     navController.popBackStack()
+                },
+            )
+        }
+
+        composable<Routes.RepoFilesScreen> { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.RepoFilesScreen>()
+            RepoFilesScreen(
+                owner = route.owner,
+                repo = route.repo,
+                path = route.path,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onOpenPath = { newPath ->
+                    navController.navigate(
+                        Routes.RepoFilesScreen(
+                            owner = route.owner,
+                            repo = route.repo,
+                            path = newPath,
+                        )
+                    )
                 },
             )
         }

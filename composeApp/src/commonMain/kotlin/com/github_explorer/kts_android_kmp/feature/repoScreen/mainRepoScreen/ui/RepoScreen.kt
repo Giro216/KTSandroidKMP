@@ -22,6 +22,7 @@ fun RepoScreen(
     repo: String,
     onBackClick: () -> Unit,
     onOpenIssues: (owner: String, repo: String) -> Unit,
+    onOpenCode: (owner: String, repo: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -35,6 +36,7 @@ fun RepoScreen(
         onBackClick = onBackClick,
         onToggleFavorite = { viewModel.onEvent(RepoUiEvent.ToggleFavorite) },
         onOpenIssues = { onOpenIssues(owner, repo) },
+        onOpenCode = { onOpenCode(owner, repo) },
         modifier = modifier,
     )
 }
@@ -75,6 +77,7 @@ private fun RepoScreenContentPreview() {
             onBackClick = {},
             onToggleFavorite = {},
             onOpenIssues = {},
+            onOpenCode = {},
             renderReadme = { markdown ->
                 Text(
                     text = markdown,
