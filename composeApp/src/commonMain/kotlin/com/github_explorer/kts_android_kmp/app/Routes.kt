@@ -28,10 +28,4 @@ sealed class Routes {
         val repo: String,
     ) : Routes()
 
-    @Serializable
-    data class RepoFilesScreen(
-        val owner: String,
-        val repo: String,
-        val path: String
-    ) : Routes()
 }
