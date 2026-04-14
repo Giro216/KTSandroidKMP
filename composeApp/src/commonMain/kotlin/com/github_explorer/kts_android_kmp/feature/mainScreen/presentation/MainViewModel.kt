@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ObserveFavoritesUseCase
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ToggleFavoriteUseCase
-import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
+import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.usecase.SearchReposPageUseCase
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainAction
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainReducer
@@ -21,6 +21,8 @@ import kotlinx.coroutines.launch
 
 private const val SEARCH_DEBOUNCE_MS = 1000L
 private const val PER_PAGE = 20
+
+private const val KOTLIN = "kotlin"
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class MainViewModel(
@@ -37,10 +39,10 @@ class MainViewModel(
         observeFavorites()
         searchRepos()
         viewModelScope.launch { observeRefreshRequests() }
-        onQueryChanged("kotlin")
+        onQueryChanged(KOTLIN)
     }
 
-    fun observeFavorites(){
+    fun observeFavorites() {
         viewModelScope.launch {
             observeFavoritesUseCase().collect { favorites ->
                 updateState {
@@ -53,7 +55,7 @@ class MainViewModel(
         }
     }
 
-    fun searchRepos(){
+    fun searchRepos() {
         viewModelScope.launch {
             events
                 .debounce(SEARCH_DEBOUNCE_MS)
@@ -128,7 +130,7 @@ class MainViewModel(
     }
 
     fun retry() {
-        val query = state.value.query.trim().ifBlank { "kotlin" }
+        val query = state.value.query.trim().ifBlank { KOTLIN }
         updateState { copy(query = query) }
         acceptLabel(MainUiEvent.RetryClicked)
     }

@@ -39,6 +39,7 @@
     <string name="main_screen_empty_favorites">Пока нет избранных репозиториев</string>
     <string name="star_logo">★ </string>
     <string name="fork_logo">⑂ </string>
+    <string name="issue_logo">🐞 </string>
 
     <string name="login_waiting_title">Ждём логина…</string>
     <string name="login_waiting_subtitle">Авторизуйтесь через GitHub — и мы сразу пустим вас дальше</string>
@@ -57,6 +58,31 @@
     <string name="repo_screen_readme_title">README</string>
     <string name="repo_screen_readme_load_error">Failed to load README</string>
 
+    <string name="issues_screen_refresh_ru">Обновить</string>
+    <string name="issues_screen_create_issue_en">Create issue</string>
+    <string name="issues_screen_create_issue_ru">Создать issue</string>
+    <string name="issues_screen_load_issue_error_en">Failed to load issues</string>
+    <string name="issues_screen_load_issue_error_ru">Ошибка загрузки issues</string>
+    <string name="issues_screen_retry_en">Retry</string>
+    <string name="issues_screen_retry_ru">Повторить</string>
+    <string name="issues_screen_no_open_issue_ru">Открытых задач нет</string>
+    <string name="issues_screen_no_open_issue_en">There are no open issues</string>
+    <string name="issues_screen_issue_title_ru">Название</string>
+    <string name="issues_screen_issue_title_en">Title</string>
+    <string name="issues_screen_issue_description_ru">Описание</string>
+    <string name="issues_screen_issue_description_en">Description</string>
+    <string name="issues_screen_create_ru">Создать</string>
+    <string name="issues_screen_create_en">Create</string>
+    <string name="issues_screen_creating_ru">Создание...</string>
+    <string name="issues_screen_creating_en">Creating...</string>
+    <string name="issues_screen_issue_status_open">OPEN</string>
+    <string name="issues_screen_issue_status_closed">CLOSED</string>
+    <string name="issues_screen_issue_status_unknown">UNKNOWN</string>
+
     <string name="repo_title">Репозиторий</string>
     <string name="repos_title">Репозитории</string>
+    <string name="issues_title">Issues</string>
+    <string name="cancel_ru">Отмена</string>
+    <string name="cancel_en">Cancel</string>
+    <string name="OK">OK</string>
 </resources>
