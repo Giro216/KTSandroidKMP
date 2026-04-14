@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github_explorer.kts_android_kmp.common.ui.LoadingIndicator
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.domain.GithubIssue
@@ -217,7 +218,7 @@ private fun IssueStateHandler(state: GithubIssueUiState, onRefresh: () -> Unit) 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 items(
                     items = state.issueList,
@@ -331,16 +332,16 @@ private fun Banner(
 @Composable
 private fun IssueRow(issue: GithubIssue) {
     val horizontalPadding = 6.dp
-    val verticalPadding = 2.dp
+    val verticalPadding = 3.dp
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
             .background(
                 MaterialTheme.colorScheme.surfaceVariant,
                 shape = MaterialTheme.shapes.small
             )
     ) {
+        Spacer(modifier = Modifier.height(verticalPadding))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -364,8 +365,6 @@ private fun IssueRow(issue: GithubIssue) {
             )
         }
 
-        Spacer(Modifier.height(2.dp))
-
         Text(
             text = issue.title,
             style = MaterialTheme.typography.bodyLarge,
@@ -373,8 +372,45 @@ private fun IssueRow(issue: GithubIssue) {
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(
                 horizontal = horizontalPadding,
-                vertical = verticalPadding
             )
+        )
+
+        Spacer(modifier = Modifier.height(verticalPadding))
+    }
+}
+
+@Preview
+@Composable
+private fun IssueScreenContentPreview() {
+    MaterialTheme {
+        IssueScreenContent(
+            state = GithubIssueUiState(
+                isLoading = false,
+                issueList = listOf(
+                    GithubIssue(
+                        id = 1L,
+                        number = 42,
+                        title = "Preview issue title",
+                        state = GithubIssue.State.OPEN,
+                    ),
+                    GithubIssue(
+                        id = 2L,
+                        number = 43,
+                        title = "Second preview issue with a longer title",
+                        state = GithubIssue.State.CLOSED,
+                    ),
+                ),
+            ),
+            onBackClick = {},
+            onRefresh = {},
+            onOpenCreateIssue = {},
+            onDismissCreateIssue = {},
+            onDismissOwnershipWarning = {},
+            onDismissCreateIssueSuccess = {},
+            onTitleChanged = {},
+            onBodyChanged = {},
+            onCreateIssue = {},
         )
     }
 }
+
