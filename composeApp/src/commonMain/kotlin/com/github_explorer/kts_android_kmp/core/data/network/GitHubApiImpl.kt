@@ -2,6 +2,7 @@ package com.github_explorer.kts_android_kmp.core.data.network
 
 import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
 import com.github_explorer.kts_android_kmp.feature.profile.data.network.GithubUserDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.CreateIssueRequestDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.GithubIssueDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoDetailsDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoReadmeDto
@@ -9,6 +10,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 
 interface GitHubApi {
     suspend fun loadRepos(param: GitHubApiImpl.LoadReposRequestParam): GithubRepoSearchResponseDto
@@ -20,6 +23,13 @@ interface GitHubApi {
     suspend fun getCurRepoDetails(owner: String, repo: String): GithubRepoDetailsDto
 
     suspend fun getCurRepoIssues(owner: String, repo: String): List<GithubIssueDto>
+
+    suspend fun createNewIssue(
+        owner: String,
+        repo: String,
+        title: String,
+        body: String? = null
+    ): GithubIssueDto
 }
 
 class GitHubApiImpl(
@@ -56,6 +66,17 @@ class GitHubApiImpl(
     override suspend fun getCurRepoIssues(owner: String, repo: String): List<GithubIssueDto> {
         return client.get("/repos/$owner/$repo/issues") {
         }.body<List<GithubIssueDto>>()
+    }
+
+    override suspend fun createNewIssue(
+        owner: String,
+        repo: String,
+        title: String,
+        body: String?
+    ): GithubIssueDto {
+        return client.post(urlString = "/repos/$owner/$repo/issues") {
+            setBody(CreateIssueRequestDto(title = title, body = body))
+        }.body<GithubIssueDto>()
     }
 
 

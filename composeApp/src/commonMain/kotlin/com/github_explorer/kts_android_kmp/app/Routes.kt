@@ -17,9 +17,6 @@ sealed class Routes {
     data object MainScreen : Routes()
 
     @Serializable
-    data object ProfileScreen : Routes()
-
-    @Serializable
     data object RepoScreen : Routes()
 
     @Serializable

@@ -5,5 +5,11 @@ sealed interface GithubIssueUiEvent {
 
     data object RefreshLoadIssues : GithubIssueUiEvent
 
+    data object OpenCreateIssueDialog : GithubIssueUiEvent
+    data object DismissCreateIssueDialog : GithubIssueUiEvent
+    data object DismissOwnershipWarning : GithubIssueUiEvent
+    data object DismissCreateIssueSuccess : GithubIssueUiEvent
+    data class IssueTitleChanged(val value: String) : GithubIssueUiEvent
+    data class IssueBodyChanged(val value: String) : GithubIssueUiEvent
     data object CreateIssue : GithubIssueUiEvent
 }

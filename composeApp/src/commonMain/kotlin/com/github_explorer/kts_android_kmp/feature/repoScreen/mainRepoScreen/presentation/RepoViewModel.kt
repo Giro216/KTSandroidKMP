@@ -77,10 +77,6 @@ class RepoViewModel(
             RepoUiEvent.ShareRepo -> {
                 // TODO: side-effect (share)
             }
-
-            RepoUiEvent.CreateIssue -> {
-                // TODO: side-effect (open issue URL)
-            }
         }
     }
 

@@ -12,6 +12,4 @@ sealed interface RepoUiEvent {
     data object RetryLoadReadme : RepoUiEvent
 
     data object ShareRepo : RepoUiEvent
-
-    data object CreateIssue : RepoUiEvent
 }

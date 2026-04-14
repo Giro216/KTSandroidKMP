@@ -11,6 +11,15 @@ data class GithubIssueUiState(
 
     val owner: String? = null,
     val repo: String? = null,
+    val canCreateIssue: Boolean = false,
+    val ownershipWarningMessage: String? = null,
+    val createIssueSuccessMessage: String? = null,
 
-    val issueList: ArrayList<GithubIssue> = arrayListOf(),
+    val issueList: List<GithubIssue> = emptyList(),
+
+    val isCreateDialogOpen: Boolean = false,
+    val issueTitleInput: String = "",
+    val issueBodyInput: String = "",
+    val isCreatingIssue: Boolean = false,
+    val createIssueError: String? = null,
 )
