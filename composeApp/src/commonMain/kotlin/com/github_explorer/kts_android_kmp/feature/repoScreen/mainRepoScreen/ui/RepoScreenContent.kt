@@ -206,6 +206,7 @@ private fun CodeButton(state: RepoUiState, onOpenCode: () -> Unit) {
             text = "Code",
             style = MaterialTheme.typography.bodyLargeEmphasized,
             color = AppColors.PrimaryBlue,
+            modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start,
         )
     }
