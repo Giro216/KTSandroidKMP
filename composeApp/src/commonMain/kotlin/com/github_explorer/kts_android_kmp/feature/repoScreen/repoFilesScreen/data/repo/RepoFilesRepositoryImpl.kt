@@ -3,9 +3,7 @@ package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.d
 import com.github_explorer.kts_android_kmp.core.data.network.GitHubApi
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.CreateOrUpdateFileRequestDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.RepoDirContentDto
-import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.RepoFileContentDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoDirItem
-import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileContent
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFilesRepository
 import com.github_explorer.kts_android_kmp.utils.coRunCatching
@@ -42,19 +40,6 @@ class RepoFilesRepositoryImpl(
                 }.thenBy {
                     it.name.lowercase()
                 })
-        }
-    }
-
-    override suspend fun getFileContent(
-        owner: String,
-        repo: String,
-        path: String
-    ): Result<RepoFileContent> {
-        return coRunCatching {
-            val response = api.getRepoContentsRaw(owner = owner, repo = repo, path = path)
-            val raw = response.body<String>()
-            parseFileContentResponse(raw)
-                ?: throw IllegalStateException("Failed to parse file content response for path: $path")
         }
     }
 
@@ -120,21 +105,17 @@ class RepoFilesRepositoryImpl(
     private suspend fun parseContentsResponse(raw: String): List<RepoDirItem> {
         return when (val element = json.parseToJsonElement(raw)) {
             // при запросе вернулся массив элементов (директория)
-            is JsonArray -> element.jsonArray.mapNotNull { decodeDirContentItem(it.jsonObject) }
+            is JsonArray -> element.jsonArray.mapNotNull { decodeContentItem(it.jsonObject) }
 
             // при запросе вернулся один элемент (файл)
-            is JsonObject -> listOfNotNull(decodeDirContentItem(element.jsonObject))
+            is JsonObject -> listOfNotNull(decodeContentItem(element.jsonObject))
             else -> emptyList()
         }
     }
 
-    private suspend fun parseFileContentResponse(raw: String): RepoFileContent? {
-        val element = json.parseToJsonElement(raw)
-        return decodeFileContentItem(element.jsonObject)
-    }
-
-    private suspend fun decodeDirContentItem(obj: JsonObject): RepoDirItem? {
+    private suspend fun decodeContentItem(obj: JsonObject): RepoDirItem? {
         val dto = coRunCatching {
+            // TODO добавить парсинг для чтения содержимого файла
             json.decodeFromJsonElement(RepoDirContentDto.serializer(), obj)
         }.getOrNull() ?: return null
 
@@ -150,29 +131,6 @@ class RepoFilesRepositoryImpl(
             type = type,
             sha = dto.sha,
             size = dto.size,
-        )
-    }
-
-    private suspend fun decodeFileContentItem(obj: JsonObject): RepoFileContent? {
-        val dto = coRunCatching {
-            json.decodeFromJsonElement(RepoFileContentDto.serializer(), obj)
-        }.getOrNull() ?: return null
-
-        val type = when (dto.type.lowercase()) {
-            "dir" -> RepoFileItemType.DIR
-            "file" -> RepoFileItemType.FILE
-            else -> return null
-        }
-
-        return RepoFileContent(
-            name = dto.name,
-            path = dto.path,
-            type = type,
-            sha = dto.sha,
-            size = dto.size,
-            content = dto.content,
-            encoding = dto.encoding,
-            downloadUrl = dto.downloadUrl
         )
     }
 }

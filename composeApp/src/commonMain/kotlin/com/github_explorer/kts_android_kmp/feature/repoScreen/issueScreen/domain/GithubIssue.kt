@@ -4,14 +4,14 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class GithubIssue(
-    val id: Long,
-    val number: Int,
-    val title: String,
-    val state: State,
+	val id: Long,
+	val number: Int,
+	val title: String,
+	val state: State,
 ) {
-    enum class State {
-        OPEN,
-        CLOSED,
-        UNKNOWN,
-    }
+	enum class State {
+		OPEN,
+		CLOSED,
+		UNKNOWN,
+	}
 }

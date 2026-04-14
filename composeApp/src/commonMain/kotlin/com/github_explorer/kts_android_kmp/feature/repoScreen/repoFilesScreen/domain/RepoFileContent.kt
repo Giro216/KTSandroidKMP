@@ -11,7 +11,6 @@ data class RepoFileContent(
     val size: Long,
     val content: String,
     val encoding: String,
-    val downloadUrl: String?
 )
 
 /*

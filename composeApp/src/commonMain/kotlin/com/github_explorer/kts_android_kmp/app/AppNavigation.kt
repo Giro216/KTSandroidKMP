@@ -15,7 +15,6 @@ import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainBottomTab
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.ui.IssueScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui.RepoScreen
-import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui.RepoFilesScreen
 import com.github_explorer.kts_android_kmp.platform.exitApp
 
@@ -107,14 +106,7 @@ fun AppNavigation(innerPadding: PaddingValues) {
                     navController.navigate(Routes.IssueScreen(owner = owner, repo = repo))
                 },
                 onOpenCode = { owner, repo ->
-                    navController.navigate(
-                        Routes.RepoFilesScreen(
-                            owner = owner,
-                            repo = repo,
-                            path = "",
-                            type = RepoFileItemType.DIR
-                        )
-                    )
+                    navController.navigate(Routes.RepoFilesScreen(owner = owner, repo = repo, path = ""))
                 },
                 owner = route.owner,
                 repo = route.repo,
@@ -138,17 +130,15 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 owner = route.owner,
                 repo = route.repo,
                 path = route.path,
-                contentType = route.type,
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onOpenContent = { newPath, type ->
+                onOpenPath = { newPath ->
                     navController.navigate(
                         Routes.RepoFilesScreen(
                             owner = route.owner,
                             repo = route.repo,
                             path = newPath,
-                            type = type
                         )
                     )
                 },

@@ -1,15 +1,47 @@
 package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoDirItem
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
-import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFilesClickEvent
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFilesOneShotEvent
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFilesUiEvent
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFilesUiState
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.presentation.RepoFilesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -19,40 +51,210 @@ fun RepoFilesScreen(
     owner: String,
     repo: String,
     path: String,
-    contentType: RepoFileItemType,
     onBackClick: () -> Unit,
-    onOpenContent: (String, RepoFileItemType) -> Unit,
+    onOpenPath: (String) -> Unit,
     viewModel: RepoFilesViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(owner, repo, path) {
-        viewModel.onEvent(
-            RepoFilesUiEvent.Init(
-                owner = owner,
-                repo = repo,
-                path = path,
-                contentType = contentType
-            )
-        )
+        viewModel.onEvent(RepoFilesUiEvent.Init(owner = owner, repo = repo, path = path))
     }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is RepoFilesClickEvent.Snackbar -> snackbarHostState.showSnackbar(event.message)
-                is RepoFilesClickEvent.OpenFile -> onOpenContent(event.path, RepoFileItemType.FILE)
-                is RepoFilesClickEvent.OpenDir -> onOpenContent(event.path, RepoFileItemType.DIR)
+                is RepoFilesOneShotEvent.Snackbar -> snackbarHostState.showSnackbar(event.message)
+                is RepoFilesOneShotEvent.OpenPath -> onOpenPath(event.path)
             }
         }
     }
 
     RepoFilesScreenContent(
         state = state,
-        contentType = contentType,
         snackbarHostState = snackbarHostState,
         onBackClick = onBackClick,
         onEvent = viewModel::onEvent,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RepoFilesScreenContent(
+    state: RepoFilesUiState,
+    snackbarHostState: SnackbarHostState,
+    onBackClick: () -> Unit,
+    onEvent: (RepoFilesUiEvent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = state.path.takeIf { it.isNotBlank() } ?: "/",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { onEvent(RepoFilesUiEvent.CreateFileClicked) }) {
+                        Icon(Icons.Filled.Add, contentDescription = null)
+                    }
+                },
+            )
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        modifier = modifier,
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+        ) {
+            if (state.isLoading) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+                Spacer(Modifier.height(12.dp))
+            }
+
+            if (state.isError) {
+                Text(
+                    text = state.errorMessage ?: "Ошибка загрузки",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(8.dp))
+                TextButton(onClick = { onEvent(RepoFilesUiEvent.Retry) }) {
+                    Text("Повторить")
+                }
+                Spacer(Modifier.height(12.dp))
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                items(state.items, key = { it.path }) { item ->
+                    RepoFileRow(
+                        item = item,
+                        onClick = {
+                            when (item.type) {
+                                RepoFileItemType.DIR -> onEvent(
+                                    RepoFilesUiEvent.DirectoryClicked(
+                                        item.path
+                                    )
+                                )
+
+                                RepoFileItemType.FILE -> onEvent(RepoFilesUiEvent.FileClicked(item.path))
+                            }
+                        },
+                    )
+                }
+            }
+        }
+
+        if (state.showCreateFileDialog) {
+            CreateFileDialog(
+                fileName = state.newFileName,
+                content = state.newFileContent,
+                isUploading = state.isUploading,
+                onFileNameChanged = { onEvent(RepoFilesUiEvent.NewFileNameChanged(it)) },
+                onContentChanged = { onEvent(RepoFilesUiEvent.NewFileContentChanged(it)) },
+                onDismiss = { onEvent(RepoFilesUiEvent.DismissCreateFileDialog) },
+                onConfirm = { onEvent(RepoFilesUiEvent.ConfirmCreateFile) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun RepoFileRow(
+    item: RepoDirItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val prefix = when (item.type) {
+        RepoFileItemType.DIR -> "📁"
+        RepoFileItemType.FILE -> "📄"
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(text = prefix)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = item.name, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = item.path,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CreateFileDialog(
+    fileName: String,
+    content: String,
+    isUploading: Boolean,
+    onFileNameChanged: (String) -> Unit,
+    onContentChanged: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = { if (!isUploading) onDismiss() },
+        title = { Text("Новый файл") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = fileName,
+                    onValueChange = onFileNameChanged,
+                    singleLine = true,
+                    label = { Text("Имя файла (например, notes.txt)") },
+                    enabled = !isUploading,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = onContentChanged,
+                    label = { Text("Содержимое") },
+                    enabled = !isUploading,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp),
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = onConfirm, enabled = !isUploading) {
+                Text(if (isUploading) "Загрузка…" else "Создать")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss, enabled = !isUploading) {
+                Text("Отмена")
+            }
+        },
     )
 }

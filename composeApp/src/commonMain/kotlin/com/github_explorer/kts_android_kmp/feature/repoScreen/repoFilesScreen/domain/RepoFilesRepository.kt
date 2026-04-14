@@ -3,8 +3,6 @@ package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.d
 interface RepoFilesRepository {
     suspend fun listContents(owner: String, repo: String, path: String): Result<List<RepoDirItem>>
 
-    suspend fun getFileContent(owner: String, repo: String, path: String): Result<RepoFileContent>
-
     suspend fun createFile(
         owner: String,
         repo: String,
