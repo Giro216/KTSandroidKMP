@@ -11,8 +11,8 @@ import org.koin.dsl.module
 val RepoScreenModule = module {
     single<GithubRepoRepository> { GithubRepoRepositoryImpl(api = get()) }
 
-    single { LoadReadmeUseCase(repoRepository = get()) }
-    single { LoadDetailsUseCase(repoRepository = get()) }
+    factory { LoadReadmeUseCase(repoRepository = get()) }
+    factory { LoadDetailsUseCase(repoRepository = get()) }
 
     viewModel {
         RepoViewModel(

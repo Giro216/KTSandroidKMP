@@ -10,6 +10,7 @@ import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMappe
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.usecase.SearchReposPageUseCase
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainAction
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainReducer
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
@@ -44,14 +45,20 @@ class MainViewModel(
 
     fun observeFavorites() {
         viewModelScope.launch {
-            observeFavoritesUseCase().collect { favorites ->
-                updateState {
-                    copy(
-                        favoriteRepos = favorites,
-                        favoriteRepoIds = favorites.map { it.id }.toSet(),
-                    )
+            observeFavoritesUseCase()
+                .onSuccess { favoritesFlow ->
+                    favoritesFlow.collect { favorites ->
+                        updateState {
+                            copy(
+                                favoriteRepos = favorites,
+                                favoriteRepoIds = favorites.map { it.id }.toSet(),
+                            )
+                        }
+                    }
                 }
-            }
+                .onFailure {
+                    Napier.e("Failed to observe favorites: ${it.message}", it)
+                }
         }
     }
 
@@ -104,18 +111,27 @@ class MainViewModel(
     fun toggleFavorite(repo: GitHubRepo) {
         viewModelScope.launch {
             toggleFavoriteUseCase(repo)
+                .onFailure {
+                    Napier.e("Failed to toggle favorite: ${it.message}", it)
+                }
         }
     }
 
     fun loadFavoritesFromStorage() {
         viewModelScope.launch {
-            val favorites = observeFavoritesUseCase().first()
-            updateState {
-                copy(
-                    favoriteRepos = favorites,
-                    favoriteRepoIds = favorites.map { it.id }.toSet(),
-                )
-            }
+            observeFavoritesUseCase()
+                .onSuccess { favoritesFlow ->
+                    val favorites = favoritesFlow.first()
+                    updateState {
+                        copy(
+                            favoriteRepos = favorites,
+                            favoriteRepoIds = favorites.map { it.id }.toSet(),
+                        )
+                    }
+                }
+                .onFailure {
+                    Napier.e("Failed to load favorites from storage: ${it.message}", it)
+                }
         }
     }
 

@@ -8,9 +8,11 @@ import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.dom
 class ToggleFavoriteUseCase(
     private val repository: FavoriteRepository,
 ) {
-    suspend operator fun invoke(repo: GitHubRepo): Boolean = repository.toggleFavorite(repo)
+    suspend operator fun invoke(repo: GitHubRepo): Result<Boolean> {
+        return repository.toggleFavorite(repo)
+    }
 
-    suspend operator fun invoke(repo: GithubRepoDetails): Boolean =
+    suspend operator fun invoke(repo: GithubRepoDetails): Result<Boolean> =
         repository.toggleFavorite(repo.toGitHubRepo())
 }
 

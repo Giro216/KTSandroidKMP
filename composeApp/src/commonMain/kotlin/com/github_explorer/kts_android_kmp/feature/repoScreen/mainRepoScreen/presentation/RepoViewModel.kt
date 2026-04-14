@@ -23,11 +23,17 @@ class RepoViewModel(
 
     init {
         viewModelScope.launch {
-            observeFavoritesUseCase().collect { favorites ->
-                favoriteRepoIds = favorites.map { it.id }.toSet()
-                val detailsId = state.value.details?.id ?: return@collect
-                updateState { copy(isStarredLocally = favoriteRepoIds.contains(detailsId)) }
-            }
+            observeFavoritesUseCase()
+                .onSuccess { favoritesFlow ->
+                    favoritesFlow.collect { favorites ->
+                        favoriteRepoIds = favorites.map { it.id }.toSet()
+                        val detailsId = state.value.details?.id ?: return@collect
+                        updateState { copy(isStarredLocally = favoriteRepoIds.contains(detailsId)) }
+                    }
+                }
+                .onFailure {
+                    Napier.e("Failed to observe favorites: ${it.message}", it)
+                }
         }
     }
 
@@ -49,8 +55,13 @@ class RepoViewModel(
             RepoUiEvent.ToggleFavorite -> {
                 val repo = state.value.details ?: return
                 viewModelScope.launch {
-                    val isFavorite = toggleFavoriteUseCase(repo)
-                    updateState { copy(isStarredLocally = isFavorite) }
+                    toggleFavoriteUseCase(repo)
+                        .onSuccess { isFavorite ->
+                            updateState { copy(isStarredLocally = isFavorite) }
+                        }
+                        .onFailure {
+                            Napier.e("Failed to toggle favorite: ${it.message}", it)
+                        }
                 }
             }
 
