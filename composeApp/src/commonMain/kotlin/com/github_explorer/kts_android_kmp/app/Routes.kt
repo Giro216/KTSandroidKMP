@@ -17,9 +17,15 @@ sealed class Routes {
     data object MainScreen : Routes()
 
     @Serializable
-    data object RepoScreen : Routes()
+    data class RepoScreen(
+        val owner: String,
+        val repo: String,
+    ) : Routes()
 
     @Serializable
-    data object IssueScreen : Routes()
+    data class IssueScreen(
+        val owner: String,
+        val repo: String,
+    ) : Routes()
 
 }
