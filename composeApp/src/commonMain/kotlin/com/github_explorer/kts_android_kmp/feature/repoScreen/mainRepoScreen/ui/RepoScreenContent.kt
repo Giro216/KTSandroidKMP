@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
@@ -101,21 +102,25 @@ fun RepoScreenContent(
                 LoadingIndicator()
             }
         } else {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(16.dp),
             ) {
-                PrintRepoDetails(state.details)
+                item(key = "repo_details") {
+                    PrintRepoDetails(state.details)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                item(key = "actions") {
+                    IssueButton(state = state, onOpenIssues = onOpenIssues, modifier = modifier)
+                    CodeButton(state = state, onOpenCode = onOpenCode)
+                }
 
-                IssueButton(state = state, onOpenIssues = onOpenIssues, modifier = modifier)
-
-                CodeButton(state = state, onOpenCode = onOpenCode)
-
-                PrintReadmeSection(state = state, renderReadme = renderReadme)
+                item(key = "readme") {
+                    PrintReadmeSection(state = state, renderReadme = renderReadme)
+                }
             }
         }
     }

@@ -9,7 +9,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val RepoScreenModule = module {
-    single<GithubRepoRepository> { GithubRepoRepositoryImpl(api = get()) }
+    factory<GithubRepoRepository> { GithubRepoRepositoryImpl(api = get()) }
 
     factory { LoadReadmeUseCase(repoRepository = get()) }
     factory { LoadDetailsUseCase(repoRepository = get()) }
