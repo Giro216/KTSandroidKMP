@@ -41,6 +41,8 @@ kotlin {
         }
     }
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -99,6 +101,12 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "ktsandroidkmp.composeapp.generated.resources"
+    generateResClass = auto
 }
 
 android {
@@ -191,6 +199,34 @@ detekt {
 //    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 //}
 
+abstract class GenerateAuthConfigTask : DefaultTask() {
+    @get:Input
+    abstract val clientId: Property<String>
+
+    @get:Input
+    abstract val clientSecret: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val pkg = "com.github_explorer.kts_android_kmp.feature.login.oauth.data.network"
+        val outDir = outputDir.get().asFile.resolve(pkg.replace('.', '/'))
+        outDir.mkdirs()
+        outDir.resolve("AuthSecrets.kt").writeText(
+            """
+            package $pkg
+
+            internal object AuthSecrets {
+                const val CLIENT_ID = "${clientId.get()}"
+                const val CLIENT_SECRET = "${clientSecret.get()}"
+            }
+            """.trimIndent()
+        )
+    }
+}
+
 val localProps = Properties().apply {
     val f = rootProject.layout.projectDirectory.file("local.properties").asFile
     if (f.exists()) f.inputStream().use { load(it) }
@@ -201,26 +237,10 @@ val clientSecretProvider = providers.provider { localProps.getProperty("CLIENT_S
 
 val genDir = layout.buildDirectory.dir("generated/authConfig")
 
-val generateAuthConfig by tasks.registering {
-    outputs.dir(genDir)
-    doLast {
-        val clientId = clientIdProvider.get()
-        val clientSecret = clientSecretProvider.get()
-
-        val pkg = "com.example.kts_android_kmp.feature.login.oauth.data.network"
-        val outDir = genDir.get().asFile.resolve(pkg.replace('.', '/'))
-        outDir.mkdirs()
-        outDir.resolve("AuthSecrets.kt").writeText(
-            """
-            package $pkg
-
-            internal object AuthSecrets {
-                const val CLIENT_ID = "$clientId"
-                const val CLIENT_SECRET = "$clientSecret"
-            }
-            """.trimIndent()
-        )
-    }
+val generateAuthConfig by tasks.registering(GenerateAuthConfigTask::class) {
+    clientId.set(clientIdProvider)
+    clientSecret.set(clientSecretProvider)
+    outputDir.set(genDir)
 }
 
 val releaseStorePassword = localProps.getProperty("RELEASE_STORE_PASSWORD") ?: ""
@@ -236,3 +256,9 @@ kotlin {
 }
 
 tasks.named("compileKotlinMetadata").configure { dependsOn(generateAuthConfig) }
+tasks.matching { it.name.startsWith("compile") && it.name.contains("Kotlin") }.configureEach {
+    dependsOn(generateAuthConfig)
+}
+tasks.matching { it.name.startsWith("ksp") && it.name.contains("KotlinAndroid") }.configureEach {
+    dependsOn(generateAuthConfig)
+}

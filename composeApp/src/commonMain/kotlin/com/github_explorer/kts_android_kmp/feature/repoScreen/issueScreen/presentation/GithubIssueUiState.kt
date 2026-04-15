@@ -2,18 +2,25 @@ package com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.prese
 
 import androidx.compose.runtime.Immutable
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.domain.GithubIssue
+import org.jetbrains.compose.resources.StringResource
+
+sealed interface IssueMessage {
+    data class Resource(val value: StringResource) : IssueMessage
+
+    data class Dynamic(val value: String) : IssueMessage
+}
 
 @Immutable
 data class GithubIssueUiState(
     val isLoading: Boolean = true,
     val isError: Boolean = false,
-    val errorMessage: String? = null,
+    val errorMessage: IssueMessage? = null,
 
     val owner: String? = null,
     val repo: String? = null,
     val canCreateIssue: Boolean = false,
-    val ownershipWarningMessage: String? = null,
-    val createIssueSuccessMessage: String? = null,
+    val isOwnershipWarning: Boolean = false,
+    val createIssueSuccessMessage: IssueMessage? = null,
 
     val issueList: List<GithubIssue> = emptyList(),
 
@@ -21,5 +28,5 @@ data class GithubIssueUiState(
     val issueTitleInput: String = "",
     val issueBodyInput: String = "",
     val isCreatingIssue: Boolean = false,
-    val createIssueError: String? = null,
+    val createIssueError: IssueMessage? = null,
 )

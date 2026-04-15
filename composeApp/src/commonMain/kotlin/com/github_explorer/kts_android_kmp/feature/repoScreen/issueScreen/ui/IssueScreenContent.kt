@@ -41,22 +41,24 @@ import androidx.compose.ui.unit.dp
 import com.github_explorer.kts_android_kmp.common.ui.LoadingIndicator
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.domain.GithubIssue
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.presentation.GithubIssueUiState
+import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.presentation.IssueMessage
 import io.github.aakira.napier.Napier
 import ktsandroidkmp.composeapp.generated.resources.OK
 import ktsandroidkmp.composeapp.generated.resources.Res
-import ktsandroidkmp.composeapp.generated.resources.cancel_ru
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_create_issue_en
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_create_ru
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_creating_ru
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_issue_description_ru
+import ktsandroidkmp.composeapp.generated.resources.cancel
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_create
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_create_issue
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_create_issue_warning
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_creating
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_issue_description
 import ktsandroidkmp.composeapp.generated.resources.issues_screen_issue_status_closed
 import ktsandroidkmp.composeapp.generated.resources.issues_screen_issue_status_open
 import ktsandroidkmp.composeapp.generated.resources.issues_screen_issue_status_unknown
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_issue_title_ru
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_load_issue_error_ru
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_no_open_issue_ru
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_refresh_ru
-import ktsandroidkmp.composeapp.generated.resources.issues_screen_retry_ru
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_issue_title
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_load_issue_error
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_no_open_issue
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_refresh
+import ktsandroidkmp.composeapp.generated.resources.issues_screen_retry
 import ktsandroidkmp.composeapp.generated.resources.issues_title
 import org.jetbrains.compose.resources.stringResource
 
@@ -112,7 +114,7 @@ fun IssueScreenContent(
         ) {
             state.createIssueSuccessMessage?.let { success ->
                 Banner(
-                    text = success,
+                    text = messageText(success),
                     backgroundColor = MaterialTheme.colorScheme.primaryContainer,
                     textColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     onClose = onDismissCreateIssueSuccess,
@@ -144,7 +146,7 @@ private fun TopBarActions(
     onOpenCreateIssue: () -> Unit
 ) {
     Text(
-        text = if (state.isLoading) "" else stringResource(Res.string.issues_screen_refresh_ru),
+        text = if (state.isLoading) "" else stringResource(Res.string.issues_screen_refresh),
         modifier = Modifier
             .padding(end = 16.dp)
             .padding(vertical = 8.dp)
@@ -165,7 +167,7 @@ private fun TopBarActions(
     ) {
         Icon(
             imageVector = Icons.Filled.Add,
-            contentDescription = stringResource(Res.string.issues_screen_create_issue_en),
+            contentDescription = stringResource(Res.string.issues_screen_create_issue),
             tint = MaterialTheme.colorScheme.onPrimaryContainer,
         )
     }
@@ -191,14 +193,15 @@ private fun IssueStateHandler(state: GithubIssueUiState, onRefresh: () -> Unit) 
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Napier.e("Failed to load issues: ${state.errorMessage ?: "Unknown error"}")
+                val errorText = state.errorMessage?.let { messageText(it) } ?: "Unknown error"
+                Napier.e("Failed to load issues: $errorText")
                 Text(
-                    text = stringResource(Res.string.issues_screen_load_issue_error_ru),
+                    text = stringResource(Res.string.issues_screen_load_issue_error),
                     color = MaterialTheme.colorScheme.error,
                 )
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = stringResource(Res.string.issues_screen_retry_ru),
+                    text = stringResource(Res.string.issues_screen_retry),
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable(onClick = onRefresh)
                 )
@@ -210,7 +213,7 @@ private fun IssueStateHandler(state: GithubIssueUiState, onRefresh: () -> Unit) 
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(text = stringResource(Res.string.issues_screen_no_open_issue_ru))
+                Text(text = stringResource(Res.string.issues_screen_no_open_issue))
             }
         }
 
@@ -242,12 +245,12 @@ private fun CreateDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissCreateIssue,
-        title = { Text(stringResource(Res.string.issues_screen_no_open_issue_ru)) },
+        title = { Text(stringResource(Res.string.issues_screen_no_open_issue)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                state.ownershipWarningMessage?.let { warning ->
+                if (state.isOwnershipWarning) {
                     Banner(
-                        text = warning,
+                        text = stringResource(Res.string.issues_screen_create_issue_warning),
                         backgroundColor = MaterialTheme.colorScheme.errorContainer,
                         textColor = MaterialTheme.colorScheme.onErrorContainer,
                         textStyle = MaterialTheme.typography.bodyMedium,
@@ -257,21 +260,21 @@ private fun CreateDialog(
                 OutlinedTextField(
                     value = state.issueTitleInput,
                     onValueChange = onTitleChanged,
-                    label = { Text(stringResource(Res.string.issues_screen_issue_title_ru)) },
+                    label = { Text(stringResource(Res.string.issues_screen_issue_title)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = state.issueBodyInput,
                     onValueChange = onBodyChanged,
-                    label = { Text(stringResource(Res.string.issues_screen_issue_description_ru)) },
+                    label = { Text(stringResource(Res.string.issues_screen_issue_description)) },
                     minLines = 3,
                     modifier = Modifier.fillMaxWidth(),
                 )
 
                 state.createIssueError?.let { error ->
                     Text(
-                        text = error,
+                        text = messageText(error),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -284,8 +287,8 @@ private fun CreateDialog(
                 enabled = !state.isCreatingIssue,
             ) {
                 Text(
-                    if (state.isCreatingIssue) stringResource(Res.string.issues_screen_creating_ru) else stringResource(
-                        Res.string.issues_screen_create_ru
+                    if (state.isCreatingIssue) stringResource(Res.string.issues_screen_creating) else stringResource(
+                        Res.string.issues_screen_create
                     )
                 )
             }
@@ -295,10 +298,16 @@ private fun CreateDialog(
                 onClick = onDismissCreateIssue,
                 enabled = !state.isCreatingIssue,
             ) {
-                Text(stringResource(Res.string.cancel_ru))
+                Text(stringResource(Res.string.cancel))
             }
         },
     )
+}
+
+@Composable
+private fun messageText(message: IssueMessage): String = when (message) {
+    is IssueMessage.Resource -> stringResource(message.value)
+    is IssueMessage.Dynamic -> message.value
 }
 
 @Composable

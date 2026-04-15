@@ -34,7 +34,7 @@ class IssueViewModel(
             copy(
                 owner = owner,
                 repo = repoName,
-                ownershipWarningMessage = null,
+                isOwnershipWarning = false,
                 createIssueSuccessMessage = null,
             )
         }
@@ -76,7 +76,7 @@ class IssueViewModel(
                         copy(
                             isLoading = false,
                             isError = true,
-                            errorMessage = throwable.message,
+                            errorMessage = throwable.message?.let(IssueMessage::Dynamic),
                         )
                     }
                 }
@@ -87,7 +87,7 @@ class IssueViewModel(
         if (!state.value.canCreateIssue) {
             updateState {
                 copy(
-                    ownershipWarningMessage = Strings.createIssueWarning,
+                    isOwnershipWarning = true,
                 )
             }
         }
@@ -102,7 +102,7 @@ class IssueViewModel(
     }
 
     private fun dismissOwnershipWarning() {
-        updateState { copy(ownershipWarningMessage = null) }
+        updateState { copy(isOwnershipWarning = false) }
     }
 
     private fun dismissCreateIssueSuccess() {
@@ -116,8 +116,7 @@ class IssueViewModel(
                     updateState {
                         copy(
                             canCreateIssue = canCreate,
-                            ownershipWarningMessage = if (canCreate) null
-                            else Strings.createIssueWarning,
+                            isOwnershipWarning = !canCreate,
                         )
                     }
                 }
@@ -125,7 +124,8 @@ class IssueViewModel(
                     updateState {
                         copy(
                             canCreateIssue = false,
-                            ownershipWarningMessage = Strings.checkRoolsErr,
+                            isError = true,
+                            errorMessage = IssueMessage.Resource(Strings.checkRoolsErr),
                         )
                     }
                 }
@@ -165,7 +165,7 @@ class IssueViewModel(
     private fun createIssue() {
         if (!state.value.canCreateIssue) {
             updateState {
-                copy(ownershipWarningMessage = Strings.createIssueWarning)
+                copy(isOwnershipWarning = true)
             }
             return
         }
@@ -201,7 +201,7 @@ class IssueViewModel(
                             issueBodyInput = "",
                             isCreatingIssue = false,
                             createIssueError = null,
-                            createIssueSuccessMessage = Strings.createIssueSuccessMessage,
+                            createIssueSuccessMessage = IssueMessage.Resource(Strings.createIssueSuccessMessage),
                         )
                     }
                     loadIssues(owner, repoName)
@@ -212,8 +212,13 @@ class IssueViewModel(
                         copy(
                             isCreatingIssue = false,
                             createIssueError = when (result.reason) {
-                                CreateIssueValidationError.EmptyTitle -> Strings.issueNameIsRequired
-                                CreateIssueValidationError.NoPermission -> Strings.createIssueWarning
+                                CreateIssueValidationError.EmptyTitle -> IssueMessage.Resource(
+                                    Strings.issueNameIsRequired
+                                )
+
+                                CreateIssueValidationError.NoPermission -> IssueMessage.Resource(
+                                    Strings.createIssueWarning
+                                )
                             },
                         )
                     }
@@ -223,7 +228,8 @@ class IssueViewModel(
                     updateState {
                         copy(
                             isCreatingIssue = false,
-                            createIssueError = result.throwable.message ?: Strings.createIssueError,
+                            createIssueError = result.throwable.message?.let(IssueMessage::Dynamic)
+                                ?: IssueMessage.Resource(Strings.createIssueError),
                         )
                     }
                 }

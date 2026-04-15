@@ -76,6 +76,7 @@ fun MainScreen(
     mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
     onNavigateToBootstrap: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
     forcedTab: String? = null,
     onForcedTabConsumed: () -> Unit = {},
     onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
@@ -285,6 +286,7 @@ fun MainScreen(
                     MainBottomTab.Profile -> {
                         ProfileScreen(
                             onNavigateToBootstrap = onNavigateToBootstrap,
+                            onOpenSettings = onOpenSettings,
                             modifier = Modifier.fillMaxSize(),
                         )
                     }

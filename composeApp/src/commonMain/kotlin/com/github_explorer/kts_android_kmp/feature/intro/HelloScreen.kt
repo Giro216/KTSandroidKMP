@@ -23,10 +23,10 @@ import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.SpacingExtraLarge
 import io.github.aakira.napier.Napier
 import ktsandroidkmp.composeapp.generated.resources.Res
-import ktsandroidkmp.composeapp.generated.resources.en_login
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_img_url
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_subtitle
 import ktsandroidkmp.composeapp.generated.resources.hello_screen_title
+import ktsandroidkmp.composeapp.generated.resources.login
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -77,7 +77,7 @@ fun HelloScreen(
             shape = MaterialTheme.shapes.large,
         ) {
             Text(
-                text = stringResource(Res.string.en_login),
+                text = stringResource(Res.string.login),
                 style = MaterialTheme.typography.headlineMedium
             )
         }
