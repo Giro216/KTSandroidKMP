@@ -2,12 +2,20 @@ package com.github_explorer.kts_android_kmp.core.data.network
 
 import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
 import com.github_explorer.kts_android_kmp.feature.profile.data.network.GithubUserDto
-import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoDetailsDto
-import com.github_explorer.kts_android_kmp.feature.repoScreen.data.network.GithubRepoReadmeDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.CreateIssueRequestDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.GithubIssueDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoDetailsDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoReadmeDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.CreateOrUpdateFileRequestDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.CreateOrUpdateFileResponseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 
 interface GitHubApi {
     suspend fun loadRepos(param: GitHubApiImpl.LoadReposRequestParam): GithubRepoSearchResponseDto
@@ -17,6 +25,24 @@ interface GitHubApi {
     suspend fun getCurRepoReadme(owner: String, repo: String): GithubRepoReadmeDto
 
     suspend fun getCurRepoDetails(owner: String, repo: String): GithubRepoDetailsDto
+
+    suspend fun getCurRepoIssues(owner: String, repo: String): List<GithubIssueDto>
+
+    suspend fun createNewIssue(
+        owner: String,
+        repo: String,
+        title: String,
+        body: String? = null
+    ): GithubIssueDto
+
+    suspend fun getRepoContentsRaw(owner: String, repo: String, path: String): HttpResponse
+
+    suspend fun createOrUpdateFile(
+        owner: String,
+        repo: String,
+        path: String,
+        request: CreateOrUpdateFileRequestDto,
+    ): CreateOrUpdateFileResponseDto
 }
 
 class GitHubApiImpl(
@@ -48,6 +74,44 @@ class GitHubApiImpl(
     override suspend fun getCurRepoDetails(owner: String, repo: String): GithubRepoDetailsDto {
         return client.get("/repos/$owner/$repo") {
         }.body<GithubRepoDetailsDto>()
+    }
+
+    override suspend fun getCurRepoIssues(owner: String, repo: String): List<GithubIssueDto> {
+        return client.get("/repos/$owner/$repo/issues") {
+        }.body<List<GithubIssueDto>>()
+    }
+
+    override suspend fun createNewIssue(
+        owner: String,
+        repo: String,
+        title: String,
+        body: String?
+    ): GithubIssueDto {
+        return client.post(urlString = "/repos/$owner/$repo/issues") {
+            setBody(CreateIssueRequestDto(title = title, body = body))
+        }.body<GithubIssueDto>()
+    }
+
+    override suspend fun getRepoContentsRaw(
+        owner: String,
+        repo: String,
+        path: String
+    ): HttpResponse {
+        val normalizedPath = path.trimStart('/')
+        val suffix = if (normalizedPath.isBlank()) "" else "/$normalizedPath"
+        return client.get("/repos/$owner/$repo/contents$suffix") { }
+    }
+
+    override suspend fun createOrUpdateFile(
+        owner: String,
+        repo: String,
+        path: String,
+        request: CreateOrUpdateFileRequestDto,
+    ): CreateOrUpdateFileResponseDto {
+        val normalizedPath = path.trimStart('/')
+        return client.put("/repos/$owner/$repo/contents/$normalizedPath") {
+            setBody(request)
+        }.body()
     }
 
 

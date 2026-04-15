@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 class ObserveFavoritesUseCase(
     private val repository: FavoriteRepository,
 ) {
-    operator fun invoke(): Flow<List<GitHubRepo>> = repository.observeFavorites()
+    suspend operator fun invoke(): Result<Flow<List<GitHubRepo>>> {
+        return repository.observeFavorites()
+    }
 }
 

@@ -5,11 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ObserveFavoritesUseCase
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ToggleFavoriteUseCase
-import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
+import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.usecase.SearchReposPageUseCase
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainAction
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.reducer.MainReducer
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
@@ -21,6 +22,8 @@ import kotlinx.coroutines.launch
 
 private const val SEARCH_DEBOUNCE_MS = 1000L
 private const val PER_PAGE = 20
+
+private const val KOTLIN = "kotlin"
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class MainViewModel(
@@ -37,23 +40,29 @@ class MainViewModel(
         observeFavorites()
         searchRepos()
         viewModelScope.launch { observeRefreshRequests() }
-        onQueryChanged("kotlin")
+        onQueryChanged(KOTLIN)
     }
 
-    fun observeFavorites(){
+    fun observeFavorites() {
         viewModelScope.launch {
-            observeFavoritesUseCase().collect { favorites ->
-                updateState {
-                    copy(
-                        favoriteRepos = favorites,
-                        favoriteRepoIds = favorites.map { it.id }.toSet(),
-                    )
+            observeFavoritesUseCase()
+                .onSuccess { favoritesFlow ->
+                    favoritesFlow.collect { favorites ->
+                        updateState {
+                            copy(
+                                favoriteRepos = favorites,
+                                favoriteRepoIds = favorites.map { it.id }.toSet(),
+                            )
+                        }
+                    }
                 }
-            }
+                .onFailure {
+                    Napier.e("Failed to observe favorites: ${it.message}", it)
+                }
         }
     }
 
-    fun searchRepos(){
+    fun searchRepos() {
         viewModelScope.launch {
             events
                 .debounce(SEARCH_DEBOUNCE_MS)
@@ -102,18 +111,27 @@ class MainViewModel(
     fun toggleFavorite(repo: GitHubRepo) {
         viewModelScope.launch {
             toggleFavoriteUseCase(repo)
+                .onFailure {
+                    Napier.e("Failed to toggle favorite: ${it.message}", it)
+                }
         }
     }
 
     fun loadFavoritesFromStorage() {
         viewModelScope.launch {
-            val favorites = observeFavoritesUseCase().first()
-            updateState {
-                copy(
-                    favoriteRepos = favorites,
-                    favoriteRepoIds = favorites.map { it.id }.toSet(),
-                )
-            }
+            observeFavoritesUseCase()
+                .onSuccess { favoritesFlow ->
+                    val favorites = favoritesFlow.first()
+                    updateState {
+                        copy(
+                            favoriteRepos = favorites,
+                            favoriteRepoIds = favorites.map { it.id }.toSet(),
+                        )
+                    }
+                }
+                .onFailure {
+                    Napier.e("Failed to load favorites from storage: ${it.message}", it)
+                }
         }
     }
 
@@ -128,7 +146,7 @@ class MainViewModel(
     }
 
     fun retry() {
-        val query = state.value.query.trim().ifBlank { "kotlin" }
+        val query = state.value.query.trim().ifBlank { KOTLIN }
         updateState { copy(query = query) }
         acceptLabel(MainUiEvent.RetryClicked)
     }

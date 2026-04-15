@@ -3,3 +3,10 @@
 
 -keep class org.koin.** { *; }
 -dontwarn org.koin.**
+
+# Kotlin Serialization
+-keep @kotlinx.serialization.Serializable class * { *; }
+-keepclassmembers class **$$serializer { *; }
+
+# Enum support
+-keep enum * { *; }

@@ -79,6 +79,7 @@ fun MainScreen(
     forcedTab: String? = null,
     onForcedTabConsumed: () -> Unit = {},
     onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
+    onOpenFavorites: () -> Unit = {},
 ) {
     val state by mainViewModel.state.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableStateOf(MainBottomTab.Repositories) }
@@ -269,6 +270,7 @@ fun MainScreen(
                     }
 
                     MainBottomTab.Favorites -> {
+                        onOpenFavorites()
                         FavoriteScreen(
                             repos = state.favoriteRepos,
                             favoriteRepoIds = state.favoriteRepoIds,

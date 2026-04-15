@@ -131,6 +131,7 @@ android {
             )
 
             buildConfigField("Boolean", "LOGGING_ENABLED", "false")
+            resValue("string", "app_name", "Github Explorer")
         }
     }
 

@@ -4,5 +4,6 @@ import com.github_explorer.kts_android_kmp.feature.login.oauth.data.network.Toke
 
 expect class AppAuthHandler {
     suspend fun performTokenRequest(): TokensModelDto?
+    fun cleanup()
 }
 
