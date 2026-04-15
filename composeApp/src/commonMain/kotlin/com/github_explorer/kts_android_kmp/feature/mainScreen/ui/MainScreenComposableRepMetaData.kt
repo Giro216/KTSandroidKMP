@@ -34,10 +34,13 @@ import androidx.compose.ui.unit.dp
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.RoundedCornerShapeSize
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenTotalPaddingSmall
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.fork_logo
 import ktsandroidkmp.composeapp.generated.resources.star_logo
 import org.jetbrains.compose.resources.stringResource
+import kotlinx.datetime.Instant
 
 @Composable
 fun RepoCard(
@@ -118,17 +121,28 @@ private fun PrintMetaData(
     onFormatMetric: (emoji: String, count: Int) -> String,
     onColorMapping: (language: String) -> Color,
 ) {
+    fun formatDate(date: String): String {
+        val instant = Instant.parse(date)
+        val localDate = instant
+            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+
+        return "${localDate.dayOfMonth.toString().padStart(2, '0')}." +
+                "${localDate.monthNumber.toString().padStart(2, '0')}." +
+                "${localDate.year}"
+    }
+
     val starEmoji = stringResource(Res.string.star_logo)
     val forkEmoji = stringResource(Res.string.fork_logo)
 
 
     val likeText = remember(starEmoji, stars) { onFormatMetric(starEmoji, stars) }
     val commentText = remember(forkEmoji, forks) { onFormatMetric(forkEmoji, forks) }
+    val formatedDate = remember(updatedAt) { formatDate(updatedAt) }
 
     RepoMetaLanguage(language, onColorMapping)
     RepoMetaText(text = likeText)
     RepoMetaText(text = commentText)
-    RepoMetaText(text = updatedAt)
+    RepoMetaText(text = formatedDate)
 
 }
 

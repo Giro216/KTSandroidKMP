@@ -74,6 +74,7 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.coil.compose)
             implementation(libs.napier)
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
