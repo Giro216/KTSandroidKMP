@@ -232,8 +232,15 @@ val localProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
-val clientIdProvider = providers.provider { localProps.getProperty("CLIENT_ID") ?: "" }
-val clientSecretProvider = providers.provider { localProps.getProperty("CLIENT_SECRET") ?: "" }
+val localClientId = localProps.getProperty("CLIENT_ID").orEmpty()
+val localClientSecret = localProps.getProperty("CLIENT_SECRET").orEmpty()
+
+val clientIdProvider = providers.gradleProperty("CLIENT_ID")
+    .orElse(providers.environmentVariable("CLIENT_ID"))
+    .orElse(localClientId)
+val clientSecretProvider = providers.gradleProperty("CLIENT_SECRET")
+    .orElse(providers.environmentVariable("CLIENT_SECRET"))
+    .orElse(localClientSecret)
 
 val genDir = layout.buildDirectory.dir("generated/authConfig")
 
@@ -243,9 +250,18 @@ val generateAuthConfig by tasks.registering(GenerateAuthConfigTask::class) {
     outputDir.set(genDir)
 }
 
-val releaseStorePassword = localProps.getProperty("RELEASE_STORE_PASSWORD") ?: ""
-val releaseKeyPassword = localProps.getProperty("RELEASE_KEY_PASSWORD") ?: ""
-val releaseKeyAlias = localProps.getProperty("RELEASE_KEY_ALIAS") ?: ""
+val releaseStorePassword = providers.gradleProperty("RELEASE_STORE_PASSWORD")
+    .orElse(providers.environmentVariable("RELEASE_STORE_PASSWORD"))
+    .orElse(localProps.getProperty("RELEASE_STORE_PASSWORD").orEmpty())
+    .get()
+val releaseKeyPassword = providers.gradleProperty("RELEASE_KEY_PASSWORD")
+    .orElse(providers.environmentVariable("RELEASE_KEY_PASSWORD"))
+    .orElse(localProps.getProperty("RELEASE_KEY_PASSWORD").orEmpty())
+    .get()
+val releaseKeyAlias = providers.gradleProperty("RELEASE_KEY_ALIAS")
+    .orElse(providers.environmentVariable("RELEASE_KEY_ALIAS"))
+    .orElse(localProps.getProperty("RELEASE_KEY_ALIAS").orEmpty())
+    .get()
 
 kotlin {
     sourceSets {
