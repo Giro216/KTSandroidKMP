@@ -17,6 +17,7 @@ import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.ui.Iss
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui.RepoScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui.RepoFilesScreen
+import com.github_explorer.kts_android_kmp.feature.settings.ui.SettingsScreen
 import com.github_explorer.kts_android_kmp.platform.exitApp
 
 @Composable
@@ -92,7 +93,18 @@ fun AppNavigation(innerPadding: PaddingValues) {
                         ?.savedStateHandle
                         ?.set(forcedTabProperty, MainBottomTab.Favorites.name)
                 },
+                onOpenSettings = {
+                    navController.navigate(Routes.SettingsScreen)
+                },
                 lazyColumnModifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+            )
+        }
+
+        composable<Routes.SettingsScreen> {
+            SettingsScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
             )
         }
 

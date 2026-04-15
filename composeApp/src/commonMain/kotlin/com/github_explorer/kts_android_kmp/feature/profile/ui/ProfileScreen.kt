@@ -1,6 +1,7 @@
 package com.github_explorer.kts_android_kmp.feature.profile.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -40,16 +46,18 @@ import ktsandroidkmp.composeapp.generated.resources.profile_avatar_content_descr
 import ktsandroidkmp.composeapp.generated.resources.profile_load_error
 import ktsandroidkmp.composeapp.generated.resources.profile_logout
 import ktsandroidkmp.composeapp.generated.resources.profile_retry
+import ktsandroidkmp.composeapp.generated.resources.profile_settings_content_description
 import ktsandroidkmp.composeapp.generated.resources.profile_stat_followers
 import ktsandroidkmp.composeapp.generated.resources.profile_title
 import ktsandroidkmp.composeapp.generated.resources.repos_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onNavigateToBootstrap: () -> Unit,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel = koinViewModel(),
 ) {
@@ -73,12 +81,25 @@ fun ProfileScreen(
     ) {
         StatusBarSpacer()
 
-        Text(
-            text = stringResource(Res.string.profile_title),
-            style = MaterialTheme.typography.headlineLarge,
+        Box(
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-        )
+        ) {
+            Text(
+                text = stringResource(Res.string.profile_title),
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.align(Alignment.Center),
+            )
+
+            IconButton(
+                onClick = onOpenSettings,
+                modifier = Modifier.align(Alignment.TopEnd),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = stringResource(Res.string.profile_settings_content_description),
+                )
+            }
+        }
 
         Spacer(Modifier.height(Dimens.SpacingLarge))
 
@@ -197,7 +218,7 @@ private fun Stat(
 @Composable
 fun ProfileScreenPreview() {
     MaterialTheme {
-        ProfileScreen(onNavigateToBootstrap = {})
+        ProfileScreen(onNavigateToBootstrap = {}, onOpenSettings = {})
     }
 }
 

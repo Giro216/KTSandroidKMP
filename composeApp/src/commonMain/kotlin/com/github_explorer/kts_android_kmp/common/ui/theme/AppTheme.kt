@@ -8,12 +8,11 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun AppTheme(
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
-
     MaterialTheme(
-        colorScheme = if (isDark) darkColorScheme() else lightColorScheme(),
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme(),
         content = content
     )
 }

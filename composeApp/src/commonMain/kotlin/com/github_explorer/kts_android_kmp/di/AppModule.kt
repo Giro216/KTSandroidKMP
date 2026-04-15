@@ -8,6 +8,7 @@ val appModules = listOf(
     bootstrapModule,
     networkModule,
     storageModule,
+    settingsModule,
     loginScreenModule,
     mainScreenModule,
     profileModule,
