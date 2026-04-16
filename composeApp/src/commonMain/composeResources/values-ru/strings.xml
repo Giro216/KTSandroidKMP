@@ -95,6 +95,7 @@
     <string name="issues_screen_issue_status_unknown">UNKNOWN</string>
 
     <string name="repo_title">Репозиторий</string>
+    <string name="repos_title">Репозитории</string>
     <string name="public_repos_title">Публичные репозитории</string>
     <string name="private_repos_title">Приватные репозитории</string>
     <string name="issues_title">Issues</string>

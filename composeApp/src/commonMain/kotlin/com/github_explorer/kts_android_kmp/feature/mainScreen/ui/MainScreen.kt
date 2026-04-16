@@ -61,7 +61,7 @@ import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_search_hint
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
 import ktsandroidkmp.composeapp.generated.resources.profile_title
-import ktsandroidkmp.composeapp.generated.resources.public_repos_title
+import ktsandroidkmp.composeapp.generated.resources.repos_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -160,7 +160,7 @@ fun MainScreen(
                         selected = selectedTab == MainBottomTab.Repositories,
                         onClick = { selectedTab = MainBottomTab.Repositories },
                         icon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                        label = { Text(stringResource(Res.string.public_repos_title)) },
+                        label = { Text(stringResource(Res.string.repos_title)) },
                     )
                     NavigationBarItem(
                         selected = selectedTab == MainBottomTab.Favorites,

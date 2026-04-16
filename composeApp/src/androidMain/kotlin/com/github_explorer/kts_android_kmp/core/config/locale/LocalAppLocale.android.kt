@@ -1,15 +1,14 @@
 package com.github_explorer.kts_android_kmp.core.config.locale
 
-import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidedValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import java.util.Locale
 
 actual object LocalAppLocale {
 
-    private var startupLocaleTag: String? = null
-    private var appliedLocaleTag: String? = null
+    private var defaultLocale: Locale? = null
 
     actual val current: String
         @Composable
@@ -17,29 +16,24 @@ actual object LocalAppLocale {
 
     @Composable
     actual infix fun provides(value: String?): ProvidedValue<*> {
-        val context = LocalContext.current
+        val configuration = LocalConfiguration.current
 
-        if (startupLocaleTag == null) {
-            startupLocaleTag = getDefaultLocale()
+        if (defaultLocale == null) {
+            defaultLocale = Locale.getDefault()
         }
 
-        val targetTag = value?.takeIf { it.isNotBlank() } ?: startupLocaleTag!!
-        val parsed = Locale.forLanguageTag(targetTag)
-        val localeToApply = if (parsed == Locale.ROOT) {
-            Locale.forLanguageTag(startupLocaleTag!!)
+        val newLocale = if (value == null) {
+            defaultLocale!!
         } else {
-            parsed
-        }
-        val localeTagToApply = localeToApply.toLanguageTag()
-
-        if (appliedLocaleTag != localeTagToApply) {
-            Locale.setDefault(localeToApply)
-            appliedLocaleTag = localeTagToApply
+            Locale.forLanguageTag(value)
         }
 
-        val localizedConfiguration = Configuration(context.resources.configuration)
-        localizedConfiguration.setLocale(localeToApply)
-        val newContext = context.createConfigurationContext(localizedConfiguration)
+        Locale.setDefault(newLocale)
+        configuration.setLocale(newLocale)
+
+
+        val context = LocalContext.current
+        val newContext = context.createConfigurationContext(configuration)
 
         return LocalContext provides newContext
     }
