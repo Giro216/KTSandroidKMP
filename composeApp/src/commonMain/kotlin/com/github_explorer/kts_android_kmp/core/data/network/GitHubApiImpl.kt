@@ -1,7 +1,7 @@
 package com.github_explorer.kts_android_kmp.core.data.network
 
 import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
-import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.data.network.GithubUserDto
+import com.github_explorer.kts_android_kmp.feature.profile.data.network.GithubUserDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.CreateIssueRequestDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.GithubIssueDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.data.network.GithubRepoDetailsDto

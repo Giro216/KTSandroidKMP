@@ -50,7 +50,7 @@ import com.github_explorer.kts_android_kmp.feature.favorites.ui.FavoriteScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.platform.MainScreenBackHandler
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
-import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.ui.ProfileScreen
+import com.github_explorer.kts_android_kmp.feature.profile.ui.ProfileScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res

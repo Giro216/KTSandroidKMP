@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.ui
+package com.github_explorer.kts_android_kmp.feature.profile.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,9 +37,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github_explorer.kts_android_kmp.common.ui.PrintCoilImage
 import com.github_explorer.kts_android_kmp.common.ui.StatusBarSpacer
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens
-import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.UserProfile
-import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.presentation.ProfileUiEvent
-import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.presentation.ProfileViewModel
+import com.github_explorer.kts_android_kmp.feature.profile.domain.UserProfile
+import com.github_explorer.kts_android_kmp.feature.profile.presentation.ProfileUiEvent
+import com.github_explorer.kts_android_kmp.feature.profile.presentation.ProfileViewModel
 import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.profile_avatar_content_description

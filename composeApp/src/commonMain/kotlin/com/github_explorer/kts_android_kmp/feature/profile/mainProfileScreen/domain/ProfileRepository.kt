@@ -1,5 +1,0 @@
-package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain
-
-interface ProfileRepository {
-    suspend fun loadProfile(): Result<UserProfile>
-}
