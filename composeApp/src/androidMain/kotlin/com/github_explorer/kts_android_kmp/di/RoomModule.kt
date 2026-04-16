@@ -3,16 +3,12 @@ package com.github_explorer.kts_android_kmp.di
 import android.content.Context
 import androidx.room.Room
 import com.github_explorer.kts_android_kmp.db.AppDatabase
-import com.github_explorer.kts_android_kmp.feature.favorites.data.RoomFavoriteRepository
-import com.github_explorer.kts_android_kmp.feature.favorites.data.SystemTimeProvider
-import com.github_explorer.kts_android_kmp.feature.favorites.data.TimeProvider
+import com.github_explorer.kts_android_kmp.feature.favorites.data.RoomFavoriteRepositoryImpl
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.FavoriteRepository
-import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ObserveFavoritesUseCase
-import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ToggleFavoriteUseCase
 import com.github_explorer.kts_android_kmp.feature.mainScreen.cache.RoomGitHubSearchCacheImpl
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
-import com.github_explorer.kts_android_kmp.feature.profile.data.AndroidAppDataCleanerImpl
-import com.github_explorer.kts_android_kmp.feature.profile.platform.AppDataCleaner
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.platform.AndroidAppDataCleanerImpl
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.platform.AppDataCleaner
 import org.koin.dsl.module
 
 fun roomModule(context: Context) = module {
@@ -22,7 +18,7 @@ fun roomModule(context: Context) = module {
             AppDatabase::class.java,
             AppDatabase.NAME,
         )
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(false)
             .build()
     }
 
@@ -31,10 +27,7 @@ fun roomModule(context: Context) = module {
 
     // favorites
     factory { get<AppDatabase>().favoriteRepoDao() }
-    single<TimeProvider> { SystemTimeProvider() }
-    single<FavoriteRepository> { RoomFavoriteRepository(dao = get(), timeProvider = get()) }
-    factory { ObserveFavoritesUseCase(repository = get()) }
-    factory { ToggleFavoriteUseCase(repository = get()) }
+    single<FavoriteRepository> { RoomFavoriteRepositoryImpl(dao = get()) }
 
     factory<AppDataCleaner> {
         AndroidAppDataCleanerImpl(

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello_screen_img_url">https://habrastorage.org/getpro/habr/upload_files/8e0/5d6/aa1/8e05d6aa1598c5bef4ec157784c30ff7.jpg</string>
+    <string name="hello_screen_title">GitHub Explorer</string>
+    <string name="hello_screen_subtitle">Будущее разработки создаётся вместе</string>
+    <string name="hello_screen_repositories_title">Исследуйте репозитории</string>
+    <string name="hello_screen_repositories_description">Ищите проекты на GitHub, изучайте результаты и находите увлекательные кодовые базы</string>
+    <string name="hello_screen_repositories_img_url">https://avatars.githubusercontent.com/u/9919?v=4</string>
+    <string name="hello_screen_profile_title">Ваш профиль</string>
+    <string name="hello_screen_profile_description">Просматривайте профиль, избранные репозитории и настройки приложения в одном месте</string>
+    <string name="hello_screen_profile_img_url">https://avatars.githubusercontent.com/u/583231?v=4</string>
+
+    <string name="top_logo_img_url">https://raw.githubusercontent.com/tedivm/tedivm/main/images/github.png</string>
+
+    <string name="login_screen_title">Войдите в аккаунт, чтобы продолжить</string>
+    <string name="login">Войти</string>
+    <string name="login_screen_title_main">Вход</string>
+    <string name="logo_content_description">Логотип</string>
+
+    <string name="email_label">Email</string>
+    <string name="email_placeholder">name@example.com</string>
+    <string name="password_label">Пароль</string>
+    <string name="hide_password_content_description">Скрыть пароль</string>
+    <string name="show_password_content_description">Показать пароль</string>
+    <string name="email_error_blank">Введите email</string>
+    <string name="email_error_invalid">Некорректный email</string>
+    <string name="password_error_blank">Введите пароль</string>
+    <string name="password_error_min_length">Минимум %1$d символов</string>
+    <string name="login_error_message">Неверный логин или пароль</string>
+
+    <string name="login_screen_loading_gif">https://media1.tenor.com/m/6bLqzMcCDzEAAAAC/marmalady-loading-cat.gif</string>
+
+    <string name="main_screen_search_exp">Например: kotlin</string>
+    <string name="main_screen_title">Поиск репозиториев</string>
+    <string name="main_screen_click_back_twice">Нажмите назад ещё раз, чтобы выйти</string>
+    <string name="main_screen_search_advice">Введите запрос и нажмите Поиск</string>
+    <string name="main_screen_search_nothing_found">Ничего не найдено</string>
+    <string name="main_screen_next_page_loading_error">Ошибка при загрузке следующей страницы</string>
+    <string name="main_screen_data_loading_error">Не удалось загрузить данные</string>
+    <string name="main_screen_retry_search_hint">Попробуйте изменить запрос</string>
+    <string name="main_screen_found_count">Найдено: %1$d</string>
+    <string name="main_screen_found_count_of_total">Найдено: %1$d из %2$d</string>
+    <string name="main_screen_search_button">Поиск</string>
+    <string name="main_screen_retry_button">Повторить</string>
+    <string name="main_screen_empty_favorites">Пока нет избранных репозиториев</string>
+
+    <string name="star_logo">★ </string>
+    <string name="fork_logo">⑂ </string>
+    <string name="issue_logo">🐞 </string>
+
+    <string name="login_waiting_title">Ждём логина…</string>
+    <string name="login_waiting_subtitle">Авторизуйтесь через GitHub — и мы сразу пустим вас дальше</string>
+
+    <string name="profile_title">Профиль</string>
+    <string name="profile_avatar_content_description">Аватар</string>
+    <string name="profile_load_error">Не удалось загрузить профиль</string>
+    <string name="profile_retry">Повторить</string>
+    <string name="profile_logout">Выход</string>
+    <string name="profile_stat_followers">Подписчики</string>
+    <string name="profile_settings_content_description">Открыть настройки</string>
+
+    <string name="settings_title">Настройки</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_dark">Тёмная</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_russian">Русский</string>
+    <string name="settings_back_content_description">Назад</string>
+
+    <string name="favorite_title">Избранное</string>
+    <string name="favorite_no_repos">Пока нет избранных репозиториев</string>
+
+    <string name="repo_screen_Language">Язык: </string>
+    <string name="repo_screen_readme_title">README</string>
+    <string name="repo_screen_readme_load_error">Не удалось загрузить README</string>
+
+    <string name="issues_screen_refresh">Обновить</string>
+    <string name="issues_screen_create_issue">Создать issue</string>
+    <string name="issues_screen_load_issue_error">Ошибка загрузки issues</string>
+    <string name="issues_screen_retry">Повторить</string>
+    <string name="issues_screen_no_open_issue">Открытых задач нет</string>
+    <string name="issues_screen_issue_title">Название</string>
+    <string name="issues_screen_issue_description">Описание</string>
+    <string name="issues_screen_create">Создать</string>
+    <string name="issues_screen_creating">Создание...</string>
+    <string name="issues_screen_create_issue_warning">Вы уверены, что хотите создать issue? Это не ваш личный репозиторий</string>
+    <string name="issues_screen_check_permissions_error">Не удалось проверить права на создание issue</string>
+    <string name="issues_screen_issue_name_required">Название issue обязательно</string>
+    <string name="issues_screen_create_issue_success">Issue успешно создан</string>
+    <string name="issues_screen_create_issue_error">Не удалось создать issue</string>
+
+    <string name="issues_screen_issue_status_open">OPEN</string>
+    <string name="issues_screen_issue_status_closed">CLOSED</string>
+    <string name="issues_screen_issue_status_unknown">UNKNOWN</string>
+
+    <string name="repo_title">Репозиторий</string>
+    <string name="repos_title">Репозитории</string>
+    <string name="public_repos_title">Публичные репозитории</string>
+    <string name="private_repos_title">Приватные репозитории</string>
+    <string name="issues_title">Issues</string>
+
+    <string name="cancel">Отмена</string>
+    <string name="OK">OK</string>
+
+    <string name="repo_files_screen_new_file">Новый файл</string>
+    <string name="repo_files_screen_edit_file">Редактирование файла</string>
+    <string name="repo_files_screen_file_name">Имя файла</string>
+    <string name="repo_files_screen_content">Содержимое</string>
+    <string name="repo_files_screen_folder_icon">📁</string>
+    <string name="repo_files_screen_file_icon">📄</string>
+
+    <string name="repo_files_screen_file_not_implemented">Просмотр/редактирование файла пока не реализованы: %1$s</string>
+    <string name="repo_files_screen_enter_file_name">Введите имя файла</string>
+    <string name="repo_files_screen_invalid_file_name">Некорректное имя файла</string>
+
+    <string name="repo_files_screen_file_created">Файл создан: %1$s</string>
+    <string name="repo_files_screen_upload_error">Ошибка загрузки</string>
+    <string name="repo_files_screen_file_not_loaded">Файл еще не загружен</string>
+    <string name="repo_files_screen_edit_only_text">Редактирование доступно только для CODE/JSON/TEXT</string>
+
+    <string name="repo_files_screen_file_updated">Файл обновлен</string>
+    <string name="repo_files_screen_update_error">Ошибка обновления</string>
+    <string name="repo_files_screen_path_not_defined">Путь файла не определен</string>
+
+    <string name="repo_files_conflict_error">Конфликт: файл изменился на сервере (sha mismatch). Обновите данные и попробуйте снова.</string>
+    <string name="repo_files_validation_error">Ошибка валидации (422). Возможно, файл уже существует или путь/имя некорректны.</string>
+    <string name="repo_files_unauthorized_error">Не авторизован (401).</string>
+    <string name="repo_files_forbidden_error">Нет доступа (403). Проверьте права/скоупы токена.</string>
+    <string name="repo_files_not_found_error">Ресурс не найден (404).</string>
+    <string name="repo_files_server_error">Ошибка сервера GitHub: %1$s</string>
+
+    <string name="repo_files_screen_edit">Edit</string>
+    <string name="repo_files_screen_loading_error">Ошибка загрузки</string>
+    <string name="repo_files_screen_preview_not_available">Предварительный просмотр недоступен для %1$s</string>
+</resources>

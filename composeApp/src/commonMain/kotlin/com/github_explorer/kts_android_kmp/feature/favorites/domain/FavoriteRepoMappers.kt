@@ -1,7 +1,7 @@
 package com.github_explorer.kts_android_kmp.feature.favorites.domain
 
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
-import com.github_explorer.kts_android_kmp.feature.repoScreen.domain.GithubRepoDetails
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.domain.GithubRepoDetails
 
 fun GithubRepoDetails.toGitHubRepo(): GitHubRepo {
     return GitHubRepo(

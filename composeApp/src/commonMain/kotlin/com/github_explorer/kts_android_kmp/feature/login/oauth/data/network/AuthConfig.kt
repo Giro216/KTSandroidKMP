@@ -1,7 +1,5 @@
 package com.github_explorer.kts_android_kmp.feature.login.oauth.data.network
 
-import com.example.kts_android_kmp.feature.login.oauth.data.network.AuthSecrets
-
 object AuthConfig {
     const val AUTH_URI = "https://github.com/login/oauth/authorize"
     const val TOKEN_URI = "https://github.com/login/oauth/access_token"

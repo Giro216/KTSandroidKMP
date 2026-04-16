@@ -25,8 +25,14 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build
-        run: ./gradlew assembleDebug
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        run: ./gradlew --no-configuration-cache :composeApp:generateAuthConfig :composeApp:assembleDebug
 
       - name: Test
-        run: ./gradlew check
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        run: ./gradlew --no-configuration-cache check
 

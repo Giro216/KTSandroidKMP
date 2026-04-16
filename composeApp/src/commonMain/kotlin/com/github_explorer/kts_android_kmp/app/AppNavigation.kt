@@ -7,19 +7,23 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.github_explorer.kts_android_kmp.feature.bootstrap.BootstrapScreen
 import com.github_explorer.kts_android_kmp.feature.intro.HelloScreen
 import com.github_explorer.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainBottomTab
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainScreen
-import com.github_explorer.kts_android_kmp.feature.repoScreen.ui.RepoScreen
+import com.github_explorer.kts_android_kmp.feature.profile.userRepoScreen.ui.UserReposScreen
+import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.ui.IssueScreen
+import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui.RepoScreen
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.ui.RepoFilesScreen
+import com.github_explorer.kts_android_kmp.feature.settings.ui.SettingsScreen
 import com.github_explorer.kts_android_kmp.platform.exitApp
 
 @Composable
 fun AppNavigation(innerPadding: PaddingValues) {
     val navController = rememberNavController()
-    val ownerProperty = "owner"
-    val repoProperty = "repo"
     val forcedTabProperty = "forced_tab"
 
     NavHost(
@@ -69,12 +73,6 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 onBackPressed = {
                     exitApp()
                 },
-                onNavigateToBootstrap = {
-                    navController.navigate(Routes.Bootstrap) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
                 forcedTab = forcedTab,
                 onForcedTabConsumed = {
                     backStackEntry.savedStateHandle[forcedTabProperty] = null
@@ -82,29 +80,111 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 onOpenRepo = { owner, repo ->
                     navController.currentBackStackEntry
                         ?.savedStateHandle
-                        ?.set(ownerProperty, owner)
-                    navController.currentBackStackEntry
-                        ?.savedStateHandle
-                        ?.set(repoProperty, repo)
+                        ?.set(forcedTabProperty, MainBottomTab.Repositories.name)
+                    navController.navigate(Routes.RepoScreen(owner = owner, repo = repo))
+                },
+                onOpenFavorites = {
                     navController.currentBackStackEntry
                         ?.savedStateHandle
                         ?.set(forcedTabProperty, MainBottomTab.Favorites.name)
-                    navController.navigate(Routes.RepoScreen)
+                },
+                onOpenSettings = {
+                    navController.navigate(Routes.SettingsScreen)
+                },
+                onOpenUserRepos = {
+                    navController.navigate(Routes.UserReposScreen)
                 },
                 lazyColumnModifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             )
         }
 
+        composable<Routes.SettingsScreen> {
+            SettingsScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onNavigateToBootstrap = {
+                    navController.navigate(Routes.Bootstrap) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
 
-        composable<Routes.RepoScreen> {
+        composable<Routes.UserReposScreen> {
+            UserReposScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onOpenSettings = {
+                    navController.navigate(Routes.SettingsScreen)
+                },
+                onOpenRepo = { owner, repo ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(forcedTabProperty, MainBottomTab.Repositories.name)
+                    navController.navigate(Routes.RepoScreen(owner = owner, repo = repo))
+                },
+            )
+        }
+
+
+        composable<Routes.RepoScreen> { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.RepoScreen>()
             RepoScreen(
                 onBackClick = {
                     navController.popBackStack()
                 },
-                owner = navController.previousBackStackEntry?.savedStateHandle?.get(ownerProperty)
-                    ?: "",
-                repo = navController.previousBackStackEntry?.savedStateHandle?.get(repoProperty)
-                    ?: "",
+                onOpenIssues = { owner, repo ->
+                    navController.navigate(Routes.IssueScreen(owner = owner, repo = repo))
+                },
+                onOpenCode = { owner, repo ->
+                    navController.navigate(
+                        Routes.RepoFilesScreen(
+                            owner = owner,
+                            repo = repo,
+                            path = "",
+                            type = RepoFileItemType.DIR
+                        )
+                    )
+                },
+                owner = route.owner,
+                repo = route.repo,
+            )
+        }
+
+        composable<Routes.IssueScreen> { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.IssueScreen>()
+            IssueScreen(
+                owner = route.owner,
+                repo = route.repo,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        composable<Routes.RepoFilesScreen> { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.RepoFilesScreen>()
+            RepoFilesScreen(
+                owner = route.owner,
+                repo = route.repo,
+                path = route.path,
+                contentType = route.type,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onOpenContent = { newPath, type ->
+                    navController.navigate(
+                        Routes.RepoFilesScreen(
+                            owner = route.owner,
+                            repo = route.repo,
+                            path = newPath,
+                            type = type
+                        )
+                    )
+                },
             )
         }
     }

@@ -13,17 +13,20 @@ class PlatformPreferencesImpl(
     override fun getBoolean(key: String, default: Boolean): Flow<Boolean> =
         when (key) {
             PrefKeys.ONBOARDING_SHOWN -> storage.observeOnboardingShown()
+            PrefKeys.IS_DARK_THEME -> storage.observeIsDarkTheme()
             else -> flowOf(default)
         }
 
     override suspend fun putBoolean(key: String, value: Boolean) {
         when (key) {
             PrefKeys.ONBOARDING_SHOWN -> storage.setOnboardingShown(value).getOrThrow()
+            PrefKeys.IS_DARK_THEME -> storage.setDarkTheme(value).getOrThrow()
         }
     }
 
     override fun getString(key: String, default: String?): Flow<String?> =
         when (key) {
+            PrefKeys.LANGUAGE -> storage.observeLanguage()
             PrefKeys.ACCESS_TOKEN -> storage.observeAccessToken()
             PrefKeys.REFRESH_TOKEN -> storage.observeRefreshToken()
             PrefKeys.ID_TOKEN -> storage.observeIdToken()
@@ -33,12 +36,14 @@ class PlatformPreferencesImpl(
     override suspend fun putString(key: String, value: String?) {
         if (value != null) {
             when (key) {
+                PrefKeys.LANGUAGE -> storage.saveLanguage(value).getOrThrow()
                 PrefKeys.ACCESS_TOKEN -> storage.saveAccessToken(value).getOrThrow()
                 PrefKeys.REFRESH_TOKEN -> storage.saveRefreshToken(value).getOrThrow()
                 PrefKeys.ID_TOKEN -> storage.saveIdToken(value).getOrThrow()
             }
         } else {
             when (key) {
+                PrefKeys.LANGUAGE -> storage.saveLanguage("ru-RU").getOrThrow()
                 PrefKeys.ACCESS_TOKEN -> storage.clearAccessToken().getOrThrow()
                 PrefKeys.REFRESH_TOKEN -> storage.clearRefreshToken().getOrThrow()
                 PrefKeys.ID_TOKEN -> storage.clearIdToken().getOrThrow()

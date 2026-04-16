@@ -11,9 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.github_explorer.kts_android_kmp.common.ui.RepoCard
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
-import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.RepoCard
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.favorite_no_repos
 import ktsandroidkmp.composeapp.generated.resources.favorite_title
@@ -26,8 +26,6 @@ fun FavoriteScreen(
     favoriteRepoIds: Set<Long>,
     onOpenRepo: (owner: String, repo: String) -> Unit,
     onToggleFavorite: (GitHubRepo) -> Unit,
-    onFormatMetric: (emoji: String, count: Int) -> String,
-    onColorMapping: (language: String) -> androidx.compose.ui.graphics.Color,
     lazyColumnModifier: Modifier,
 ) {
     LazyColumn(
@@ -59,8 +57,6 @@ fun FavoriteScreen(
             RepoCard(
                 repo = repo,
                 modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
-                onFormatMetric = onFormatMetric,
-                onColorMapping = onColorMapping,
                 onClick = { onOpenRepo(repo.owner, repo.name) },
                 isFavorite = favoriteRepoIds.contains(repo.id),
                 onFavoriteClick = { onToggleFavorite(repo) },

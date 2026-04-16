@@ -42,8 +42,7 @@ object ApiClient {
                         BearerTokens(accessToken = token, refreshToken = "")
                     }
 
-                    // Сейчас авто-рефреш токена не используем.
-                    // Если появится refreshToken/use-case — можно реализовать здесь.
+                    // При 401 прекращаем попытки (не используем авто-рефреш)
                     refreshTokens { null }
                 }
             }

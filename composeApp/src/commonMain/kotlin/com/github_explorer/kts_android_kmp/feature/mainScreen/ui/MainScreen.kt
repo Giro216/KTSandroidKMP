@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github_explorer.kts_android_kmp.common.ui.LoadingIndicator
+import com.github_explorer.kts_android_kmp.common.ui.RepoCard
 import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors.PrimaryBlue
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.headerHeight
@@ -50,7 +51,7 @@ import com.github_explorer.kts_android_kmp.feature.favorites.ui.FavoriteScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.platform.MainScreenBackHandler
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainUiEvent
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.MainViewModel
-import com.github_explorer.kts_android_kmp.feature.profile.ui.ProfileScreen
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.ui.ProfileScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import ktsandroidkmp.composeapp.generated.resources.Res
@@ -75,10 +76,12 @@ fun MainScreen(
     lazyColumnModifier: Modifier = Modifier,
     mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
-    onNavigateToBootstrap: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
+    onOpenUserRepos: () -> Unit = {},
     forcedTab: String? = null,
     onForcedTabConsumed: () -> Unit = {},
     onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
+    onOpenFavorites: () -> Unit = {},
 ) {
     val state by mainViewModel.state.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableStateOf(MainBottomTab.Repositories) }
@@ -249,8 +252,6 @@ fun MainScreen(
                                     RepoCard(
                                         repo = repo,
                                         modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
-                                        onFormatMetric = mainViewModel::formatMetric,
-                                        onColorMapping = mainViewModel::colorMapping,
                                         onClick = { onOpenRepo(repo.owner, repo.name) },
                                         isFavorite = state.favoriteRepoIds.contains(repo.id),
                                         onFavoriteClick = { mainViewModel.toggleFavorite(repo) },
@@ -269,20 +270,20 @@ fun MainScreen(
                     }
 
                     MainBottomTab.Favorites -> {
+                        onOpenFavorites()
                         FavoriteScreen(
                             repos = state.favoriteRepos,
                             favoriteRepoIds = state.favoriteRepoIds,
                             onOpenRepo = onOpenRepo,
                             onToggleFavorite = mainViewModel::toggleFavorite,
-                            onFormatMetric = mainViewModel::formatMetric,
-                            onColorMapping = mainViewModel::colorMapping,
                             lazyColumnModifier = lazyColumnModifier,
                         )
                     }
 
                     MainBottomTab.Profile -> {
                         ProfileScreen(
-                            onNavigateToBootstrap = onNavigateToBootstrap,
+                            onOpenSettings = onOpenSettings,
+                            onOpenUserRepos = onOpenUserRepos,
                             modifier = Modifier.fillMaxSize(),
                         )
                     }

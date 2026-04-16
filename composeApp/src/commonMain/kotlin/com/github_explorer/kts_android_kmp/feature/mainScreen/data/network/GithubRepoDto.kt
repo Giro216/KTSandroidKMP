@@ -58,7 +58,7 @@ data class GithubRepoDto(
     val masterBranch: String? = null,
     @SerialName("default_branch")
     val defaultBranch: String,
-    val score: Double,
+    val score: Double? = null,
 
     // --- also required in schema (urls & endpoints) ---
     @SerialName("forks_url")

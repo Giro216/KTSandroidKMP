@@ -41,6 +41,8 @@ kotlin {
         }
     }
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -72,6 +74,7 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.coil.compose)
             implementation(libs.napier)
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
@@ -99,6 +102,12 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "ktsandroidkmp.composeapp.generated.resources"
+    generateResClass = auto
 }
 
 android {
@@ -131,6 +140,7 @@ android {
             )
 
             buildConfigField("Boolean", "LOGGING_ENABLED", "false")
+            resValue("string", "app_name", "Github Explorer")
         }
     }
 
@@ -190,41 +200,69 @@ detekt {
 //    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 //}
 
-val localProps = Properties().apply {
-    val f = rootProject.layout.projectDirectory.file("local.properties").asFile
-    if (f.exists()) f.inputStream().use { load(it) }
-}
+abstract class GenerateAuthConfigTask : DefaultTask() {
+    @get:Input
+    abstract val clientId: Property<String>
 
-val clientIdProvider = providers.provider { localProps.getProperty("CLIENT_ID") ?: "" }
-val clientSecretProvider = providers.provider { localProps.getProperty("CLIENT_SECRET") ?: "" }
+    @get:Input
+    abstract val clientSecret: Property<String>
 
-val genDir = layout.buildDirectory.dir("generated/authConfig")
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
 
-val generateAuthConfig by tasks.registering {
-    outputs.dir(genDir)
-    doLast {
-        val clientId = clientIdProvider.get()
-        val clientSecret = clientSecretProvider.get()
-
-        val pkg = "com.example.kts_android_kmp.feature.login.oauth.data.network"
-        val outDir = genDir.get().asFile.resolve(pkg.replace('.', '/'))
+    @TaskAction
+    fun generate() {
+        val pkg = "com.github_explorer.kts_android_kmp.feature.login.oauth.data.network"
+        val outDir = outputDir.get().asFile.resolve(pkg.replace('.', '/'))
         outDir.mkdirs()
         outDir.resolve("AuthSecrets.kt").writeText(
             """
             package $pkg
 
             internal object AuthSecrets {
-                const val CLIENT_ID = "$clientId"
-                const val CLIENT_SECRET = "$clientSecret"
+                const val CLIENT_ID = "${clientId.get()}"
+                const val CLIENT_SECRET = "${clientSecret.get()}"
             }
             """.trimIndent()
         )
     }
 }
 
-val releaseStorePassword = localProps.getProperty("RELEASE_STORE_PASSWORD") ?: ""
-val releaseKeyPassword = localProps.getProperty("RELEASE_KEY_PASSWORD") ?: ""
-val releaseKeyAlias = localProps.getProperty("RELEASE_KEY_ALIAS") ?: ""
+val localProps = Properties().apply {
+    val f = rootProject.layout.projectDirectory.file("local.properties").asFile
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
+val localClientId = localProps.getProperty("CLIENT_ID").orEmpty()
+val localClientSecret = localProps.getProperty("CLIENT_SECRET").orEmpty()
+
+val clientIdProvider = providers.gradleProperty("CLIENT_ID")
+    .orElse(providers.environmentVariable("CLIENT_ID"))
+    .orElse(localClientId)
+val clientSecretProvider = providers.gradleProperty("CLIENT_SECRET")
+    .orElse(providers.environmentVariable("CLIENT_SECRET"))
+    .orElse(localClientSecret)
+
+val genDir = layout.buildDirectory.dir("generated/authConfig")
+
+val generateAuthConfig by tasks.registering(GenerateAuthConfigTask::class) {
+    clientId.set(clientIdProvider)
+    clientSecret.set(clientSecretProvider)
+    outputDir.set(genDir)
+}
+
+val releaseStorePassword = providers.gradleProperty("RELEASE_STORE_PASSWORD")
+    .orElse(providers.environmentVariable("RELEASE_STORE_PASSWORD"))
+    .orElse(localProps.getProperty("RELEASE_STORE_PASSWORD").orEmpty())
+    .get()
+val releaseKeyPassword = providers.gradleProperty("RELEASE_KEY_PASSWORD")
+    .orElse(providers.environmentVariable("RELEASE_KEY_PASSWORD"))
+    .orElse(localProps.getProperty("RELEASE_KEY_PASSWORD").orEmpty())
+    .get()
+val releaseKeyAlias = providers.gradleProperty("RELEASE_KEY_ALIAS")
+    .orElse(providers.environmentVariable("RELEASE_KEY_ALIAS"))
+    .orElse(localProps.getProperty("RELEASE_KEY_ALIAS").orEmpty())
+    .get()
 
 kotlin {
     sourceSets {
@@ -235,3 +273,9 @@ kotlin {
 }
 
 tasks.named("compileKotlinMetadata").configure { dependsOn(generateAuthConfig) }
+tasks.matching { it.name.startsWith("compile") && it.name.contains("Kotlin") }.configureEach {
+    dependsOn(generateAuthConfig)
+}
+tasks.matching { it.name.startsWith("ksp") && it.name.contains("KotlinAndroid") }.configureEach {
+    dependsOn(generateAuthConfig)
+}
