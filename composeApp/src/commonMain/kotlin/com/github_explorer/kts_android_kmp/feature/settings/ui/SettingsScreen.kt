@@ -88,7 +88,7 @@ fun SettingsScreen(
                         Text(stringResource(Res.string.settings_language_english))
                     }
 
-                    Button(onClick = { viewModel.setLanguage("ru") }) {
+                    Button(onClick = { viewModel.setLanguage("ru-RU") }) {
                         Text(stringResource(Res.string.settings_language_russian))
                     }
                 }

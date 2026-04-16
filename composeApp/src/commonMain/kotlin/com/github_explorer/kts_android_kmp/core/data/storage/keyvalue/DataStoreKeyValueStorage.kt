@@ -41,7 +41,7 @@ class DataStoreKeyValueStorage(
         dataStore.data.map { prefs -> prefs[IS_DARK_THEME] ?: false }
 
     fun observeLanguage(): Flow<String> =
-        dataStore.data.map { prefs -> prefs[LANGUAGE] ?: "en" }
+        dataStore.data.map { prefs -> prefs[LANGUAGE] ?: "ru-RU" }
 
     fun observeAccessToken(): Flow<String?> =
         dataStore.data.map { prefs -> prefs[ACCESS_TOKEN] }

@@ -7,8 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github_explorer.kts_android_kmp.common.ui.theme.AppTheme
 import com.github_explorer.kts_android_kmp.core.config.locale.LocalAppLocale
+import com.github_explorer.kts_android_kmp.core.config.locale.getDefaultLocale
 import com.github_explorer.kts_android_kmp.feature.settings.presentation.SettingsViewModel
 import org.koin.compose.koinInject
 
@@ -23,7 +25,7 @@ fun App() {
         .value
 
     val languageCode = vm.getLanguageState()
-        .collectAsState("en")
+        .collectAsStateWithLifecycle(getDefaultLocale())
         .value
 
 

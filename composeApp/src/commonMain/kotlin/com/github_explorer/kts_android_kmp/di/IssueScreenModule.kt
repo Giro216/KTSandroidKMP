@@ -10,7 +10,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val IssueScreenModule = module {
-    single<GithubIssueRepository> { GithubIssueRepositoryImpl(api = get()) }
+    factory<GithubIssueRepository> { GithubIssueRepositoryImpl(api = get()) }
     factory { LoadIssuesUseCase(issueRepository = get()) }
     factory { CheckCreateIssuePermissionUseCase(issueRepository = get()) }
     factory { CreateIssueUseCase(issueRepository = get()) }

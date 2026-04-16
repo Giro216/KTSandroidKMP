@@ -12,7 +12,7 @@ class SettingsRepositoryImpl(
         appPreferences.getBoolean(PrefKeys.IS_DARK_THEME, default = false)
 
     override fun observeLanguage() =
-        appPreferences.getString(PrefKeys.LANGUAGE, default = "en").map { it ?: "en" }
+        appPreferences.getString(PrefKeys.LANGUAGE, default = "ru-RU").map { it ?: "ru-RU" }
 
     override suspend fun setDarkTheme(isDarkTheme: Boolean) {
         appPreferences.putBoolean(PrefKeys.IS_DARK_THEME, isDarkTheme)

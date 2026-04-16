@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello_screen_img_url">https://habrastorage.org/getpro/habr/upload_files/8e0/5d6/aa1/8e05d6aa1598c5bef4ec157784c30ff7.jpg</string>
-    <string name="hello_screen_title">Github Explorer</string>
-    <string name="hello_screen_subtitle">The future of building happens together</string>
+    <string name="hello_screen_title">GitHub Explorer</string>
+    <string name="hello_screen_subtitle">Будущее разработки создаётся вместе</string>
     <string name="hello_screen_repositories_title">Исследуйте репозитории</string>
     <string name="hello_screen_repositories_description">Ищите проекты на GitHub, изучайте результаты и находите увлекательные кодовые базы</string>
     <string name="hello_screen_repositories_img_url">https://avatars.githubusercontent.com/u/9919?v=4</string>
@@ -38,6 +38,8 @@
     <string name="main_screen_next_page_loading_error">Ошибка при загрузке следующей страницы</string>
     <string name="main_screen_data_loading_error">Не удалось загрузить данные</string>
     <string name="main_screen_retry_search_hint">Попробуйте изменить запрос</string>
+    <string name="main_screen_found_count">Найдено: %1$d</string>
+    <string name="main_screen_found_count_of_total">Найдено: %1$d из %2$d</string>
     <string name="main_screen_search_button">Поиск</string>
     <string name="main_screen_retry_button">Повторить</string>
     <string name="main_screen_empty_favorites">Пока нет избранных репозиториев</string>

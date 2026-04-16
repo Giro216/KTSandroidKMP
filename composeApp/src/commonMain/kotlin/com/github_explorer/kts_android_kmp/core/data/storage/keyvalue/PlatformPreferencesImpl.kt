@@ -43,7 +43,7 @@ class PlatformPreferencesImpl(
             }
         } else {
             when (key) {
-                PrefKeys.LANGUAGE -> storage.saveLanguage("en").getOrThrow()
+                PrefKeys.LANGUAGE -> storage.saveLanguage("ru-RU").getOrThrow()
                 PrefKeys.ACCESS_TOKEN -> storage.clearAccessToken().getOrThrow()
                 PrefKeys.REFRESH_TOKEN -> storage.clearRefreshToken().getOrThrow()
                 PrefKeys.ID_TOKEN -> storage.clearIdToken().getOrThrow()
