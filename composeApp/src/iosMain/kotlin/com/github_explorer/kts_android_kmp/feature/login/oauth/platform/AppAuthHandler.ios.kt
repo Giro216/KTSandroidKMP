@@ -6,4 +6,6 @@ actual class AppAuthHandler {
     actual suspend fun performTokenRequest(): TokensModelDto? {
         return null
     }
+
+    actual fun cleanup() {}
 }

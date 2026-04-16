@@ -5,19 +5,21 @@ import com.github_explorer.kts_android_kmp.feature.profile.domain.ProfileReposit
 import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LoadUseCase
 import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LogoutUseCase
 import com.github_explorer.kts_android_kmp.feature.profile.presentation.ProfileViewModel
+import com.github_explorer.kts_android_kmp.core.data.storage.domain.SessionRepository
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val profileModule = module {
-    single<ProfileRepository> { ProfileRepositoryImpl(api = get()) }
+    factory<ProfileRepository> { ProfileRepositoryImpl(api = get()) }
 
-    single { LogoutUseCase(appDataCleaner = get()) }
-    single { LoadUseCase(profileRepository = get()) }
+    factory { LogoutUseCase(appDataCleaner = get()) }
+    factory { LoadUseCase(profileRepository = get()) }
 
     viewModel {
         ProfileViewModel(
             loadUseCase = get(),
             logoutUseCase = get(),
+            sessionRepository = get<SessionRepository>(),
         )
     }
 }

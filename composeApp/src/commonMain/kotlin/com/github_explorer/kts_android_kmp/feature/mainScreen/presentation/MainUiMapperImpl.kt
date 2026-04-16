@@ -6,6 +6,8 @@ import androidx.compose.ui.graphics.Color
 import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors.AvatarBackground
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
 import ktsandroidkmp.composeapp.generated.resources.Res
+import ktsandroidkmp.composeapp.generated.resources.main_screen_found_count
+import ktsandroidkmp.composeapp.generated.resources.main_screen_found_count_of_total
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_advice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
 import org.jetbrains.compose.resources.StringResource
@@ -20,8 +22,15 @@ class MainUiMapperImpl : MainUiMapper {
         return when {
             query.isBlank() -> HintContent.Resource(Res.string.main_screen_search_advice)
             reposSize == 0 -> HintContent.Resource(Res.string.main_screen_search_nothing_found)
-            totalCount > 0 -> HintContent.PlainText("Найдено: $reposSize из $totalCount")
-            else -> HintContent.PlainText("Найдено: $reposSize")
+            totalCount > 0 -> HintContent.Resource(
+                resource = Res.string.main_screen_found_count_of_total,
+                args = listOf(reposSize, totalCount),
+            )
+
+            else -> HintContent.Resource(
+                resource = Res.string.main_screen_found_count,
+                args = listOf(reposSize),
+            )
         }
     }
 
@@ -77,6 +86,10 @@ class MainUiMapperImpl : MainUiMapper {
 
 @Immutable
 sealed interface HintContent {
-    data class Resource(val resource: StringResource) : HintContent
+    data class Resource(
+        val resource: StringResource,
+        val args: List<Any> = emptyList(),
+    ) : HintContent
+
     data class PlainText(val text: String) : HintContent
 }

@@ -16,6 +16,8 @@ interface AppPreferences {
 
 object PrefKeys {
     const val ONBOARDING_SHOWN = "onboarding_shown"
+    const val IS_DARK_THEME = "is_dark_theme"
+    const val LANGUAGE = "language"
     const val ACCESS_TOKEN = "access_token"
     const val REFRESH_TOKEN = "refresh_token"
     const val ID_TOKEN = "id_token"

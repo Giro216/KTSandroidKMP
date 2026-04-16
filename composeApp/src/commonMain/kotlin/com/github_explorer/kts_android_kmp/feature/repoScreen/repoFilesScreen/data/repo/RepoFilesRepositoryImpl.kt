@@ -1,0 +1,224 @@
+package com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.repo
+
+import com.github_explorer.kts_android_kmp.core.data.network.GitHubApi
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.RepoFilesStrings
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.CreateOrUpdateFileRequestDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.RepoDirContentDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.data.network.RepoFileContentDto
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoDirItem
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileContent
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
+import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFilesRepository
+import com.github_explorer.kts_android_kmp.utils.coRunCatching
+import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.http.HttpStatusCode
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
+
+class RepoFilesRepositoryImpl(
+    private val api: GitHubApi,
+    private val json: Json,
+) : RepoFilesRepository {
+
+    override suspend fun listContents(
+        owner: String,
+        repo: String,
+        path: String
+    ): Result<List<RepoDirItem>> {
+        return coRunCatching {
+            val response = api.getRepoContentsRaw(owner = owner, repo = repo, path = path)
+            val raw = response.body<String>()
+            parseContentsResponse(raw)
+                .sortedWith(compareBy<RepoDirItem> {
+                    it.type != RepoFileItemType.DIR
+                }.thenBy {
+                    it.name.lowercase()
+                })
+        }
+    }
+
+    override suspend fun getFileContent(
+        owner: String,
+        repo: String,
+        path: String
+    ): Result<RepoFileContent> {
+        return coRunCatching {
+            val response = api.getRepoContentsRaw(owner = owner, repo = repo, path = path)
+            val raw = response.body<String>()
+            parseFileContentResponse(raw)
+                ?: throw IllegalStateException("Failed to parse file content response for path: $path")
+        }
+    }
+
+    @OptIn(ExperimentalEncodingApi::class)
+    override suspend fun createFile(
+        owner: String,
+        repo: String,
+        path: String,
+        contentUtf8: String,
+        message: String,
+    ): Result<Unit> {
+        return coRunCatching {
+            val encoded = Base64.encode(contentUtf8.encodeToByteArray())
+            api.createOrUpdateFile(
+                owner = owner,
+                repo = repo,
+                path = path,
+                request = CreateOrUpdateFileRequestDto(
+                    message = message,
+                    content = encoded,
+                    sha = null,
+                ),
+            )
+            Unit
+        }.mapFailureToDomainMessage()
+    }
+
+    @OptIn(ExperimentalEncodingApi::class)
+    override suspend fun updateFile(
+        owner: String,
+        repo: String,
+        path: String,
+        contentUtf8: String,
+        message: String,
+    ): Result<Unit> {
+        return coRunCatching {
+            val currentSha = loadFileSha(owner = owner, repo = repo, path = path)
+                ?: throw IllegalStateException("Cannot resolve sha for file: $path")
+
+            val encoded = Base64.encode(contentUtf8.encodeToByteArray())
+            api.createOrUpdateFile(
+                owner = owner,
+                repo = repo,
+                path = path,
+                request = CreateOrUpdateFileRequestDto(
+                    message = message,
+                    content = encoded,
+                    sha = currentSha,
+                ),
+            )
+            Unit
+        }.mapFailureToDomainMessage()
+    }
+
+    private suspend fun loadFileSha(owner: String, repo: String, path: String): String? {
+        val response = api.getRepoContentsRaw(owner = owner, repo = repo, path = path)
+        val raw = response.body<String>()
+        val element = json.parseToJsonElement(raw)
+        val asObject = element as? JsonObject ?: return null
+        return asObject["sha"]?.jsonPrimitive?.contentOrNull
+    }
+
+    private suspend fun parseContentsResponse(raw: String): List<RepoDirItem> {
+        return when (val element = json.parseToJsonElement(raw)) {
+            // при запросе вернулся массив элементов (директория)
+            is JsonArray -> element.jsonArray.mapNotNull { decodeDirContentItem(it.jsonObject) }
+
+            // при запросе вернулся один элемент (файл)
+            is JsonObject -> listOfNotNull(decodeDirContentItem(element.jsonObject))
+            else -> emptyList()
+        }
+    }
+
+    private suspend fun parseFileContentResponse(raw: String): RepoFileContent? {
+        val element = json.parseToJsonElement(raw)
+        return decodeFileContentItem(element.jsonObject)
+    }
+
+    private suspend fun decodeDirContentItem(obj: JsonObject): RepoDirItem? {
+        val dto = coRunCatching {
+            json.decodeFromJsonElement(RepoDirContentDto.serializer(), obj)
+        }.getOrNull() ?: return null
+
+        val type = when (dto.type.lowercase()) {
+            "dir" -> RepoFileItemType.DIR
+            "file" -> RepoFileItemType.FILE
+            else -> return null
+        }
+
+        return RepoDirItem(
+            name = dto.name,
+            path = dto.path,
+            type = type,
+            sha = dto.sha,
+            size = dto.size,
+        )
+    }
+
+    private suspend fun decodeFileContentItem(obj: JsonObject): RepoFileContent? {
+        val dto = coRunCatching {
+            json.decodeFromJsonElement(RepoFileContentDto.serializer(), obj)
+        }.getOrNull() ?: return null
+
+        val type = when (dto.type.lowercase()) {
+            "dir" -> RepoFileItemType.DIR
+            "file" -> RepoFileItemType.FILE
+            else -> return null
+        }
+
+        return RepoFileContent(
+            name = dto.name,
+            path = dto.path,
+            type = type,
+            sha = dto.sha,
+            size = dto.size,
+            content = dto.content,
+            encoding = dto.encoding,
+            downloadUrl = dto.downloadUrl
+        )
+    }
+}
+
+private fun <T> Result<T>.mapFailureToDomainMessage(): Result<T> {
+    return this.exceptionOrNull()?.let { throwable ->
+        val mapped = when (throwable) {
+            is ClientRequestException -> {
+                when (throwable.response.status) {
+                    HttpStatusCode.Conflict -> IllegalStateException(
+                        RepoFilesStrings.CONFLICT_ERROR,
+                        throwable
+                    )
+
+                    HttpStatusCode.UnprocessableEntity -> IllegalStateException(
+                        RepoFilesStrings.VALIDATION_ERROR,
+                        throwable
+                    )
+
+                    HttpStatusCode.Unauthorized -> IllegalStateException(
+                        RepoFilesStrings.UNAUTHORIZED_ERROR,
+                        throwable
+                    )
+
+                    HttpStatusCode.Forbidden -> IllegalStateException(
+                        RepoFilesStrings.FORBIDDEN_ERROR,
+                        throwable
+                    )
+
+                    HttpStatusCode.NotFound -> IllegalStateException(
+                        RepoFilesStrings.NOT_FOUND_ERROR,
+                        throwable
+                    )
+
+                    else -> throwable
+                }
+            }
+
+            is ServerResponseException -> IllegalStateException(
+                RepoFilesStrings.SERVER_ERROR + throwable.response.status,
+                throwable
+            )
+
+            else -> throwable
+        }
+        Result.failure(mapped)
+    } ?: this
+}

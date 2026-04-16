@@ -1,17 +1,20 @@
 package com.github_explorer.kts_android_kmp.feature.profile.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.github_explorer.kts_android_kmp.core.data.storage.domain.SessionRepository
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
 import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LoadUseCase
 import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LogoutUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileViewModel(
     private val loadUseCase: LoadUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val sessionRepository: SessionRepository,
 ) : BaseViewModel<ProfileUiEvent, ProfileUiState>(ProfileUiState()) {
 
     init {
@@ -20,6 +23,12 @@ class ProfileViewModel(
 
     fun load() {
         viewModelScope.launch {
+            val hasToken = sessionRepository.accessToken().first().orEmpty().isNotBlank()
+            if (!hasToken) {
+                updateState { copy(isLoading = false, profile = null, isError = false) }
+                return@launch
+            }
+
             updateState { copy(isLoading = true, isError = false) }
 
             val result = loadUseCase.loadProfile()

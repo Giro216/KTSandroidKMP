@@ -76,9 +76,11 @@ fun MainScreen(
     mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
     onNavigateToBootstrap: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
     forcedTab: String? = null,
     onForcedTabConsumed: () -> Unit = {},
     onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
+    onOpenFavorites: () -> Unit = {},
 ) {
     val state by mainViewModel.state.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableStateOf(MainBottomTab.Repositories) }
@@ -269,6 +271,7 @@ fun MainScreen(
                     }
 
                     MainBottomTab.Favorites -> {
+                        onOpenFavorites()
                         FavoriteScreen(
                             repos = state.favoriteRepos,
                             favoriteRepoIds = state.favoriteRepoIds,
@@ -283,6 +286,7 @@ fun MainScreen(
                     MainBottomTab.Profile -> {
                         ProfileScreen(
                             onNavigateToBootstrap = onNavigateToBootstrap,
+                            onOpenSettings = onOpenSettings,
                             modifier = Modifier.fillMaxSize(),
                         )
                     }

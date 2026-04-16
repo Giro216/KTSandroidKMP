@@ -10,7 +10,7 @@ import org.koin.dsl.module
 
 val networkModule = module {
     single { AuthTokenProvider(sessionRepository = get<SessionRepository>()) }
-    single<HttpClient> { ApiClient.createHttpClient(tokenProvider = get()) }
-    single<GitHubApi> { GitHubApiImpl(client = get()) }
+    factory<HttpClient> { ApiClient.createHttpClient(tokenProvider = get()) }
+    factory<GitHubApi> { GitHubApiImpl(client = get()) }
 
 }

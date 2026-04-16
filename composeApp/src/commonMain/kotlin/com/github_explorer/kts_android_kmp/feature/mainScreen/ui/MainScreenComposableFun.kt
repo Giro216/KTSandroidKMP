@@ -30,6 +30,7 @@ import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.SpacingSmall
 import com.github_explorer.kts_android_kmp.feature.mainScreen.presentation.HintContent
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_data_loading_error
+import ktsandroidkmp.composeapp.generated.resources.main_screen_found_count_of_total
 import ktsandroidkmp.composeapp.generated.resources.main_screen_next_page_loading_error
 import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_button
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_button
@@ -79,7 +80,7 @@ fun MainHeader(
 
         if (hint != null) {
             val hintText = when (hint) {
-                is HintContent.Resource -> stringResource(hint.resource)
+                is HintContent.Resource -> stringResource(hint.resource, *hint.args.toTypedArray())
                 is HintContent.PlainText -> hint.text
             }
 
@@ -177,7 +178,10 @@ fun MainHeaderPreview() {
     MainHeader(
         query = "Kotlin",
         isInitialError = false,
-        hint = HintContent.PlainText("Найдено: 30 из 100"),
+        hint = HintContent.Resource(
+            resource = Res.string.main_screen_found_count_of_total,
+            args = listOf(30, 100),
+        ),
         onQueryChanged = {},
         onSearch = {},
         onRetry = {},

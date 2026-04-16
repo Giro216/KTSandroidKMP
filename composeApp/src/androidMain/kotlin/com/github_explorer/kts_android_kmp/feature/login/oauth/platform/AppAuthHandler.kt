@@ -36,6 +36,11 @@ actual class AppAuthHandler(private val activity: ComponentActivity) {
         }
     }
 
+    actual fun cleanup() {
+        continuation = null
+        authService.dispose()
+    }
+
     private fun onAuthResult(data: Intent?) {
         if (data == null) {
             dispatch(Result.failure(IllegalStateException("Authentication cancelled")))

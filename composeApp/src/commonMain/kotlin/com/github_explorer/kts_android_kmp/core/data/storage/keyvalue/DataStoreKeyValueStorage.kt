@@ -27,6 +27,8 @@ class DataStoreKeyValueStorage(
 ) {
     private companion object {
         val ONBOARDING_SHOWN = booleanPreferencesKey(PrefKeys.ONBOARDING_SHOWN)
+        val IS_DARK_THEME = booleanPreferencesKey(PrefKeys.IS_DARK_THEME)
+        val LANGUAGE = stringPreferencesKey(PrefKeys.LANGUAGE)
         val ACCESS_TOKEN = stringPreferencesKey(PrefKeys.ACCESS_TOKEN)
         val REFRESH_TOKEN = stringPreferencesKey(PrefKeys.REFRESH_TOKEN)
         val ID_TOKEN = stringPreferencesKey(PrefKeys.ID_TOKEN)
@@ -34,6 +36,12 @@ class DataStoreKeyValueStorage(
 
     fun observeOnboardingShown(): Flow<Boolean> =
         dataStore.data.map { prefs -> prefs[ONBOARDING_SHOWN] ?: false }
+
+    fun observeIsDarkTheme(): Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[IS_DARK_THEME] ?: false }
+
+    fun observeLanguage(): Flow<String> =
+        dataStore.data.map { prefs -> prefs[LANGUAGE] ?: "ru-RU" }
 
     fun observeAccessToken(): Flow<String?> =
         dataStore.data.map { prefs -> prefs[ACCESS_TOKEN] }
@@ -46,6 +54,14 @@ class DataStoreKeyValueStorage(
 
     suspend fun setOnboardingShown(shown: Boolean): Result<Unit> = coRunCatching {
         dataStore.edit { prefs -> prefs[ONBOARDING_SHOWN] = shown }
+    }
+
+    suspend fun setDarkTheme(isDarkTheme: Boolean): Result<Unit> = coRunCatching {
+        dataStore.edit { prefs -> prefs[IS_DARK_THEME] = isDarkTheme }
+    }
+
+    suspend fun saveLanguage(language: String): Result<Unit> = coRunCatching {
+        dataStore.edit { prefs -> prefs[LANGUAGE] = language }
     }
 
     suspend fun saveTokens(
