@@ -1,9 +1,9 @@
-package com.github_explorer.kts_android_kmp.feature.profile.data.repo
+package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.data.repo
 
 import com.github_explorer.kts_android_kmp.core.data.network.GitHubApi
-import com.github_explorer.kts_android_kmp.feature.profile.data.network.GithubUserDto
-import com.github_explorer.kts_android_kmp.feature.profile.domain.ProfileRepository
-import com.github_explorer.kts_android_kmp.feature.profile.domain.UserProfile
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.data.network.GithubUserDto
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.ProfileRepository
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.UserProfile
 import com.github_explorer.kts_android_kmp.utils.coRunCatching
 
 class ProfileRepositoryImpl(

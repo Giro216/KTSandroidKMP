@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.profile.platform
+package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.platform
 
 
 interface AppDataCleaner {

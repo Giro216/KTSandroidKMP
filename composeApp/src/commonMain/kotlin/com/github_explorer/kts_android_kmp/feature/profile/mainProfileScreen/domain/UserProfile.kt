@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.profile.domain
+package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain
 
 import androidx.compose.runtime.Immutable
 

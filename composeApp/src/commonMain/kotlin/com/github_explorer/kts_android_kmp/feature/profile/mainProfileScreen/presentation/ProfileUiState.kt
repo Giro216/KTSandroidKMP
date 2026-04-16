@@ -1,7 +1,7 @@
-package com.github_explorer.kts_android_kmp.feature.profile.presentation
+package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.presentation
 
 import androidx.compose.runtime.Immutable
-import com.github_explorer.kts_android_kmp.feature.profile.domain.UserProfile
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.UserProfile
 
 @Immutable
 data class ProfileUiState(

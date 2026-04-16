@@ -1,10 +1,10 @@
-package com.github_explorer.kts_android_kmp.feature.profile.presentation
+package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.core.data.storage.domain.SessionRepository
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
-import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LoadUseCase
-import com.github_explorer.kts_android_kmp.feature.profile.domain.useCase.LogoutUseCase
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.useCase.LoadUseCase
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.useCase.LogoutUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.first

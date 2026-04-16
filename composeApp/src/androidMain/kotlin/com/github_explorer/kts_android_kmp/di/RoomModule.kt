@@ -7,8 +7,8 @@ import com.github_explorer.kts_android_kmp.feature.favorites.data.RoomFavoriteRe
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.FavoriteRepository
 import com.github_explorer.kts_android_kmp.feature.mainScreen.cache.RoomGitHubSearchCacheImpl
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.cache.GitHubRepoCache
-import com.github_explorer.kts_android_kmp.feature.profile.data.AndroidAppDataCleanerImpl
-import com.github_explorer.kts_android_kmp.feature.profile.platform.AppDataCleaner
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.platform.AndroidAppDataCleanerImpl
+import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.platform.AppDataCleaner
 import org.koin.dsl.module
 
 fun roomModule(context: Context) = module {
