@@ -1,6 +1,5 @@
 package com.github_explorer.kts_android_kmp.feature.mainScreen.presentation
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
 import com.github_explorer.kts_android_kmp.feature.favorites.domain.usecase.ObserveFavoritesUseCase
@@ -198,10 +197,6 @@ class MainViewModel(
     fun refresh() {
         refreshRequests.trySend(Unit)
     }
-
-    fun formatMetric(emoji: String, count: Int): String = uiMapper.formatMetric(emoji, count)
-
-    fun colorMapping(language: String): Color = uiMapper.colorForLanguage(language)
 
     private suspend fun observeRefreshRequests() {
         for (r in refreshRequests) {

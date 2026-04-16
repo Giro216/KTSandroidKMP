@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github_explorer.kts_android_kmp.common.ui.LoadingIndicator
+import com.github_explorer.kts_android_kmp.common.ui.RepoCard
 import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors.PrimaryBlue
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenHorizontalPaddingSmall
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.headerHeight
@@ -60,7 +61,7 @@ import ktsandroidkmp.composeapp.generated.resources.main_screen_click_back_twice
 import ktsandroidkmp.composeapp.generated.resources.main_screen_retry_search_hint
 import ktsandroidkmp.composeapp.generated.resources.main_screen_search_nothing_found
 import ktsandroidkmp.composeapp.generated.resources.profile_title
-import ktsandroidkmp.composeapp.generated.resources.repos_title
+import ktsandroidkmp.composeapp.generated.resources.public_repos_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -75,8 +76,8 @@ fun MainScreen(
     lazyColumnModifier: Modifier = Modifier,
     mainViewModel: MainViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
-    onNavigateToBootstrap: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
+    onOpenUserRepos: () -> Unit = {},
     forcedTab: String? = null,
     onForcedTabConsumed: () -> Unit = {},
     onOpenRepo: (owner: String, repo: String) -> Unit = { _, _ -> },
@@ -159,7 +160,7 @@ fun MainScreen(
                         selected = selectedTab == MainBottomTab.Repositories,
                         onClick = { selectedTab = MainBottomTab.Repositories },
                         icon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                        label = { Text(stringResource(Res.string.repos_title)) },
+                        label = { Text(stringResource(Res.string.public_repos_title)) },
                     )
                     NavigationBarItem(
                         selected = selectedTab == MainBottomTab.Favorites,
@@ -251,8 +252,6 @@ fun MainScreen(
                                     RepoCard(
                                         repo = repo,
                                         modifier = Modifier.padding(horizontal = ScreenHorizontalPaddingSmall),
-                                        onFormatMetric = mainViewModel::formatMetric,
-                                        onColorMapping = mainViewModel::colorMapping,
                                         onClick = { onOpenRepo(repo.owner, repo.name) },
                                         isFavorite = state.favoriteRepoIds.contains(repo.id),
                                         onFavoriteClick = { mainViewModel.toggleFavorite(repo) },
@@ -277,16 +276,14 @@ fun MainScreen(
                             favoriteRepoIds = state.favoriteRepoIds,
                             onOpenRepo = onOpenRepo,
                             onToggleFavorite = mainViewModel::toggleFavorite,
-                            onFormatMetric = mainViewModel::formatMetric,
-                            onColorMapping = mainViewModel::colorMapping,
                             lazyColumnModifier = lazyColumnModifier,
                         )
                     }
 
                     MainBottomTab.Profile -> {
                         ProfileScreen(
-                            onNavigateToBootstrap = onNavigateToBootstrap,
                             onOpenSettings = onOpenSettings,
+                            onOpenUserRepos = onOpenUserRepos,
                             modifier = Modifier.fillMaxSize(),
                         )
                     }

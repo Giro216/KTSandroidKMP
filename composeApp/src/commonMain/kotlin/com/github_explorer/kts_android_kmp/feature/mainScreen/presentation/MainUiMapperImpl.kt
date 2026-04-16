@@ -2,8 +2,6 @@ package com.github_explorer.kts_android_kmp.feature.mainScreen.presentation
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors.AvatarBackground
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.MainUiMapper
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.main_screen_found_count
@@ -51,37 +49,6 @@ class MainUiMapperImpl : MainUiMapper {
         return trimmed.takeIf { it.isNotBlank() }
     }
 
-    @Stable
-    override fun formatCount(count: Int): String {
-        return when {
-            count >= 1_000_000 -> "${count / 1_000_000}M"
-            count >= 1_000 -> "${count / 1_000}K"
-            else -> count.toString()
-        }
-    }
-
-    @Stable
-    override fun formatMetric(emoji: String, count: Int): String {
-        return buildString {
-            append(emoji)
-            append(formatCount(count))
-        }
-    }
-
-    @Stable
-    override fun colorForLanguage(language: String): Color {
-        return when (language.lowercase()) {
-            "kotlin" -> Color(0xFFA97BFF)
-            "java" -> Color(0xFFB07219)
-            "swift" -> Color(0xFFFFAC45)
-            "javascript" -> Color(0xFFF1E05A)
-            "typescript" -> Color(0xFF3178C6)
-            "c" -> Color(0xFF555555)
-            "c++" -> Color(0xFFF34B7D)
-            "python" -> Color(0xFF3572A5)
-            else -> AvatarBackground
-        }
-    }
 }
 
 @Immutable

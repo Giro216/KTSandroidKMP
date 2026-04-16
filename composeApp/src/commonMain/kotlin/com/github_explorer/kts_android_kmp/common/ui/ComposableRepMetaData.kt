@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.mainScreen.ui
+package com.github_explorer.kts_android_kmp.common.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,23 +32,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github_explorer.kts_android_kmp.common.ui.theme.AppColors.AvatarBackground
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.RoundedCornerShapeSize
 import com.github_explorer.kts_android_kmp.common.ui.theme.Dimens.ScreenTotalPaddingSmall
 import com.github_explorer.kts_android_kmp.feature.mainScreen.domain.GitHubRepo
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ktsandroidkmp.composeapp.generated.resources.Res
 import ktsandroidkmp.composeapp.generated.resources.fork_logo
 import ktsandroidkmp.composeapp.generated.resources.star_logo
 import org.jetbrains.compose.resources.stringResource
-import kotlinx.datetime.Instant
 
 @Composable
 fun RepoCard(
     repo: GitHubRepo,
     modifier: Modifier = Modifier,
-    onFormatMetric: (emoji: String, count: Int) -> String,
-    onColorMapping: (language: String) -> Color,
     onClick: () -> Unit,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
@@ -103,9 +103,64 @@ fun RepoCard(
                     repo.language,
                     repo.stars,
                     repo.forks,
-                    repo.updatedAt,
-                    onFormatMetric,
-                    onColorMapping,
+                    repo.updatedAt
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RepoCard(
+    repo: GitHubRepo,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(RoundedCornerShapeSize),
+    ) {
+        Column(modifier = Modifier.padding(ScreenTotalPaddingSmall)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = "${repo.owner} / ${repo.name}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+
+            }
+
+            if (!repo.description.isNullOrBlank()) {
+                Text(
+                    text = repo.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                PrintMetaData(
+                    repo.language,
+                    repo.stars,
+                    repo.forks,
+                    repo.updatedAt
                 )
             }
         }
@@ -118,8 +173,6 @@ private fun PrintMetaData(
     stars: Int,
     forks: Int,
     updatedAt: String,
-    onFormatMetric: (emoji: String, count: Int) -> String,
-    onColorMapping: (language: String) -> Color,
 ) {
     fun formatDate(date: String): String {
         val instant = Instant.parse(date)
@@ -135,11 +188,11 @@ private fun PrintMetaData(
     val forkEmoji = stringResource(Res.string.fork_logo)
 
 
-    val likeText = remember(starEmoji, stars) { onFormatMetric(starEmoji, stars) }
-    val commentText = remember(forkEmoji, forks) { onFormatMetric(forkEmoji, forks) }
+    val likeText = remember(starEmoji, stars) { formatMetric(starEmoji, stars) }
+    val commentText = remember(forkEmoji, forks) { formatMetric(forkEmoji, forks) }
     val formatedDate = remember(updatedAt) { formatDate(updatedAt) }
 
-    RepoMetaLanguage(language, onColorMapping)
+    RepoMetaLanguage(language)
     RepoMetaText(text = likeText)
     RepoMetaText(text = commentText)
     RepoMetaText(text = formatedDate)
@@ -147,7 +200,7 @@ private fun PrintMetaData(
 }
 
 @Composable
-private fun RepoMetaLanguage(language: String?, onColorMapping: (language: String) -> Color) {
+private fun RepoMetaLanguage(language: String?) {
     if (language.isNullOrBlank()) return
 
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -155,7 +208,7 @@ private fun RepoMetaLanguage(language: String?, onColorMapping: (language: Strin
             modifier = Modifier
                 .size(10.dp)
                 .clip(CircleShape)
-                .background(onColorMapping(language)),
+                .background(colorForLanguage(language)),
         )
         Spacer(Modifier.width(6.dp))
         RepoMetaText(text = language)
@@ -171,4 +224,36 @@ private fun RepoMetaText(text: String) {
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
     )
+}
+
+@Stable
+fun formatCount(count: Int): String {
+    return when {
+        count >= 1_000_000 -> "${count / 1_000_000}M"
+        count >= 1_000 -> "${count / 1_000}K"
+        else -> count.toString()
+    }
+}
+
+@Stable
+fun formatMetric(emoji: String, count: Int): String {
+    return buildString {
+        append(emoji)
+        append(formatCount(count))
+    }
+}
+
+@Stable
+fun colorForLanguage(language: String): Color {
+    return when (language.lowercase()) {
+        "kotlin" -> Color(0xFFA97BFF)
+        "java" -> Color(0xFFB07219)
+        "swift" -> Color(0xFFFFAC45)
+        "javascript" -> Color(0xFFF1E05A)
+        "typescript" -> Color(0xFF3178C6)
+        "c" -> Color(0xFF555555)
+        "c++" -> Color(0xFFF34B7D)
+        "python" -> Color(0xFF3572A5)
+        else -> AvatarBackground
+    }
 }
