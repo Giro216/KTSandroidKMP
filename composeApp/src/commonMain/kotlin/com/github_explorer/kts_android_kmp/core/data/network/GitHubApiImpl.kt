@@ -1,5 +1,6 @@
 package com.github_explorer.kts_android_kmp.core.data.network
 
+import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoDto
 import com.github_explorer.kts_android_kmp.feature.mainScreen.data.network.GithubRepoSearchResponseDto
 import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.data.network.GithubUserDto
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.data.network.CreateIssueRequestDto
@@ -21,6 +22,13 @@ interface GitHubApi {
     suspend fun loadRepos(param: GitHubApiImpl.LoadReposRequestParam): GithubRepoSearchResponseDto
 
     suspend fun getCurrentUser(): GithubUserDto
+
+    suspend fun loadCurrentUserRepos(
+        page: Int,
+        perPage: Int,
+        sort: String = "updated",
+        type: String = "owner",
+    ): List<GithubRepoDto>
 
     suspend fun getCurRepoReadme(owner: String, repo: String): GithubRepoReadmeDto
 
@@ -64,6 +72,20 @@ class GitHubApiImpl(
     override suspend fun getCurrentUser(): GithubUserDto {
         return client.get("/user") {
         }.body<GithubUserDto>()
+    }
+
+    override suspend fun loadCurrentUserRepos(
+        page: Int,
+        perPage: Int,
+        sort: String,
+        type: String,
+    ): List<GithubRepoDto> {
+        return client.get("/user/repos") {
+            parameter("per_page", perPage.toString())
+            parameter("page", page.toString())
+            parameter("sort", sort)
+            parameter("type", type)
+        }.body()
     }
 
     override suspend fun getCurRepoReadme(owner: String, repo: String): GithubRepoReadmeDto {

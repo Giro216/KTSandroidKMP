@@ -13,5 +13,7 @@ data class GithubUserDto(
     val bio: String? = null,
     @SerialName("public_repos")
     val publicRepos: Int = 0,
+    @SerialName("owned_private_repos")
+    val ownedPrivateRepos: Int = 0,
     val followers: Int = 0,
 )
