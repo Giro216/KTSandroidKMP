@@ -8,5 +8,6 @@ data class UserProfile(
     val name: String,
     val bio: String?,
     val publicRepos: Int,
+    val privateRepos: Int,
     val followers: Int,
 )

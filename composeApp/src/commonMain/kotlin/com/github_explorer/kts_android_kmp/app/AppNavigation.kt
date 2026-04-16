@@ -13,6 +13,7 @@ import com.github_explorer.kts_android_kmp.feature.intro.HelloScreen
 import com.github_explorer.kts_android_kmp.feature.login.oauth.ui.LoginScreen
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainBottomTab
 import com.github_explorer.kts_android_kmp.feature.mainScreen.ui.MainScreen
+import com.github_explorer.kts_android_kmp.feature.profile.userRepoScreen.ui.UserReposScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.issueScreen.ui.IssueScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.mainRepoScreen.ui.RepoScreen
 import com.github_explorer.kts_android_kmp.feature.repoScreen.repoFilesScreen.domain.RepoFileItemType
@@ -72,12 +73,6 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 onBackPressed = {
                     exitApp()
                 },
-                onNavigateToBootstrap = {
-                    navController.navigate(Routes.Bootstrap) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
                 forcedTab = forcedTab,
                 onForcedTabConsumed = {
                     backStackEntry.savedStateHandle[forcedTabProperty] = null
@@ -96,6 +91,9 @@ fun AppNavigation(innerPadding: PaddingValues) {
                 onOpenSettings = {
                     navController.navigate(Routes.SettingsScreen)
                 },
+                onOpenUserRepos = {
+                    navController.navigate(Routes.UserReposScreen)
+                },
                 lazyColumnModifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             )
         }
@@ -104,6 +102,29 @@ fun AppNavigation(innerPadding: PaddingValues) {
             SettingsScreen(
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onNavigateToBootstrap = {
+                    navController.navigate(Routes.Bootstrap) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
+
+        composable<Routes.UserReposScreen> {
+            UserReposScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onOpenSettings = {
+                    navController.navigate(Routes.SettingsScreen)
+                },
+                onOpenRepo = { owner, repo ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(forcedTabProperty, MainBottomTab.Repositories.name)
+                    navController.navigate(Routes.RepoScreen(owner = owner, repo = repo))
                 },
             )
         }

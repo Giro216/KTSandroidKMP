@@ -21,6 +21,9 @@ sealed class Routes {
     data object SettingsScreen : Routes()
 
     @Serializable
+    data object UserReposScreen : Routes()
+
+    @Serializable
     data class RepoScreen(
         val owner: String,
         val repo: String,

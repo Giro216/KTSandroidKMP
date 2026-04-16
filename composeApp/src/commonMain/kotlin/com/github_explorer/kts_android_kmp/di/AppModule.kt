@@ -12,6 +12,7 @@ val appModules = listOf(
     loginScreenModule,
     mainScreenModule,
     profileModule,
+    userReposModule,
     RepoScreenModule,
     RepoFilesModule,
     IssueScreenModule,
