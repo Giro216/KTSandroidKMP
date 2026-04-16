@@ -1,4 +1,4 @@
-package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.useCase
+package com.github_explorer.kts_android_kmp.feature.settings.domain.useCase
 
 import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.platform.AppDataCleaner
 

@@ -95,7 +95,8 @@
     <string name="issues_screen_issue_status_unknown">UNKNOWN</string>
 
     <string name="repo_title">Repository</string>
-    <string name="repos_title">Repositories</string>
+    <string name="public_repos_title">Public repositories</string>
+    <string name="private_repos_title">Private repositories</string>
     <string name="issues_title">Issues</string>
 
     <string name="cancel">Cancel</string>

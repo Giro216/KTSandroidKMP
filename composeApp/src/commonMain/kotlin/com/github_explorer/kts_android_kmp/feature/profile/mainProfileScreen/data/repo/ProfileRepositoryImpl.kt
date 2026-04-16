@@ -23,6 +23,7 @@ private fun GithubUserDto.toDomain(): UserProfile {
         name = name?.takeIf { it.isNotBlank() } ?: login,
         bio = bio,
         publicRepos = publicRepos,
+        privateRepos = ownedPrivateRepos,
         followers = followers,
     )
 }

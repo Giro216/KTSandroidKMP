@@ -1,15 +1,12 @@
 package com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.github_explorer.kts_android_kmp.core.data.storage.domain.SessionRepository
 import com.github_explorer.kts_android_kmp.common.BaseViewModel
+import com.github_explorer.kts_android_kmp.core.data.storage.domain.SessionRepository
 import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.useCase.LoadUseCase
-import com.github_explorer.kts_android_kmp.feature.profile.mainProfileScreen.domain.useCase.LogoutUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import com.github_explorer.kts_android_kmp.feature.settings.domain.useCase.LogoutUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ProfileViewModel(
     private val loadUseCase: LoadUseCase,
@@ -39,15 +36,6 @@ class ProfileViewModel(
                 .onFailure {
                     updateState { copy(isLoading = false, profile = null, isError = true) }
                 }
-        }
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                logoutUseCase.logout()
-            }
-            acceptLabel(ProfileUiEvent.LogoutSuccess)
         }
     }
 }
